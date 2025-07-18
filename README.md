@@ -1,2 +1,8 @@
-# FengServerTool
-清风 Among Us 工具箱，集合了多种功能。
+![FengServerTool](https://socialify.git.ci/QingFengTechnology/FengServerTool/image?custom_language=Windows&description=1&font=KoHo&language=1&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDMyIDMyIj48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMjcgOWgtM1Y2YTIgMiAwIDAgMC0yLTJIMTBhMiAyIDAgMCAwLTIgMnYzSDVhMyAzIDAgMCAwLTMgM3YxNGEyIDIgMCAwIDAgMiAyaDI0YTIgMiAwIDAgMCAyLTJWMTJhMyAzIDAgMCAwLTMtM00xMCA2aDEydjNIMTBabTE4IDIwSDR2LTloOHY1aDh2LTVoOFptLTE0LTloNHYzaC00Wk00IDE1di0zYTEgMSAwIDAgMSAxLTFoMjJhMSAxIDAgMCAxIDEgMXYzWiIvPjwvc3ZnPg%3D%3D&name=1&owner=1&pattern=Solid&theme=Dark)
+
+# QingFeng Among Us Tool
+
+一个简单的工具箱，使用批处理脚本( `.bat` )编写。\
+目前支持以下功能：
+- 一键清风服
+- 修复旧版 Among Us 黑屏问题。
