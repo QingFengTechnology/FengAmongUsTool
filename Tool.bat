@@ -119,7 +119,7 @@ echo 请稍候……
 echo.
 echo ======================================================
 echo.
-timeout /t 2 /NoBreak > nul
+timeout /t 1 /NoBreak > nul
 goto install_server_confirm
 
 :install_server_confirm
@@ -172,7 +172,7 @@ echo.
 echo ======================================================
 echo.
 timeout /t 1 /NoBreak > nul
-choice /n /m "请输入你的选择[1]："
+choice /c 1 /n /m "请输入你的选择[1]："
 if "%ERRORLEVEL%"=="0" goto install_server_region_choose
 if "%ERRORLEVEL%"=="1" (
   set "ServerDownloadURL=https://raw.githubusercontent.com/QingFengTechnology/FengAmongUsTool/refs/heads/main/regionInfo.json"
@@ -204,6 +204,42 @@ if %ERRORLEVEL% neq 0 (
   goto main_menu
 )
 timeout /t 1 /NoBreak > nul
+goto install_server_set_read_only_confirm
+
+:install_server_set_read_only_confirm
+cls
+echo.
+echo ======================================================
+echo.
+echo 安装清风服
+echo.
+echo 要为配置文件设置只读吗？
+echo.
+echo 这将阻止 Among Us 修改配置文件，避免安装失效问题。
+echo.
+echo 但极少数模组可能在设置只读后出现无法启动的问题。
+echo.
+echo ======================================================
+echo.
+timeout /t 1 /NoBreak > nul
+choice /n /m "输入 Y 设定只读，输入 N 跳过。"
+if "%ERRORLEVEL%"=="0" goto install_server_set_read_only_confirm
+if "%ERRORLEVEL%"=="1" goto install_server_set_read_only
+if "%ERRORLEVEL%"=="2" goto install_server_done
+
+:install_server_set_read_only
+cls
+echo.
+echo ======================================================
+echo.
+echo 安装清风服
+echo.
+echo 正在设置配置文件只读……
+echo.
+echo ======================================================
+echo.
+timeout /t 1 /NoBreak > nul
+attrib +r "%APPDATA%\..\LocalLow\Innersloth\Among Us\regionInfo.json" > nul 2>&1
 goto install_server_done
 
 :install_server_done
@@ -302,26 +338,26 @@ echo ======================================================
 echo.
 echo 选择修复方式
 echo.
-echo 1. 直接删除 (AmongUs会自动生成默认配置文件，但这会导致包括语言选项的自定义配置全部丢失。)
+echo 1. 直接删除 (Among Us 会自动生成默认配置文件，但这会导致包括语言选项的自定义配置全部丢失。)
 echo.
-echo 2. 下载文件替换 (需要网络连接，且下载文件只是帮你设定了语言为简体中文，其余设置均为默认。)
-echo.
-echo 上述两种方式都可能导致极个别模组储存的存档丢失，请自行备份文件。
+::echo 2. 下载文件替换 (需要网络连接，且下载文件只是帮你设定了语言为简体中文，其余设置均为默认。)
+::echo.
+echo 此操作可能会导致极个别模组储存的存档丢失，请自行备份文件。
 echo.
 echo ======================================================
 echo.
 timeout /t 1 /NoBreak > nul
-choice /c 12 /n /m "请选择修复方式：[1，2]"
+choice /c 1 /n /m "请选择修复方式：[1]"
 if "%ERRORLEVEL%"=="0" goto fix_old_amongus_choose
 if "%ERRORLEVEL%"=="1" goto fix_old_amongus_delete
-if "%ERRORLEVEL%"=="2" goto fix_old_amongus_download
+::if "%ERRORLEVEL%"=="2" goto fix_old_amongus_download
 
 :fix_old_amongus_delete
 cls
 echo.
 echo ======================================================
 echo.
-echo 修复旧版 Among Us黑屏问题
+echo 修复旧版 Among Us 黑屏问题
 echo.
 echo 正在删除配置文件……
 echo.
