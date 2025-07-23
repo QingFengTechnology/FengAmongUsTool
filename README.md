@@ -1,4 +1,4 @@
-![FengAmongUsTool](https://socialify.git.ci/QingFengTechnology/FengAmongUsTool/image?custom_language=Windows&description=1&font=KoHo&language=1&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDMyIDMyIj48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMjcgOWgtM1Y2YTIgMiAwIDAgMC0yLTJIMTBhMiAyIDAgMCAwLTIgMnYzSDVhMyAzIDAgMCAwLTMgM3YxNGEyIDIgMCAwIDAgMiAyaDI0YTIgMiAwIDAgMCAyLTJWMTJhMyAzIDAgMCAwLTMtM00xMCA2aDEydjNIMTBabTE4IDIwSDR2LTloOHY1aDh2LTVoOFptLTE0LTloNHYzaC00Wk00IDE1di0zYTEgMSAwIDAgMSAxLTFoMjJhMSAxIDAgMCAxIDEgMXYzWiIvPjwvc3ZnPg%3D%3D&name=1&owner=1&pattern=Solid&theme=Dark)
+![FengAmongUsTool](https://socialify.git.ci/QingFengTechnology/FengAmongUsTool/image?custom_description=%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84+Among+Us+%E5%B7%A5%E5%85%B7%E7%AE%B1%EF%BC%8C%E9%9B%86%E5%90%88%E4%BA%86%E5%A4%9A%E7%A7%8D%E5%8A%9F%E8%83%BD%E3%80%82&custom_language=PowerShell&description=1&font=KoHo&language=1&name=1&owner=1&pattern=Solid&theme=Auto)
 
 # QingFeng Among Us Tool
 
