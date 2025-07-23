@@ -34,23 +34,6 @@
       ],
       "TargetServer": null,
       "TranslateName": 1003
-    },
-    {
-      "$type": "StaticHttpRegionInfo, Assembly-CSharp",
-      "Name": "清风服(香港)",
-      "PingServer": "hk.server.qingfengawa.top",
-      "Servers": [
-        {
-          "Name": "http-1",
-          "Ip": "https://hk.server.qingfengawa.top",
-          "Port": 8888,
-          "UseDtls": false,
-          "Players": 0,
-          "ConnectionFailures": 0
-        }
-      ],
-      "TargetServer": null,
-      "TranslateName": 1003
     }
   ]
 }
