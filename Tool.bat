@@ -107,6 +107,7 @@ if "%ERRORLEVEL%"=="1" goto install_server_wait
 if "%ERRORLEVEL%"=="2" goto fix_old_amongus_wait
 if "%ERRORLEVEL%"=="3" goto about
 if "%ERRORLEVEL%"=="4" goto exit_tool
+goto main_menu
 
 :install_server_wait
 cls
@@ -140,6 +141,7 @@ choice /n /m "你确定要继续此操作吗？输入 Y 确认，输入 N 取消
 if "%ERRORLEVEL%"=="0" goto install_server_confirm
 if "%ERRORLEVEL%"=="1" goto install_server_delete
 if "%ERRORLEVEL%"=="2" goto main_menu
+goto install_server_confirm
 
 :install_server_delete
 cls
@@ -167,17 +169,22 @@ echo 选择下载源
 echo.
 echo 1. Github
 echo.
-echo 2. FengCloud(服务维护，暂不可用)
+echo 2. 清风 API (中国大陆可用区)
 echo.
 echo ======================================================
 echo.
 timeout /t 1 /NoBreak > nul
-choice /c 1 /n /m "请输入你的选择[1]："
+choice /c 12 /n /m "请输入你的选择[1，2]："
 if "%ERRORLEVEL%"=="0" goto install_server_region_choose
 if "%ERRORLEVEL%"=="1" (
   set "ServerDownloadURL=https://raw.githubusercontent.com/QingFengTechnology/FengAmongUsTool/refs/heads/main/regionInfo.json"
   goto install_server_download
 )
+if "%ERRORLEVEL%"=="2" (
+  set "ServerDownloadURL=https://feng-public.cn-nb1.rains3.com/regionInfo.json"
+  goto install_server_download
+)
+goto install_server_region_choose
 
 :install_server_download
 cls
@@ -198,8 +205,8 @@ if %ERRORLEVEL% neq 0 (
   echo.
   echo 如果脚本无问题，那么你应该能看到错误信息，请使用电脑软件截图并发送至天云群以请求帮助。
   timeout /t 1 /NoBreak > nul
-  echo 按任意键返回主菜单。
   echo.
+  echo 按任意键返回主菜单。
   pause > nul
   goto main_menu
 )
@@ -226,6 +233,7 @@ choice /n /m "输入 Y 设定只读，输入 N 跳过。"
 if "%ERRORLEVEL%"=="0" goto install_server_set_read_only_confirm
 if "%ERRORLEVEL%"=="1" goto install_server_set_read_only
 if "%ERRORLEVEL%"=="2" goto install_server_done
+goto install_server_set_read_only_confirm
 
 :install_server_set_read_only
 cls
@@ -259,6 +267,7 @@ choice /n /m "输入 Y 确认并返回主菜单，输入 N 直接返回主菜单
 if "%ERRORLEVEL%"=="0" goto install_server_done
 if "%ERRORLEVEL%"=="1" goto install_server_run_amongus
 if "%ERRORLEVEL%"=="2" goto main_menu
+goto install_server_done
 
 :install_server_run_amongus
 cls
@@ -288,9 +297,7 @@ echo 开发者: QingFeng (https://github.com/QingFeng-awa)
 echo.
 echo 仓库链接：https://github.com/QingFengTechnology/FengAmongUsTool
 echo.
-echo 工具箱仍在持续维护中，因此可能有功能还尚未开发，或存在 Bug。
-echo.
-echo 如果你遇到了 Bug 或是想提议一个新功能，请提出 issue。
+echo 如果你遇到了 Bug 或是想提议一个新功能，请在此工具箱 GitHub 仓库提出 issue。
 echo.
 echo ======================================================
 echo.
@@ -321,36 +328,18 @@ echo ======================================================
 echo.
 echo 修复旧版 Among Us 黑屏问题
 echo.
-echo 此操作通过替换或删除文件来修复旧版 Among Us 黑屏问题。
+echo 此操作通过删除文件来解决旧版 Among Us 黑屏问题。
 echo.
-echo ======================================================
-echo.
-timeout /t 1 /NoBreak > nul
-choice /n /m "请自行备份相关文件，输入 Y 继续执行，输入 N 返回主菜单。"
-if "%ERRORLEVEL%"=="0" goto fix_old_amongus_confirm
-if "%ERRORLEVEL%"=="1" goto fix_old_amongus_choose
-if "%ERRORLEVEL%"=="2" goto main_menu
-
-:fix_old_amongus_choose
-cls
-echo.
-echo ======================================================
-echo.
-echo 选择修复方式
-echo.
-echo 1. 直接删除 (Among Us 会自动生成默认配置文件，但这会导致包括语言选项的自定义配置全部丢失。)
-echo.
-::echo 2. 下载文件替换 (需要网络连接，且下载文件只是帮你设定了语言为简体中文，其余设置均为默认。)
-::echo.
 echo 此操作可能会导致极个别模组储存的存档丢失，请自行备份文件。
 echo.
 echo ======================================================
 echo.
 timeout /t 1 /NoBreak > nul
-choice /c 1 /n /m "请选择修复方式：[1]"
-if "%ERRORLEVEL%"=="0" goto fix_old_amongus_choose
+choice /n /m "你确定要继续吗？输入 Y 继续执行，输入 N 返回主菜单。"
+if "%ERRORLEVEL%"=="0" goto fix_old_amongus_confirm
 if "%ERRORLEVEL%"=="1" goto fix_old_amongus_delete
-::if "%ERRORLEVEL%"=="2" goto fix_old_amongus_download
+if "%ERRORLEVEL%"=="2" goto main_menu
+goto fix_old_amongus_confirm
 
 :fix_old_amongus_delete
 cls
@@ -363,40 +352,8 @@ echo 正在删除配置文件……
 echo.
 echo ======================================================
 echo.
-timeout /t 2 /NoBreak > nul
+timeout /t 1 /NoBreak > nul
 del /f "%APPDATA%\..\LocalLow\Innersloth\Among Us\settings.amogus" > nul 2>&1
-goto fix_old_amongus_done
-
-:fix_old_amongus_download
-cls
-echo.
-echo ======================================================
-echo.
-echo 修复旧版 Among Us 黑屏问题
-echo.
-echo 正在下载配置文件……
-echo.
-echo ======================================================
-echo.
-timeout /t 2 /NoBreak > nul
-curl --ssl-no-revoke "https://api.xtreme.net.cn/Server/settings.amogus" -o "%APPDATA%\..\LocalLow\Innersloth\Among Us\settings.amogus"
-if %ERRORLEVEL% neq 0 (
-  cls
-  echo.
-  echo ======================================================
-  echo.
-  echo 你无法下载配置文件。
-  echo.
-  echo 下载文件出现时异常，下载失败。
-  echo.
-  echo ======================================================
-  echo.
-  timeout /t 1 /NoBreak > nul
-  echo 按任意键返回主菜单。
-  echo.
-  pause > nul
-  goto main_menu
-)
 goto fix_old_amongus_done
 
 :fix_old_amongus_done
