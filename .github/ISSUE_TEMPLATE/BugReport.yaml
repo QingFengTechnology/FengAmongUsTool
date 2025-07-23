@@ -1,0 +1,34 @@
+name: 问题反馈
+description: 反馈使用工具箱时遇到的问题。
+title: "[Bug]: "
+labels: ["Bug"]
+assignees:
+  - QingFeng-awa
+body:
+  - type: input
+    attributes:
+      label: 工具箱版本
+      description: 你当前使用工具箱的版本。
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 问题描述
+      description: 发生了什么？<br>如果可以，请在描述时使用电脑软件的截图来提供错误信息，这有助于帮助我们更好的判断问题。
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 复现步骤
+      description: 要怎么做才能完整复现此问题？请尽量详细描述。
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 错误日志
+      description: 如果有，请将错误日志粘贴到此处。<br>这将自动进行格式化，因此无需反引号。
+      render: text
+  - type: textarea
+    attributes:
+      label: 其他信息
+      description: 如果你有其他信息，可以填写在此处。
