@@ -1,6 +1,6 @@
 chcp 65001 > nul
 @echo off
-set "Version=2.1.0"
+set "Version=2.1.2"
 title 清风 Among Us 工具箱
 echo.
 echo ======================================================
