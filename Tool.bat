@@ -177,7 +177,7 @@ timeout /t 1 /NoBreak > nul
 choice /c 12 /n /m "请输入你的选择[1，2]："
 if "%ERRORLEVEL%"=="0" goto install_server_region_choose
 if "%ERRORLEVEL%"=="1" (
-  set "ServerDownloadURL=https://raw.githubusercontent.com/QingFengTechnology/FengAmongUsTool/refs/heads/Next/regionInfo.json"
+  set "ServerDownloadURL=https://raw.githubusercontent.com/QingFengTechnology/FengAmongUsTool/refs/heads/v2/regionInfo.json"
   goto install_server_download
 )
 if "%ERRORLEVEL%"=="2" (
