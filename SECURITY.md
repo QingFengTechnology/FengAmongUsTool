@@ -14,5 +14,5 @@
 
 ## 报告漏洞
 
-如果你发现了此项目存在的安全流动，请通过 [Github Security](https://github.com/QingFengTechnology/FengAmongUsTool/security/advisories/new) 向我们进行报告。\
+如果你发现了此项目存在的安全问题，请通过 [Github Security](https://github.com/QingFengTechnology/FengAmongUsTool/security/advisories/new) 向我们进行报告。\
 当我们收到此报告后，会尽快进行处理并与您商讨如何解决此问题。
