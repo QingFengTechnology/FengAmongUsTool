@@ -21,12 +21,12 @@
     {
       "$type": "StaticHttpRegionInfo, Assembly-CSharp",
       "Name": "清风服(北京)",
-      "PingServer": "bj.server.qingfengawa.top",
+      "PingServer": "bj.server.fuyiwind.top",
       "Servers": [
         {
           "Name": "http-1",
-          "Ip": "https://bj.server.qingfengawa.top",
-          "Port": 8888,
+          "Ip": "https://bj.server.fuyiwind.top",
+          "Port": 443,
           "UseDtls": false,
           "Players": 0,
           "ConnectionFailures": 0
