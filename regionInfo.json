@@ -34,6 +34,23 @@
       ],
       "TargetServer": null,
       "TranslateName": 1003
+    },
+    {
+      "$type": "StaticHttpRegionInfo, Assembly-CSharp",
+      "Name": "清风服(上海)",
+      "PingServer": "sh.server.fuyiwind.top",
+      "Servers": [
+        {
+          "Name": "http-1",
+          "Ip": "https://sh.server.fuyiwind.top",
+          "Port": 443,
+          "UseDtls": false,
+          "Players": 0,
+          "ConnectionFailures": 0
+        }
+      ],
+      "TargetServer": null,
+      "TranslateName": 1003
     }
   ]
 }
