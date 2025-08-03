@@ -10,6 +10,10 @@
 > v3版本仍在开发阶段，开发者也仍在学习 Python，因此可能多少会存在一些Bug。\
 > 如果你更想使用更加稳定一点的工具箱，你可以选择使用 v2 版本。
 
+## 安装
+
+访问 [Release](https://github.com/QingFengTechnology/FengAmongUsTool/releases) 页面，下载最新版本的自解压包，解压后运行解压目录的`FengAmongUsTool.exe`即可。 
+
 ## 贡献
 
 请参阅[贡献指南](CONTRIBUTING.md)。
