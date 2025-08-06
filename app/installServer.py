@@ -9,13 +9,13 @@ from rich.panel import Panel
 from rich.text import Text
 from rich.syntax import Syntax
 
-from function.main import printHeader, br
+from function.main import defaultHeader, br
 
 console = Console()
 
 def downloadServerMenu(MenuMainText):
     """打印安装清风服主菜单"""
-    printHeader()
+    defaultHeader()
     br()
     console.print(Panel(Text(MenuMainText, style="bold"), title=Text("安装清风服", style="bold")))
     br()
@@ -64,7 +64,7 @@ def run():
             console.print("[bold red]输入的下载源编号无效，请重新输入。[/bold red]")
             sleep(1)
     
-    printHeader()
+    defaultHeader()
     br()
     
     try:

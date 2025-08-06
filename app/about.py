@@ -4,14 +4,14 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.text import Text
 
-from function.main import printHeader, br
+from function.main import defaultHeader, br
 from function.about import Version
 
 console = Console()
 
 def aboutPage(pageText):
     """打印关于页面"""
-    printHeader()
+    defaultHeader()
     br()
     console.print(Panel(Text(pageText, style="bold"), title=Text("关于工具箱", style="bold")))
     br()

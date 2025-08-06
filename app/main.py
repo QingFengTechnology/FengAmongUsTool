@@ -10,7 +10,7 @@ from rich.text import Text
 
 from installServer import run as installServer
 from about import run as aboutPage
-from function.main import printHeader, br
+from function.main import defaultHeader, br
 
 os.system('title 清风 Among Us 工具箱')
 
@@ -22,7 +22,7 @@ signal.signal(signal.SIGINT, signalHandler)
 
 console = Console()
 
-printHeader()
+defaultHeader()
 sleep(2)
 with console.status("系统环境检查...") as status:
   sleep(1)
@@ -48,7 +48,7 @@ mainMenuText = """
 4. 退出
 """
 while True:
-  printHeader()
+  defaultHeader()
   br()
   console.print(Panel(Text(mainMenuText, style="bold"), title=Text("主菜单", style="bold")))
   br()
