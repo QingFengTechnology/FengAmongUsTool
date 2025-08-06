@@ -17,3 +17,5 @@
 ## 贡献
 
 请参阅[贡献指南](CONTRIBUTING.md)。
+
+![Repobeats](https://repobeats.axiom.co/api/embed/3b89eff8cff2ed650ba8fc937ed4aa8b8f4f0fcf.svg "Repobeats analytics image")
