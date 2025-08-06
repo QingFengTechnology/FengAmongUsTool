@@ -3,7 +3,7 @@
   "Regions": [
     {
       "$type": "StaticHttpRegionInfo, Assembly-CSharp",
-      "Name": "清风服(十堰)",
+      "Name": "清风服(<color=#C5C5C5>十堰</color>)",
       "PingServer": "sy.server.fuyiwind.top",
       "Servers": [
         {
