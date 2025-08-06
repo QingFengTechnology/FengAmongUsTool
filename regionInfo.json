@@ -20,7 +20,7 @@
     },
     {
       "$type": "StaticHttpRegionInfo, Assembly-CSharp",
-      "Name": "清风服(北京)",
+      "Name": "清风服(<color=#D12C25>北京</color>)",
       "PingServer": "bj.server.fuyiwind.top",
       "Servers": [
         {
@@ -37,12 +37,29 @@
     },
     {
       "$type": "StaticHttpRegionInfo, Assembly-CSharp",
-      "Name": "清风服(上海)",
+      "Name": "清风服(<color=#2135FF>上海</color>)",
       "PingServer": "sh.server.fuyiwind.top",
       "Servers": [
         {
           "Name": "http-1",
           "Ip": "https://sh.server.fuyiwind.top",
+          "Port": 443,
+          "UseDtls": false,
+          "Players": 0,
+          "ConnectionFailures": 0
+        }
+      ],
+      "TargetServer": null,
+      "TranslateName": 1003
+    },
+    {
+      "$type": "StaticHttpRegionInfo, Assembly-CSharp",
+      "Name": "清风服(<color=#FFA404>广州</color>)",
+      "PingServer": "gz.server.fuyiwind.top",
+      "Servers": [
+        {
+          "Name": "http-1",
+          "Ip": "https://gz.server.fuyiwind.top",
           "Port": 443,
           "UseDtls": false,
           "Players": 0,
