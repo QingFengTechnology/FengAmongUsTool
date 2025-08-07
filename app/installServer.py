@@ -6,6 +6,8 @@ import stat
 
 from rich.console import Console
 from rich.syntax import Syntax
+from rich.panel import Panel
+from rich.text import Text
 
 from function.main import defaultHeader, br, generalMainMenu
 
@@ -56,10 +58,9 @@ def run():
             console.print("[bold red]输入的下载源编号无效，请重新输入。[/bold red]")
             sleep(1)
     
-    defaultHeader()
-    br()
-    
     try:
+        defaultHeader()
+        br()
         with console.status("准备下载清风服文件...") as status:
             sleep(1)
             status.update("备份已有文件...")
@@ -173,10 +174,13 @@ def run():
     except Exception as e:
         console.log(f"[bold red]安装过程中发生错误[/bold red]: {str(e)}")
         success = False
+        console.print("\n如果你确认这是工具箱问题，请截图相关信息并通过 GitHub Issue 报告问题。\n")
+        console.input("按 Enter 继续...")
     if success:
         finalMessage = "\n服务器安装完成。\n"
+        generalMainMenu(finalMessage, MenuTitle)
     else:
         finalMessage = "\n服务器安装失败，请查看日志以了解详情。\n"
+        console.print(Panel(Text(finalMessage, style="bold red"), title=Text(MenuTitle, style="bold")))
     
-    generalMainMenu(finalMessage, MenuTitle)
     console.input("按 Enter 返回主菜单...")

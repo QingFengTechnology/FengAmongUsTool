@@ -23,6 +23,7 @@ pageText = f"""
 """
 
 def run():
+  """工具箱关于页面"""
   generalMainMenu(pageText, "关于工具箱")
   sleep(1)
   console.input("按 Enter 返回主菜单...")

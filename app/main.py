@@ -6,6 +6,7 @@ import sys
 from rich.console import Console
 
 from installServer import run as installServer
+from fixAmongUs import run as fixAmongUs
 from about import run as aboutPage
 from function.main import defaultHeader, generalMainMenu
 
@@ -38,7 +39,7 @@ with console.status("系统环境检查...") as status:
 mainMenuText = """
 1. 安装清风服
 
-2. 修复旧版 Among Us (尚不可用)
+2. 修复旧版 Among Us
 
 3. 关于工具箱
 
@@ -51,8 +52,7 @@ while True:
   if commandNumber == "1":
     installServer()
   elif commandNumber == "2":
-    console.print("[bold yellow]此功能仍在开发，尚不可用。[/bold yellow]")
-    sleep(1)
+    fixAmongUs()
   elif commandNumber == "3":
     aboutPage()
   elif commandNumber == "4":
