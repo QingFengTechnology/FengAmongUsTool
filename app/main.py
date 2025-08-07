@@ -31,7 +31,7 @@ with console.status("系统环境检查...") as status:
     console.print("当前系统版本[bold red]不满足[/bold red]所需的要求，请升级你的 Windows 版本。")
     console.print("此项目不支持 [bold red]Windows 7 及以下版本[/bold red]。")
     console.input("按 Enter 退出...")
-    exit(1)
+    sys.exit(1)
   console.log(f"Windows 版本有效, 当前版本：{platform.version()}")
   status.update("请稍后...")
   sleep(2)
@@ -56,7 +56,7 @@ while True:
   elif commandNumber == "3":
     aboutPage()
   elif commandNumber == "4":
-    exit(0)
+    sys.exit(0)
   else:
     console.print("[bold red]输入的命令编号无效，请重新输入。[/bold red]")
     sleep(1)
