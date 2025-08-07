@@ -12,7 +12,7 @@
 
 ## 安装
 
-访问 [Release](https://github.com/QingFengTechnology/FengAmongUsTool/releases) 页面，下载最新版本的自解压包，解压后运行解压目录的`FengAmongUsTool.exe`即可。 
+访问 [Release](https://github.com/QingFengTechnology/FengAmongUsTool/releases) 页面，下载最新版本的自解压包，解压后运行解压目录的`.exe`文件即可。 
 
 ## 贡献
 
