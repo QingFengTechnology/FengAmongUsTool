@@ -20,7 +20,7 @@ def br():
   """(名称)HTML 风格的换行"""
   console.print("\n")
 
-def generalMainMenu(pageText, title="\n清风工具箱\n"):
+def generalMainMenu(pageText, title):
     """打印通用主菜单"""
     defaultHeader()
     br()

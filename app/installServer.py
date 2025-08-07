@@ -5,21 +5,13 @@ import shutil
 import stat
 
 from rich.console import Console
-from rich.panel import Panel
-from rich.text import Text
 from rich.syntax import Syntax
 
-from function.main import defaultHeader, br
+from function.main import defaultHeader, br, generalMainMenu
 
 console = Console()
 
-def downloadServerMenu(MenuMainText):
-    """打印安装清风服主菜单"""
-    defaultHeader()
-    br()
-    console.print(Panel(Text(MenuMainText, style="bold"), title=Text("安装清风服", style="bold")))
-    br()
-
+MenuTitle = "清风服安装器"
 MenuMainText = """
 请选择下载源：
     
@@ -51,7 +43,7 @@ def run():
     regionInfoBakPath = regionInfoPath + '.bak'
     success = False
     while True:
-        downloadServerMenu(MenuMainText)
+        generalMainMenu(MenuMainText, MenuTitle)
         sleep(1)
         downloadServerRegion = input("请输入要选择的下载源编号：").strip()
         if downloadServerRegion == "1":
@@ -186,5 +178,5 @@ def run():
     else:
         finalMessage = "\n服务器安装失败，请查看日志以了解详情。\n"
     
-    downloadServerMenu(finalMessage)
+    generalMainMenu(finalMessage, MenuTitle)
     console.input("按 Enter 返回主菜单...")

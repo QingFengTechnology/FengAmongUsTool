@@ -3,14 +3,11 @@ import os
 from time import sleep
 import signal
 import sys
-
 from rich.console import Console
-from rich.panel import Panel
-from rich.text import Text
 
 from installServer import run as installServer
 from about import run as aboutPage
-from function.main import defaultHeader, br
+from function.main import defaultHeader, generalMainMenu
 
 os.system('title 清风 Among Us 工具箱')
 
@@ -48,10 +45,7 @@ mainMenuText = """
 4. 退出
 """
 while True:
-  defaultHeader()
-  br()
-  console.print(Panel(Text(mainMenuText, style="bold"), title=Text("主菜单", style="bold")))
-  br()
+  generalMainMenu(mainMenuText, "主菜单")
   sleep(1)
   commandNumber = console.input("请输入要执行的命令编号：").strip()
   if commandNumber == "1":

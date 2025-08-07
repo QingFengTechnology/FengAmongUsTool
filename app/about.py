@@ -1,20 +1,10 @@
 from time import sleep
-
 from rich.console import Console
-from rich.panel import Panel
-from rich.text import Text
 
-from function.main import defaultHeader, br
+from function.main import generalMainMenu
 from function.about import Version
 
 console = Console()
-
-def aboutPage(pageText):
-    """打印关于页面"""
-    defaultHeader()
-    br()
-    console.print(Panel(Text(pageText, style="bold"), title=Text("关于工具箱", style="bold")))
-    br()
 
 pageText = f"""
 
@@ -33,6 +23,6 @@ pageText = f"""
 """
 
 def run():
-  aboutPage(pageText)
+  generalMainMenu(pageText, "关于工具箱")
   sleep(1)
   console.input("按 Enter 返回主菜单...")
