@@ -15,6 +15,11 @@ def defaultHeader(title="\n清风工具箱\n",version=Version):
   """打印默认工具箱标题"""
   cls()
   console.print(Panel(Text(title, style="bold", justify="center"), subtitle=version))
+  # alpha 版本检查
+  if Version.find("alpha") != -1:
+    br()
+    console.print(Panel(Text("\n当前版本为开发版本，可能存在较多问题。\n", style="bold", justify="center"),title="警告"))
+
 
 def br():
   """(名称)HTML 风格的换行"""
