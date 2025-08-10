@@ -39,7 +39,11 @@ with console.status("系统环境检查...") as status:
 mainMenuText = """
 1. 安装清风服
 
-2. 修复旧版 Among Us
+-  调整 Among Us 配置版本
+   
+   2.1 切换老版本配置 (修复旧版游戏)
+
+   2.2 切换新版本配置
 
 3. 关于工具箱
 
@@ -51,8 +55,10 @@ while True:
   commandNumber = console.input("请输入要执行的命令编号：").strip()
   if commandNumber == "1":
     installServer()
-  elif commandNumber == "2":
+  elif commandNumber == "2.1":
     fixAmongUs()
+  elif commandNumber == "2.2":
+    pass
   elif commandNumber == "3":
     aboutPage()
   elif commandNumber == "4":
