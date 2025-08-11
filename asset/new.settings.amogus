@@ -1,0 +1,100 @@
+{
+  "gameplay": {
+    "screenShake": true,
+    "streamerMode": false
+  },
+  "accessibility": {
+    "colorBlindMode": false
+  },
+  "audio": {
+    "musicVolume": 0.0,
+    "ambienceVolume": 0.6,
+    "sfxVolume": 0.6
+  },
+  "video": {
+    "vsync": true
+  },
+  "language": {
+    "currentLanguage": "SChinese"
+  },
+  "input": {
+    "inputMode": 2,
+    "mouseMovementEnabled": false,
+    "touchJoystickSize": 1.0,
+    "inputData": {
+      "initialization": "initialized"
+    }
+  },
+  "multiplayer": {
+    "crossPlay": true,
+    "allowFriendInvites": true,
+    "censorChat": true,
+    "chatMode": 1,
+    "quickChatFavs": [],
+    "lastPlayedGameMode": 1,
+    "normalHostOptions": "CXQAAAEAZA8AAAEAAP7/nz8AAIA//P//PgAAoEAAAAgAAAAAAgAAAAAAAAAAAAAAAQABAAAHBQAAAAMAAAABCAIAAAACAAAPBQQAAAADAAAjAAADAAAAAgAAHg8IAAAAAgAACgEJAAAAAgAADx4KAAAAAwAADx4B",
+    "normalSearchOptions": "CXQAAAEAAAoAAQAAAAAAgD8AAIA/AADAPwAAcEEBAQIBAAAAAQEPAAAAeAAAAAEAAQEAAAAHBQAAAAMAAAAKCAIAAAACAAAPBQQAAAADAAA8CgADAAAAAgAAHg8IAAAAAgAACgEJAAAAAgAADx4KAAAAAwAADx4B",
+    "hideNSeekHostOptions": "CUIAAAIAAA8AAQAAAAAAgD8AAIA/AADAPwEBAgEBAAAAAABIQzMzsz4AAIA+AQEAAEhCmpmZPwEA/////wAAwEAAAEBAAA==",
+    "hideNSeekSearchOptions": "CUIAAAIAAA8AAQAAAAAAgD8AAIA/AADAPwEBAgEBAAAAAABIQzMzsz4AAIA+AQEAAEhCmpmZPwEA/////wAAwEAAAEBAAA==",
+    "gameFilterRefreshDate": "0001-01-01T00:00:00",
+    "gameFilterTags": [
+      "新手",
+      "休闲",
+      "认真",
+      "专家"
+    ],
+    "hostFilterTags": [
+      "新手"
+    ],
+    "searchFilterTags": [
+      "新手"
+    ],
+    "filterDictionary": {},
+    "classicFilterSet": {
+      "GameMode": 1,
+      "Filters": [
+        {
+          "OptionType": "chat",
+          "Key": "Chat",
+          "SubFilterString": "{\"AcceptedValues\":1,\"FilterType\":\"chat\"}"
+        },
+        {
+          "OptionType": "map",
+          "Key": "Map",
+          "SubFilterString": "{\"AcceptedValues\":55,\"FilterType\":\"map\"}"
+        },
+        {
+          "OptionType": "int",
+          "Key": "ImpostorNumber",
+          "SubFilterString": "{\"AcceptedValues\":[3],\"OptionEnum\":1,\"FilterType\":\"int\"}"
+        },
+        {
+          "OptionType": "languages",
+          "Key": "Language",
+          "SubFilterString": "{\"AcceptedValues\":65536,\"FilterType\":\"languages\"}"
+        }
+      ]
+    },
+    "hnsFilterSet": {
+      "GameMode": 2,
+      "Filters": [
+        {
+          "OptionType": "chat",
+          "Key": "Chat",
+          "SubFilterString": "{\"AcceptedValues\":1,\"FilterType\":\"chat\"}"
+        },
+        {
+          "OptionType": "map",
+          "Key": "Map",
+          "SubFilterString": "{\"AcceptedValues\":55,\"FilterType\":\"map\"}"
+        },
+        {
+          "OptionType": "languages",
+          "Key": "Language",
+          "SubFilterString": "{\"AcceptedValues\":65536,\"FilterType\":\"languages\"}"
+        }
+      ]
+    }
+  },
+  "dataVersion": 1
+}
