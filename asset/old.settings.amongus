@@ -1,0 +1,51 @@
+{
+  "gameplay": {
+    "screenShake": true,
+    "streamerMode": false
+  },
+  "accessibility": {
+    "colorBlindMode": true
+  },
+  "audio": {
+    "musicVolume": 1.0,
+    "ambienceVolume": 0.6,
+    "sfxVolume": 1.0
+  },
+  "video": {
+    "vsync": true
+  },
+  "language": {
+    "currentLanguage": "SChinese"
+  },
+  "input": {
+    "inputMode": 2,
+    "mouseMovementEnabled": false,
+    "touchJoystickSize": 1.0
+  },
+  "multiplayer": {
+    "crossPlay": true,
+    "allowFriendInvites": true,
+    "censorChat": true,
+    "chatMode": 1,
+    "quickChatFavs": [],
+    "lastPlayedGameMode": 1,
+    "normalHostOptions": "B1UAAAEPAAABAAEAAIA/AACAPwAAwD8AAHBBAQECAQAAAAMBDwAAAHgAAAABAAEBAAAEBQAAAAMAAAAKCAIAAAACAAAPBQQAAAADAAA8CgADAAAAAgAAHg8=",
+    "normalSearchOptions": "B1UAAAEKAAABADcAAIA/AACAPwAAwD8AAHBBAQECAQAAAAMBDwAAAHgAAAABAAEBAAAEBQAAAAMAAAAKCAIAAAACAAAPBQQAAAADAAA8CgADAAAAAgAAHg8=",
+    "hideNSeekHostOptions": "Bz8AAAIPAAEAAAAAAIA/AACAPwAAwD8BAQIBAQAAAAAASEMzM7M+AACAPgEBAABIQpqZmT8BAP////8AAMBAAABAQA==",
+    "hideNSeekSearchOptions": "Bz8AAAIPAAEAAAAAAIA/AACAPwAAwD8BAQIBAQAAAAAASEMzM7M+AACAPgEBAABIQpqZmT8BAP////8AAMBAAABAQA==",
+    "gameFilterRefreshDate": "0001-01-01T00:00:00",
+    "gameFilterTags": [
+      "新手",
+      "休闲",
+      "认真",
+      "专家"
+    ],
+    "hostFilterTags": [
+      "认真"
+    ],
+    "searchFilterTags": [
+      "认真"
+    ]
+  },
+  "dataVersion": 1
+}
