@@ -1,8 +1,9 @@
-from time import sleep
+from time import sleep, time
 import requests
 import os
 import shutil
 import stat
+import random
 
 from rich.console import Console
 from rich.syntax import Syntax
@@ -14,13 +15,18 @@ from function.main import defaultHeader, br, generalMainMenu
 console = Console()
 
 MenuTitle = "清风服安装器"
-MenuMainText = """
-请选择下载源：
-    
-1. 清风 API (中国大陆可用区)
-    
-2. Github
-"""
+
+# 下载源列表
+ServerSources = [
+    {
+        "name": "清风 API (中国大陆可用区)",
+        "url": "https://feng-public.cn-nb1.rains3.com/regionInfo.json"
+    },
+    {
+        "name": "Github",
+        "url": "https://raw.githubusercontent.com/QingFengTechnology/FengAmongUsTool/refs/heads/v2/regionInfo.json"
+    }
+]
 
 def getRegionInfoPath():
     """获取私服文件的完整路径"""
@@ -39,30 +45,63 @@ def setFileWritable(regionFilePath):
             console.log(f"[bold red]未能成功移除私服文件只读属性: {str(e)}[/bold red]")
     return False
 
+def testServerLatency(url, timeout=5):
+    """测试下载源延迟"""
+    try:
+        start_time = time()
+        response = requests.head(url, timeout=timeout, allow_redirects=True)
+        if response.status_code == 200:
+            end_time = time()
+            latency = (end_time - start_time) * 1000
+            return latency
+        else:
+            return float('inf')
+    except:
+        return float('inf')
+
+def selectBestServer():
+    """选择延迟最低的下载源"""
+    results = []
+
+    random.shuffle(ServerSources)
+    
+    for server in ServerSources:
+        console.log(f"测试 {server['name']}...")
+        latency = testServerLatency(server['url'])
+        if latency == float('inf'):
+            console.log(f"[bold yellow]{server['name']} 不可用[/bold yellow]")
+        else:
+            console.log(f"[bold green]{server['name']} 延迟: {latency:.2f}ms[/bold green]")
+        results.append((server, latency))
+    
+    available_servers = [(s, l) for s, l in results if l != float('inf')]
+    
+    if not available_servers:
+        console.log("[bold red]所有下载源均无法连接[/bold red]")
+        return None
+    
+    best_server, best_latency = min(available_servers, key=lambda x: x[1])
+    console.log(f"[bold blue]已选择最快下载源: {best_server['name']} (延迟: {best_latency:.2f}ms)[/bold blue]")
+    return best_server['url']
+
 def run():
     """工具箱主要模块：安装清风服"""
     regionInfoPath = getRegionInfoPath()
     regionInfoBakPath = regionInfoPath + '.bak'
     success = False
-    while True:
-        generalMainMenu(MenuMainText, MenuTitle)
-        sleep(1)
-        downloadServerRegion = input("请输入要选择的下载源编号：").strip()
-        if downloadServerRegion == "1":
-            DownloadServerURL = "https://feng-public.cn-nb1.rains3.com/regionInfo.json"
-            break
-        elif downloadServerRegion == "2":
-            DownloadServerURL = "https://raw.githubusercontent.com/QingFengTechnology/FengAmongUsTool/refs/heads/v2/regionInfo.json"
-            break
-        else:
-            console.print("[bold red]输入的下载源编号无效，请重新输入。[/bold red]")
-            sleep(1)
-    
     try:
         defaultHeader()
         br()
         with console.status("准备下载清风服文件...") as status:
             sleep(1)
+            status.update("检测下载源延迟...")
+            sleep(1)
+            DownloadServerURL = selectBestServer()
+            if not DownloadServerURL:
+                status.stop()
+                console.print("[bold red]未能连接至可用下载服务器。[/bold red]")
+                console.input("按 Enter 返回主菜单...")
+                return
             status.update("备份已有文件...")
             sleep(1)
             try:
