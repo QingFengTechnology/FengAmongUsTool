@@ -235,6 +235,7 @@ def run():
         success = False
         console.print("\n如果你确认这是工具箱问题，请截图相关信息并通过 GitHub Issue 报告问题。\n")
         console.input("按 Enter 返回主菜单...")
+        return
 
     if success:
         finalMessage = "\n修复完成。\n"
