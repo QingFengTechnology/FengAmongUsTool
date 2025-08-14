@@ -4,7 +4,7 @@
     {
       "$type": "StaticHttpRegionInfo, Assembly-CSharp",
       "Name": "<color=#16FFFF>清风服</color><color=#1B5EB7>[宁波]</color>",
-      "PingServer": "nb.server.fuyiwind.top",
+      "PingServer": "nb.server.qingfengawa.top",
       "Servers": [
         {
           "Name": "http-1",
