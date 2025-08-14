@@ -3,12 +3,12 @@
   "Regions": [
     {
       "$type": "StaticHttpRegionInfo, Assembly-CSharp",
-      "Name": "<color=#16FFFF>清风服</color><color=#D12C25>[北京]</color>",
-      "PingServer": "bj.server.fuyiwind.top",
+      "Name": "<color=#16FFFF>清风服</color><color=#1B5EB7>[宁波]</color>",
+      "PingServer": "nb.server.fuyiwind.top",
       "Servers": [
         {
           "Name": "http-1",
-          "Ip": "https://bj.server.fuyiwind.top",
+          "Ip": "https://nb.server.qingfengawa.top",
           "Port": 443,
           "UseDtls": false,
           "Players": 0,
@@ -21,11 +21,28 @@
     {
       "$type": "StaticHttpRegionInfo, Assembly-CSharp",
       "Name": "<color=#16FFFF>清风服</color><color=#2135FF>[上海]</color>",
-      "PingServer": "sh.server.fuyiwind.top",
+      "PingServer": "sh.server.qingfengawa.top",
       "Servers": [
         {
           "Name": "http-1",
-          "Ip": "https://sh.server.fuyiwind.top",
+          "Ip": "https://sh.server.qingfengawa.top",
+          "Port": 443,
+          "UseDtls": false,
+          "Players": 0,
+          "ConnectionFailures": 0
+        }
+      ],
+      "TargetServer": null,
+      "TranslateName": 1003
+    },
+    {
+      "$type": "StaticHttpRegionInfo, Assembly-CSharp",
+      "Name": "<color=#16FFFF>清风服</color><color=#D12C25>[北京]</color>",
+      "PingServer": "bj.server.qingfengawa.top",
+      "Servers": [
+        {
+          "Name": "http-1",
+          "Ip": "https://bj.server.qingfengawa.top",
           "Port": 443,
           "UseDtls": false,
           "Players": 0,
