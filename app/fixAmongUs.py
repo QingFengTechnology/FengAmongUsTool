@@ -9,7 +9,7 @@ from rich.panel import Panel
 from rich.text import Text
 from rich.syntax import Syntax
 
-from function.main import generalMainMenu, defaultHeader, br, setFileWritable, getGameFilePath, selectBestServer
+from function.main import generalMainMenu, defaultHeader, br
 
 console = Console()
 
@@ -32,9 +32,66 @@ SettingsSources = [
     }
 ]
 
+def getSettingsFilePath():
+    """获取游戏设置文件的完整路径"""
+    appdata_path = os.environ['APPDATA']
+    target_dir = os.path.join(os.path.dirname(appdata_path), 'LocalLow', 'Innersloth', 'Among Us')
+    return os.path.join(target_dir, 'settings.amogus')
+
+
+def setFileWritable(filePath):
+    """设置文件为可写状态"""
+    if os.path.exists(filePath):
+        try:
+            os.chmod(filePath, stat.S_IWRITE)
+            console.log(f"已移除文件只读属性。")
+            return True
+        except Exception as e:
+            console.log(f"[bold red]未能成功移除文件只读属性: {str(e)}[/bold red]")
+    return False
+
+def testSettingsLatency(url, timeout=5):
+    """测试下载源延迟"""
+    try:
+        start_time = time()
+        response = requests.head(url, timeout=timeout, allow_redirects=True)
+        if response.status_code == 200:
+            end_time = time()
+            latency = (end_time - start_time) * 1000
+            return latency
+        else:
+            return float('inf')
+    except:
+        return float('inf')
+
+def selectBestSettingsSource():
+    """选择延迟最低的下载源"""
+    results = []
+
+    random.shuffle(SettingsSources)
+    
+    for source in SettingsSources:
+        console.log(f"测试 {source['name']}...")
+        latency = testSettingsLatency(source['url'])
+        if latency == float('inf'):
+            console.log(f"[bold yellow]{source['name']} 不可用[/bold yellow]")
+        else:
+            console.log(f"[bold green]{source['name']} 延迟: {latency:.2f}ms[/bold green]")
+        results.append((source, latency))
+    
+    available_sources = [(s, l) for s, l in results if l != float('inf')]
+    
+    if not available_sources:
+        console.log("[bold red]所有下载源均无法连接[/bold red]")
+        return None
+    
+    best_source, best_latency = min(available_sources, key=lambda x: x[1])
+    console.log(f"[bold blue]已选择最快下载源: {best_source['name']} (延迟: {best_latency:.2f}ms)[/bold blue]")
+    return best_source['url']
+
 def run():
     """工具箱主模块：修复旧版 Among Us"""
-    settingsFilePath = getGameFilePath('settings.amongus')
+    settingsFilePath = getSettingsFilePath()
     settingsFileBakPath = settingsFilePath + '.bak'
     success = False
 
@@ -53,13 +110,13 @@ def run():
             sleep(1)
 
     try:
-        defaultHeader("\n修复旧版游戏\n")
+        defaultHeader("修复旧版游戏")
         br()
         with console.status("准备下载设置文件...") as status:
             sleep(1)
             status.update("检测下载源延迟...")
             sleep(1)
-            DownloadSettingsURL = selectBestServer(SettingsSources)
+            DownloadSettingsURL = selectBestSettingsSource()
             if not DownloadSettingsURL:
                 status.stop()
                 console.print("[bold red]未能连接至可用下载服务器。[/bold red]")

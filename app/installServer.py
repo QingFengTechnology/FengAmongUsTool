@@ -10,8 +10,7 @@ from rich.syntax import Syntax
 from rich.panel import Panel
 from rich.text import Text
 
-from function.main import defaultHeader, br, generalMainMenu, setFileWritable, getGameFilePath, selectBestServer
-
+from function.main import defaultHeader, br, generalMainMenu
 
 console = Console()
 
@@ -29,9 +28,65 @@ ServerSources = [
     }
 ]
 
+def getRegionInfoPath():
+    """获取私服文件的完整路径"""
+    appdata_path = os.environ['APPDATA']
+    target_dir = os.path.join(os.path.dirname(appdata_path), 'LocalLow', 'Innersloth', 'Among Us')
+    return os.path.join(target_dir, 'regionInfo.json')
+
+def setFileWritable(regionFilePath):
+    """设置私服文件为可写状态"""
+    if os.path.exists(regionFilePath):
+        try:
+            os.chmod(regionFilePath, stat.S_IWRITE)
+            console.log(f"已移除私服文件只读属性。")
+            return True
+        except Exception as e:
+            console.log(f"[bold red]未能成功移除私服文件只读属性: {str(e)}[/bold red]")
+    return False
+
+def testServerLatency(url, timeout=5):
+    """测试下载源延迟"""
+    try:
+        start_time = time()
+        response = requests.head(url, timeout=timeout, allow_redirects=True)
+        if response.status_code == 200:
+            end_time = time()
+            latency = (end_time - start_time) * 1000
+            return latency
+        else:
+            return float('inf')
+    except:
+        return float('inf')
+
+def selectBestServer():
+    """选择延迟最低的下载源"""
+    results = []
+
+    random.shuffle(ServerSources)
+    
+    for server in ServerSources:
+        console.log(f"测试 {server['name']}...")
+        latency = testServerLatency(server['url'])
+        if latency == float('inf'):
+            console.log(f"[bold yellow]{server['name']} 不可用[/bold yellow]")
+        else:
+            console.log(f"[bold green]{server['name']} 延迟: {latency:.2f}ms[/bold green]")
+        results.append((server, latency))
+    
+    available_servers = [(s, l) for s, l in results if l != float('inf')]
+    
+    if not available_servers:
+        console.log("[bold red]所有下载源均无法连接[/bold red]")
+        return None
+    
+    best_server, best_latency = min(available_servers, key=lambda x: x[1])
+    console.log(f"[bold blue]已选择最快下载源: {best_server['name']} (延迟: {best_latency:.2f}ms)[/bold blue]")
+    return best_server['url']
+
 def run():
     """工具箱主要模块：安装清风服"""
-    regionInfoPath = getGameFilePath('regionInfo.json')
+    regionInfoPath = getRegionInfoPath()
     regionInfoBakPath = regionInfoPath + '.bak'
     success = False
     try:
@@ -41,7 +96,7 @@ def run():
             sleep(1)
             status.update("检测下载源延迟...")
             sleep(1)
-            DownloadServerURL = selectBestServer(ServerSources)
+            DownloadServerURL = selectBestServer()
             if not DownloadServerURL:
                 status.stop()
                 console.print("[bold red]未能连接至可用下载服务器。[/bold red]")
