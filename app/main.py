@@ -43,7 +43,7 @@ mainMenuText = """
    
    2.1 使用老版本配置 (修复旧版游戏)
 
-   2.2 使用新版本配置
+   2.2 使用新版本配置 (仍在开发)
 
 3. 关于工具箱
 
@@ -58,7 +58,7 @@ while True:
   elif commandNumber == "2.1":
     fixAmongUs()
   elif commandNumber == "2.2":
-    pass
+    console.print("[bold yellow]功能仍在开发，暂不可用。[/bold yellow]")
   elif commandNumber == "3":
     aboutPage()
   elif commandNumber == "4":
