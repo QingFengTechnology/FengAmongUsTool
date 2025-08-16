@@ -59,6 +59,7 @@ while True:
     fixAmongUs()
   elif commandNumber == "2.2":
     console.print("[bold yellow]功能仍在开发，暂不可用。[/bold yellow]")
+    sleep(1)
   elif commandNumber == "3":
     aboutPage()
   elif commandNumber == "4":
