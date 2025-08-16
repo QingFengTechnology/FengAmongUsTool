@@ -3,16 +3,24 @@
 # 清风工具箱
 
 一个简单的 Among Us 工具箱，使用 Python 编写。\
-目前仅实现了安装清风服的功能，其余功能正在逐步完善中。\
 如果您有任何建议或问题，欢迎在 [issue](https://github.com/QingFengTechnology/FengAmongUsTool/issues) 中提出。
-
-> [!Important]
-> v3版本仍在开发阶段，开发者也仍在学习 Python，因此可能多少会存在一些Bug。\
-> 如果你更想使用更加稳定一点的工具箱，你可以选择使用 v2 版本。
 
 ## 安装
 
-访问 [Release](https://github.com/QingFengTechnology/FengAmongUsTool/releases) 页面，下载最新版本的自解压包，解压后运行解压目录的`.exe`文件即可。 
+访问 [Release](https://github.com/QingFengTechnology/FengAmongUsTool/releases) 页面，下载最新版本的压缩包，解压后运行解压目录的`.exe`文件即可。 
+
+## Todo
+
+- [x] 一键安装清风服
+  - [ ] 支持安装大部分主流私服
+    - [ ] 模块化设计，支持自由组合私服
+- [ ] Among Us 配置文件切换
+  - [x] 旧版 Among Us 配置文件切换（旧版修复）
+  - [ ] 新版 Among Us 配置文件切换
+    - [ ] 优先使用玩家自己的配置文件，而不是直接覆盖
+- [ ] Among Us 皮肤解锁器
+- [ ] 图形界面支持
+- [ ] 模组管理器
 
 ## 贡献
 
