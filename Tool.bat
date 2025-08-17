@@ -169,7 +169,7 @@ echo 选择下载源
 echo.
 echo 1. Github
 echo.
-echo 2. 清风 API (中国大陆可用区)
+echo 2. 清风 API (全球可用区)
 echo.
 echo ======================================================
 echo.
@@ -181,7 +181,7 @@ if "%ERRORLEVEL%"=="1" (
   goto install_server_download
 )
 if "%ERRORLEVEL%"=="2" (
-  set "ServerDownloadURL=https://feng-public.cn-nb1.rains3.com/regionInfo.json"
+  set "ServerDownloadURL=https://cn.api.qingfengawa.top/regionInfo.json"
   goto install_server_download
 )
 goto install_server_region_choose
