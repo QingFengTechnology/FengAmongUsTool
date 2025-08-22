@@ -1,0 +1,28 @@
+name: 功能请求
+description: 请求工具箱增加一个新的功能。
+title: "[Feat]: "
+labels: ["Feature"]
+assignees:
+  - QingFeng-awa
+body:
+  - type: input
+    attributes:
+      label: 工具箱版本
+      description: 你当前使用工具箱的版本。
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 建议描述
+      description: 应尽量详细描述你想要的功能，以便于我们准确理解。
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 代码实现
+      description: 如果你有能力可以提供相关 Python 代码，欢迎填写到此处。<br>这将大大提高我们的开发效率。
+      render: python
+  - type: textarea
+    attributes:
+      label: 其他信息
+      description: 如果你有其他信息，可以填写在此处。
