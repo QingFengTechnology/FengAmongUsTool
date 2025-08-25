@@ -23,7 +23,7 @@ MenuMainText = """
 # 下载源列表
 SettingsSources = [
     {
-        "name": "清风 API (全球可用区)",
+        "name": "清风 API (中华人民共和国可用区)",
         "url": "https://cn.api.qingfengawa.top/old.settings.amongus"
     },
     {
