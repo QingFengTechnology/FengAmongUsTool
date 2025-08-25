@@ -169,7 +169,7 @@ echo 选择下载源
 echo.
 echo 1. Github
 echo.
-echo 2. 清风 API (全球可用区)
+echo 2. 清风 API (中华人民共和国可用区)
 echo.
 echo ======================================================
 echo.
