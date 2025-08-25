@@ -68,23 +68,6 @@
       ],
       "TargetServer": null,
       "TranslateName": 1003
-    },
-    {
-      "$type": "StaticHttpRegionInfo, Assembly-CSharp",
-      "Name": "<color=#16FFFF>清风服</color><color=#FFA404>[广州]</color>",
-      "PingServer": "gz.server.fuyiwind.top",
-      "Servers": [
-        {
-          "Name": "http-1",
-          "Ip": "https://gz.server.fuyiwind.top",
-          "Port": 443,
-          "UseDtls": false,
-          "Players": 0,
-          "ConnectionFailures": 0
-        }
-      ],
-      "TargetServer": null,
-      "TranslateName": 1003
     }
   ]
 }
