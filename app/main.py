@@ -7,6 +7,7 @@ from rich.console import Console
 
 from installServer import run as installServer
 from fixAmongUs import run as fixAmongUs
+from fixAmongUs import run2 as updateAmongUs
 from about import run as aboutPage
 from function.main import defaultHeader, generalMainMenu
 
@@ -43,7 +44,7 @@ mainMenuText = """
    
    2.1 使用老版本配置 (修复旧版游戏)
 
-   2.2 使用新版本配置 (仍在开发)
+   2.2 使用新版本配置
 
 3. 关于工具箱
 
@@ -58,8 +59,7 @@ while True:
   elif commandNumber == "2.1":
     fixAmongUs()
   elif commandNumber == "2.2":
-    console.print("[bold yellow]功能仍在开发，暂不可用。[/bold yellow]")
-    sleep(1)
+    updateAmongUs()
   elif commandNumber == "3":
     aboutPage()
   elif commandNumber == "4":
