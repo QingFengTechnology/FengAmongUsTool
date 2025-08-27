@@ -9,7 +9,7 @@
 | 版本        | 是否支持           |
 | ----------- | ------------------ |
 | v3 最新版本 | :white_check_mark: |
-| v2 最新版本 | :white_check_mark: |
+| v2 LTS 版本 | :white_check_mark: |
 | v1.x        | :x:                |
 
 ## 报告漏洞
