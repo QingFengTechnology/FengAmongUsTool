@@ -110,7 +110,7 @@ def run():
             break
         elif downloadFileConfirm.upper() == "N":
             generalMainMenu("\n操作已取消，即将返回主菜单...\n", MenuTitle)
-            sleep(3)
+            sleep(2)
             return
         else:
             console.print("[bold red]输入无效，请重新输入。[/bold red]")
@@ -120,9 +120,7 @@ def run():
         defaultHeader("\n修复旧版游戏\n")
         br()
         with console.status("准备下载设置文件...") as status:
-            sleep(1)
             status.update("检测下载源延迟...")
-            sleep(1)
             DownloadSettingsURL = selectBestSettingsSource("old.settings.amongus")
             if not DownloadSettingsURL:
                 status.stop()
@@ -130,7 +128,6 @@ def run():
                 console.input("按 Enter 返回主菜单...")
                 return
             status.update("备份已有文件...")
-            sleep(1)
             try:
                 if os.path.exists(settingsFilePath):
                     setFileWritable(settingsFilePath)
@@ -143,7 +140,6 @@ def run():
             except Exception as e:
                 console.log(f"[bold red]备份原始设置文件失败[/bold red]: {str(e)}")
             status.update("删除原有文件...")
-            sleep(1)
             try:
                 if os.path.exists(settingsFilePath):
                     setFileWritable(settingsFilePath)
@@ -161,7 +157,6 @@ def run():
                 except:
                     console.log("[bold red]强制删除失败[/bold red]")
             status.update("下载文件...")
-            sleep(1)
             try:
                 response = requests.get(DownloadSettingsURL)
                 response.raise_for_status()
@@ -180,7 +175,6 @@ def run():
                         console.log(f"[bold red]恢复备份失败:[/bold red] {str(restoreError)}")
                 raise
             status.update("校验文件...")
-            sleep(1)
             try:
                 if "currentLanguage".encode('utf-8') not in SettingsFileResponse:
                     raise ValueError("下载的设置文件缺少必备字符，疑似下载文件不正确。")
@@ -206,7 +200,6 @@ def run():
                     console.print(f"[bold red]解码内容失败: {SettingsFileResponse[:100].hex()}[/bold red]")
                 raise
             status.update("导入文件...")
-            sleep(1)
             try:
                 os.makedirs(os.path.dirname(settingsFilePath), exist_ok=True)
                 if os.path.exists(settingsFilePath):
@@ -235,7 +228,7 @@ def run():
                         console.log(f"[bold red]恢复备份失败[/bold red]: {str(restoreError)}")
                 raise
             status.update("请稍后……")
-            sleep(3)
+            sleep(2)
 
     except Exception as e:
         console.log(f"[bold red]修复过程中发生错误[/bold red]: {str(e)}")
@@ -269,7 +262,7 @@ def run2():
             break
         elif downloadFileConfirm.upper() == "N":
             generalMainMenu("\n操作已取消，即将返回主菜单...\n", MenuTitle)
-            sleep(3)
+            sleep(2)
             return
         else:
             console.print("[bold red]输入无效，请重新输入。[/bold red]")
@@ -279,9 +272,7 @@ def run2():
         defaultHeader("\n更换新版配置\n")
         br()
         with console.status("准备下载设置文件...") as status:
-            sleep(1)
             status.update("检测下载源延迟...")
-            sleep(1)
             DownloadSettingsURL = selectBestSettingsSource("new.settings.amogus")
             if not DownloadSettingsURL:
                 status.stop()
@@ -289,7 +280,6 @@ def run2():
                 console.input("按 Enter 返回主菜单...")
                 return
             status.update("备份已有文件...")
-            sleep(1)
             try:
                 if os.path.exists(settingsFilePath):
                     setFileWritable(settingsFilePath)
@@ -302,7 +292,6 @@ def run2():
             except Exception as e:
                 console.log(f"[bold red]备份原始设置文件失败[/bold red]: {str(e)}")
             status.update("删除原有文件...")
-            sleep(1)
             try:
                 if os.path.exists(settingsFilePath):
                     setFileWritable(settingsFilePath)
@@ -320,7 +309,6 @@ def run2():
                 except:
                     console.log("[bold red]强制删除失败[/bold red]")
             status.update("下载文件...")
-            sleep(1)
             try:
                 response = requests.get(DownloadSettingsURL)
                 response.raise_for_status()
@@ -339,7 +327,6 @@ def run2():
                         console.log(f"[bold red]恢复备份失败:[/bold red] {str(restoreError)}")
                 raise
             status.update("校验文件...")
-            sleep(1)
             try:
                 if "currentLanguage".encode('utf-8') not in SettingsFileResponse:
                     raise ValueError("下载的设置文件缺少必备字符，疑似下载文件不正确。")
@@ -365,7 +352,6 @@ def run2():
                     console.print(f"[bold red]解码内容失败: {SettingsFileResponse[:100].hex()}[/bold red]")
                 raise
             status.update("导入文件...")
-            sleep(1)
             try:
                 os.makedirs(os.path.dirname(settingsFilePath), exist_ok=True)
                 if os.path.exists(settingsFilePath):
@@ -394,7 +380,7 @@ def run2():
                         console.log(f"[bold red]恢复备份失败[/bold red]: {str(restoreError)}")
                 raise
             status.update("请稍后……")
-            sleep(3)
+            sleep(2)
 
     except Exception as e:
         console.log(f"[bold red]更换配置过程中发生错误[/bold red]: {str(e)}")

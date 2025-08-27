@@ -24,9 +24,7 @@ console = Console()
 defaultHeader()
 sleep(2)
 with console.status("系统环境检查...") as status:
-  sleep(1)
   status.update("检查系统版本...")
-  sleep(1)
   if platform.version().find("10") != 0:
     status.stop()
     console.print("当前系统版本[bold red]不满足[/bold red]所需的要求，请升级你的 Windows 版本。")

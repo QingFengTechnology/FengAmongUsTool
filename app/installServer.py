@@ -93,9 +93,7 @@ def run():
         defaultHeader()
         br()
         with console.status("准备下载清风服文件...") as status:
-            sleep(1)
             status.update("检测下载源延迟...")
-            sleep(1)
             DownloadServerURL = selectBestServer()
             if not DownloadServerURL:
                 status.stop()
@@ -103,7 +101,6 @@ def run():
                 console.input("按 Enter 返回主菜单...")
                 return
             status.update("备份已有文件...")
-            sleep(1)
             try:
                 if os.path.exists(regionInfoPath):
                     setFileWritable(regionInfoPath)
@@ -116,7 +113,6 @@ def run():
             except Exception as e:
                 console.log(f"[bold red]备份原始私服文件失败[/bold red]: {str(e)}")
             status.update("删除原有文件...")
-            sleep(1)
             try:
                 if os.path.exists(regionInfoPath):
                     setFileWritable(regionInfoPath)
@@ -134,7 +130,6 @@ def run():
                 except:
                     console.log("[bold red]强制删除失败[/bold red]")
             status.update("下载文件...")
-            sleep(1)
             try:
                 response = requests.get(DownloadServerURL)
                 response.raise_for_status()
@@ -153,7 +148,6 @@ def run():
                         console.log(f"[bold red]恢复备份失败:[/bold red] {str(restoreError)}")
                 raise
             status.update("校验文件...")
-            sleep(1)
             try:
                 if "清风服".encode('utf-8') not in ServerFileResponse:
                     raise ValueError("下载的私服文件缺少必备字符，疑似下载文件不正确。")
@@ -179,7 +173,6 @@ def run():
                     console.print(f"[bold red]解码内容失败: {ServerFileResponse[:100].hex()}[/bold red]")
                 raise
             status.update("导入文件...")
-            sleep(1)
             try:
                 os.makedirs(os.path.dirname(regionInfoPath), exist_ok=True)
                 if os.path.exists(regionInfoPath):
@@ -208,7 +201,7 @@ def run():
                         console.log(f"[bold red]恢复备份失败[/bold red]: {str(restoreError)}")
                 raise
             status.update("请稍后……")
-            sleep(3)
+            sleep(2)
     
     except Exception as e:
         console.log(f"[bold red]安装过程中发生错误[/bold red]: {str(e)}")
