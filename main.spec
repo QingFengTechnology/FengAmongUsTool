@@ -32,7 +32,7 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['asset\\QingFeng.ico'],
+    contents_directory='.',
 )
 coll = COLLECT(
     exe,
