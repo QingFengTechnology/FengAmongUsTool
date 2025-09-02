@@ -20,23 +20,6 @@
     },
     {
       "$type": "StaticHttpRegionInfo, Assembly-CSharp",
-      "Name": "<color=#16FFFF>清风服</color><color=#2135FF>[上海]</color>",
-      "PingServer": "sh.server.qingfengawa.top",
-      "Servers": [
-        {
-          "Name": "http-1",
-          "Ip": "https://sh.server.qingfengawa.top",
-          "Port": 443,
-          "UseDtls": false,
-          "Players": 0,
-          "ConnectionFailures": 0
-        }
-      ],
-      "TargetServer": null,
-      "TranslateName": 1003
-    },
-    {
-      "$type": "StaticHttpRegionInfo, Assembly-CSharp",
       "Name": "<color=#16FFFF>清风服</color><color=#C2C2C2>[十堰]</color>(试运营)",
       "PingServer": "sy.server.qingfengawa.top",
       "Servers": [
