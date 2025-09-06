@@ -1,0 +1,22 @@
+{
+  "release": {
+    "enable": false
+  },
+  "preview": {
+    "enable": true,
+    "version": "3.0.0-pre.2",
+    "versionDate": "2025-08-28T01:29",
+    "releaseLink": "https://github.com/QingFengTechnology/FengAmongUsTool/releases/tag/v3.0.0-pre.2",
+    "autoUpdate": false,
+    "donloadUrl": {
+      "github": "https://github.com/QingFengTechnology/FengAmongUsTool/releases/download/v3.0.0-pre.2/FengAmongUsTool.zip",
+      "api": null
+    }
+  },
+  "beta": {
+    "enable": false
+  },
+  "alpha": {
+    "enable": false
+  }
+}

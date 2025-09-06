@@ -2,7 +2,7 @@ from time import sleep
 from rich.console import Console
 
 from function.main import generalMainMenu
-from function.about import Version
+from function.variable import Version
 
 console = Console()
 

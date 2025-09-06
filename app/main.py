@@ -10,6 +10,7 @@ from fixAmongUs import run as fixAmongUs
 from fixAmongUs import run2 as updateAmongUs
 from about import run as aboutPage
 from function.main import defaultHeader, generalMainMenu
+from function.updateCheck import checkUpdate
 
 os.system('title 清风 Among Us 工具箱')
 
@@ -22,7 +23,6 @@ signal.signal(signal.SIGINT, signalHandler)
 console = Console()
 
 defaultHeader()
-sleep(2)
 with console.status("系统环境检查...") as status:
   status.update("检查系统版本...")
   if platform.version().find("10") != 0:
@@ -32,8 +32,17 @@ with console.status("系统环境检查...") as status:
     console.input("按 Enter 退出...")
     sys.exit(1)
   console.log(f"Windows 版本有效, 当前版本：{platform.version()}")
+  status.update("检查更新...")
+  update_result = checkUpdate()
+  if update_result:
+    import function.variable
+    function.variable.UpdateAvailable = True
+    function.variable.UpdateInfo = update_result
+    console.log("有新版本更新可用！")
+  else:
+    console.log("当前版本已是最新。")
   status.update("请稍后...")
-  sleep(2)
+  sleep(3)
 
 mainMenuText = """
 1. 安装清风服
