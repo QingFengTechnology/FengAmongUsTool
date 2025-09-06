@@ -58,12 +58,11 @@ def updateNotification(version_info):
     """显示更新通知"""
     console.print(Panel(
         Text(
-            f"\n发现新版本 {version_info['version']}！\n"
-            f"发布日期: {version_info['versionDate']}\n"
-            f"请访问 {version_info['releaseLink']} 下载最新版本\n",
+            f"\n发现新版本：{version_info['version']} ({version_info['versionDate']})\n"
+            f"请访问以下链接下载最新版本：\n{version_info['releaseLink']}\n",
             style="bold",
             justify="center"
         ),
-        title="更新可用",
+        title="新版本可用",
         style="green"
     ))
