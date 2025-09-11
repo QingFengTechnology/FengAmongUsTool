@@ -186,8 +186,7 @@ def run():
                         os.remove(regionInfoBakPath)
                     except Exception as e:
                         console.log(f"[bold yellow]清理备份文件失败[/bold yellow]: {str(e)}")
-                success = True
-                
+                success = True    
             except Exception as e:
                 console.log(f"[bold red]导入失败[/bold red]: {str(e)}")
                 if os.path.exists(regionInfoBakPath):
@@ -200,7 +199,16 @@ def run():
                     except Exception as restoreError:
                         console.log(f"[bold red]恢复备份失败[/bold red]: {str(restoreError)}")
                 raise
-            status.update("请稍后……")
+            status.update("设置只读...")
+            try:
+                if os.path.exists(regionInfoPath):
+                    os.chmod(regionInfoPath, stat.S_IREAD)
+                    console.log("[bold green]已设置私服文件为只读属性[/bold green]")
+                else:
+                    console.log("[bold yellow]文件不存在，跳过设置只读属性[/bold yellow]")
+            except Exception as e:
+                console.log(f"[bold red]设置只读属性失败: {str(e)}[/bold red]")
+            status.update("请稍后...")
             sleep(2)
     
     except Exception as e:
@@ -213,8 +221,6 @@ def run():
         finalMessage = "\n服务器安装完成。\n"
         generalMainMenu(finalMessage, MenuTitle)
     else:
-        # 应当删除，但保不齐会有什么问题，我不想动
-        # 要删就应该顺便清理下整体错误处理的代码
         finalMessage = "\n服务器安装失败，请查看日志以了解详情。\n"
         console.print(Panel(Text(finalMessage, style="bold red"), title=Text(MenuTitle, style="bold")))
     
