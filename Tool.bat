@@ -1,6 +1,6 @@
 chcp 65001 > nul
 @echo off
-set "Version=2.2.0 LTS"
+set "Version=2.2.1 LTS"
 title 清风 Among Us 工具箱
 echo.
 echo ======================================================
@@ -26,34 +26,7 @@ echo.
 echo ======================================================
 echo.
 timeout /t 1 /NoBreak > nul
-goto system_version_check
-
-:system_version_check
-cls
-echo.
-echo ======================================================
-echo.
-echo 清风 Among Us 工具箱
-echo.
-echo 系统版本检查……
-echo.
-echo ======================================================
-echo.
-timeout /t 1 /NoBreak > nul
-ver | find "10." > nul && goto dependency_check
-cls
-echo.
-echo ======================================================
-echo.
-echo 清风 Among Us 工具箱
-echo.
-echo 你的 Windows 版本已过时，请更新你的 Windows。
-echo.
-echo ======================================================
-echo.
-set "InitializationErrorMessage=需要 Windows 10/11 才能运行此脚本。"
-timeout /t 2 /NoBreak > nul
-goto initialization_failed
+goto dependency_check
 
 :dependency_check
 cls
