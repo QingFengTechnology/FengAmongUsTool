@@ -61,6 +61,17 @@ cls
 echo.
 echo ======================================================
 echo.
+echo 警告：v2 版本工具箱已被标记为弃用。
+echo.
+echo 警告：即使 LTS 版本会受到更长的支持期限，但我们也不再推荐使用。
+echo.
+echo 警告：除非您是 Windows 7 版本，否则请下载 v3 版本工具箱。
+echo.
+echo v3 工具箱下载：
+echo.
+echo https://github.com/QingFengTechnology/FengAmongUsTool/releases
+echo.
+echo.
 echo 工具箱主菜单
 echo.
 echo 1. 安装清风服
