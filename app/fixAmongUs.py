@@ -33,8 +33,12 @@ SettingsSources = [
         "base_url": "https://cn.api.qingfengawa.top/"
     },
     {
+      "name": "Xget",
+      "base_url": "https://xget.xi-xu.me/gh/QingFengTechnology/FengAmongUsTool-Asset/raw/refs/heads/main/"
+    },
+    {
         "name": "Github",
-        "base_url": "https://raw.githubusercontent.com/QingFengTechnology/FengAmongUsTool/refs/heads/v3/asset/"
+        "base_url": "https://raw.githubusercontent.com/QingFengTechnology/FengAmongUsTool-Asset/refs/heads/main/"
     }
 ]
 
@@ -121,7 +125,7 @@ def run():
         br()
         with console.status("准备下载设置文件...") as status:
             status.update("检测下载源延迟...")
-            DownloadSettingsURL = selectBestSettingsSource("old.settings.amongus")
+            DownloadSettingsURL = selectBestSettingsSource("old.settings.amogus")
             if not DownloadSettingsURL:
                 status.stop()
                 console.print("[bold red]未能连接至可用下载服务器。[/bold red]")

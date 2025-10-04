@@ -23,8 +23,12 @@ ServerSources = [
         "url": "https://cn.api.qingfengawa.top/regionInfo.json"
     },
     {
+        "name": "Xget",
+        "url": "https://xget.xi-xu.me/gh/QingFengTechnology/FengAmongUsTool-Asset/raw/refs/heads/main/regionInfo.json"
+    },
+    {
         "name": "Github",
-        "url": "https://raw.githubusercontent.com/QingFengTechnology/FengAmongUsTool/refs/heads/v2/regionInfo.json"
+        "url": "https://github.com/QingFengTechnology/FengAmongUsTool-Asset/raw/refs/heads/main/regionInfo.json"
     }
 ]
 
