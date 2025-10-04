@@ -4,6 +4,8 @@ title: "[ServerAdd]: "
 labels: ["HopeServer"]
 assignees:
   - QingFeng-awa
+type: Feature
+projects: ["QingFengTechnology/2"]
 body:
   - type: input
     attributes:

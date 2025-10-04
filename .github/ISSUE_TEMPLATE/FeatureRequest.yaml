@@ -4,6 +4,8 @@ title: "[Feat]: "
 labels: ["Feature"]
 assignees:
   - QingFeng-awa
+type: Feature
+projects: ["QingFengTechnology/2"]
 body:
   - type: input
     attributes:

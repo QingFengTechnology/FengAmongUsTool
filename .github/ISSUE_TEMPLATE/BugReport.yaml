@@ -4,6 +4,8 @@ title: "[Bug]: "
 labels: ["Bug"]
 assignees:
   - QingFeng-awa
+type: Bug
+projects: ["QingFengTechnology/2"]
 body:
   - type: input
     attributes:
