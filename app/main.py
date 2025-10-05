@@ -34,9 +34,6 @@ if update_result:
   import function.variable
   function.variable.UpdateAvailable = True
   function.variable.UpdateInfo = update_result
-  console.log("有新版本更新可用！")
-else:
-  console.log("当前版本已是最新。")
 sleep(2)
 
 mainMenuText = """
