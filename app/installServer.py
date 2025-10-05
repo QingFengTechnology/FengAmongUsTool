@@ -20,7 +20,7 @@ MenuTitle = "清风服安装器"
 ServerSources = [
     {
         "name": "清风 API (中华人民共和国可用区)",
-        "url": "https://cn.api.qingfengawa.top/regionInfo.json"
+        "url": "https://api.qingfengawa.top/FengAmongUsTool-Asset/regionInfo.json"
     },
     {
         "name": "Xget",

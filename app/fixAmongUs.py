@@ -30,7 +30,7 @@ MenuMainText2 = """
 SettingsSources = [
     {
         "name": "清风 API (中华人民共和国可用区)",
-        "base_url": "https://cn.api.qingfengawa.top/"
+        "base_url": "https://api.qingfengawa.top/FengAmongUsTool-Asset/"
     },
     {
       "name": "Xget",
