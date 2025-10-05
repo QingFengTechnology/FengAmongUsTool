@@ -12,7 +12,7 @@ def checkUpdate():
     """检查工具箱更新，返回更新信息（如果有）"""
     try:
         # 从远程获取版本信息
-        response = requests.get("https://cn.api.qingfengawa.top/version.json", timeout=10)
+        response = requests.get("https://api.qingfengawa.top/FengAmongUsTool-Asset/version.json", timeout=10)
         response.raise_for_status()
         remote_version_data = response.json()
         
