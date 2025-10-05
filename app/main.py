@@ -23,26 +23,21 @@ signal.signal(signal.SIGINT, signalHandler)
 console = Console()
 
 defaultHeader()
-with console.status("系统环境检查...") as status:
-  status.update("检查系统版本...")
-  if platform.version().find("10") != 0:
-    status.stop()
-    console.print("当前系统版本[bold red]不满足[/bold red]所需的要求，请升级你的 Windows 版本。")
-    console.print("此项目不支持 [bold red]Windows 7 及以下版本[/bold red]。")
-    console.input("按 Enter 退出...")
-    sys.exit(1)
-  console.log(f"Windows 版本有效, 当前版本：{platform.version()}")
-  status.update("检查更新...")
-  update_result = checkUpdate()
-  if update_result:
-    import function.variable
-    function.variable.UpdateAvailable = True
-    function.variable.UpdateInfo = update_result
-    console.log("有新版本更新可用！")
-  else:
-    console.log("当前版本已是最新。")
-  status.update("请稍后...")
-  sleep(3)
+if platform.version().find("10") != 0:
+  console.print("当前系统版本[bold red]不满足[/bold red]所需的要求，请升级你的 Windows 版本。")
+  console.print("此项目不支持 [bold red]Windows 7 及以下版本[/bold red]。")
+  console.input("按 Enter 退出...")
+  sys.exit(1)
+console.log(f"Windows 版本有效, 当前版本：{platform.version()}")
+update_result = checkUpdate()
+if update_result:
+  import function.variable
+  function.variable.UpdateAvailable = True
+  function.variable.UpdateInfo = update_result
+  console.log("有新版本更新可用！")
+else:
+  console.log("当前版本已是最新。")
+sleep(100)
 
 mainMenuText = """
 1. 安装清风服
