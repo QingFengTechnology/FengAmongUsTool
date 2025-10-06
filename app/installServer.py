@@ -225,4 +225,4 @@ def run():
         finalMessage = "\n服务器安装失败，请查看日志以了解详情。\n"
         console.print(Panel(Text(finalMessage, style="red1"), title=Text(MenuTitle, style="bold")))
     
-    console.input("按 [plum1]Enter[/plum1] 返回主菜单...")
+    console.input("按 [plum1]Enter[/plum1] 返回主菜单。")

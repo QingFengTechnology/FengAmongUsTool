@@ -231,7 +231,7 @@ def run():
                     except Exception as restoreError:
                         console.log(f"[bold red]恢复备份失败[/bold red]: {str(restoreError)}")
                 raise
-            status.update("请稍后……")
+            status.update("请稍后...")
             sleep(2)
 
     except Exception as e:
