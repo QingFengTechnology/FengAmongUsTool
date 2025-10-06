@@ -11,7 +11,7 @@ console = Console()
 # 更新源列表
 UpdateSources = [
     {
-        "name": "清风 API (中华人民共和国可用区)",
+        "name": "清风 API",
         "url": "https://api.qingfengawa.top/FengAmongUsTool-Asset/version.json"
     },
     {

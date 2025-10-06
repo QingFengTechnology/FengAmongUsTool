@@ -29,12 +29,12 @@ MenuMainText2 = """
 # 下载源列表
 SettingsSources = [
     {
-        "name": "清风 API (中华人民共和国可用区)",
+        "name": "清风 API",
         "base_url": "https://api.qingfengawa.top/FengAmongUsTool-Asset/"
     },
     {
-      "name": "Xget",
-      "base_url": "https://xget.xi-xu.me/gh/QingFengTechnology/FengAmongUsTool-Asset/raw/refs/heads/main/"
+        "name": "Xget",
+        "base_url": "https://xget.xi-xu.me/gh/QingFengTechnology/FengAmongUsTool-Asset/raw/refs/heads/main/"
     },
     {
         "name": "Github",
