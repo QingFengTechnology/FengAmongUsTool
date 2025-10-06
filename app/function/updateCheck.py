@@ -29,7 +29,7 @@ def checkUpdate():
     # 按顺序尝试各个更新源
     for source in UpdateSources:
         try:
-            console.log(f"尝试从 {source['name']} 检查更新...")
+            console.log(f"尝试从[cornflower_blue]{source['name']}[/cornflower_blue]检查更新...")
             # 从远程获取版本信息
             response = requests.get(source['url'], timeout=10)
             response.raise_for_status()
@@ -55,30 +55,30 @@ def checkUpdate():
                     
                     if remote_date > local_date:
                         # 发现新版本，返回更新信息
-                        console.log(f"从 {source['name']} 成功获取更新信息")
+                        console.log(f"[green1]发现新版本[/green1]更新可用！")
                         return remote_version_info
                     else:
                         # 当前类型版本已是最新，停止检查
-                        console.log(f"从 {source['name']} 检查到当前版本已是最新")
+                        console.log(f"当前版本已是[green1]最新[/green1]。")
                         return None
                 
                 # 如果是release类型且未启用，停止检查
                 if version_type == "release":
-                    console.log(f"从 {source['name']} 检查到release版本未启用")
+                    console.log(f"[orange1]尚无可用[/orange1]的 Release 版本，[yellow1]你的工具箱是官方版本吗？[/yellow1]")
                     return None
             
-            console.log(f"从 {source['name']} 未找到适用的版本类型")
+            console.log(f"[orange1]未找到[/orange1]适用的版本类型，[yellow1]你的工具箱是官方版本吗？[/yellow1]")
             return None
             
         except requests.exceptions.RequestException as e:
-            console.log(f"无法连接到 {source['name']}，尝试下一个源: {e}")
+            console.log(f"[orange1]无法连接[/orange1]到[cornflower_blue]{source['name']}[/cornflower_blue]，尝试下一个源: {e}")
             continue  # 继续尝试下一个源
         except Exception as e:
-            console.log(f"从 {source['name']} 检查更新时出错: {e}")
+            console.log(f"从[cornflower_blue]{source['name']}[/cornflower_blue]检查更新时[orange1]出错[/orange1]: {e}")
             continue  # 继续尝试下一个源
     
     # 所有源都尝试失败
-    console.log("所有更新源均无法连接，跳过更新检查")
+    console.log("所有更新源[red1]均无法连接[/red1]，[orange1]跳过[/orange1]更新检查。")
     return None
 
 def updateNotification(version_info):
@@ -86,10 +86,9 @@ def updateNotification(version_info):
     console.print(Panel(
         Text(
             f"\n发现新版本：{version_info['version']} ({version_info['versionDate']})\n"
-            f"请访问以下链接下载最新版本：\n{version_info['releaseLink']}\n",
-            style="bold",
+            f"请访问此链接下载最新版本：\n{version_info['releaseLink']}\n",
             justify="center"
         ),
         title="新版本可用",
-        style="green"
+        style="green1"
     ))

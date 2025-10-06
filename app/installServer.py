@@ -1,4 +1,5 @@
 from time import sleep, time
+from tkinter import E
 import requests
 import os
 import shutil
@@ -43,10 +44,10 @@ def setFileWritable(regionFilePath):
     if os.path.exists(regionFilePath):
         try:
             os.chmod(regionFilePath, stat.S_IWRITE)
-            console.log(f"已移除私服文件只读属性。")
+            console.log(f"[green1]成功移除[/green1]私服文件只读属性。")
             return True
         except Exception as e:
-            console.log(f"[bold red]未能成功移除私服文件只读属性: {str(e)}[/bold red]")
+            console.log(f"[red]未能成功移除[/red]私服文件只读属性: {str(e)}")
     return False
 
 def testServerLatency(url, timeout=5):
@@ -70,22 +71,22 @@ def selectBestServer():
     random.shuffle(ServerSources)
     
     for server in ServerSources:
-        console.log(f"测试 {server['name']}...")
+        console.log(f"测试下载源[cornflower_blue]{server['name']}[/cornflower_blue][white]...[/white]")
         latency = testServerLatency(server['url'])
         if latency == float('inf'):
-            console.log(f"[bold yellow]{server['name']} 不可用[/bold yellow]")
+            console.log(f"[orange1]无法连接[/orange1]至下载源[cornflower_blue]{server['name']}[/cornflower_blue]。")
         else:
-            console.log(f"[bold green]{server['name']} 延迟: {latency:.2f}ms[/bold green]")
+            console.log(f"[green1]成功连接[/green1]至下载源[cornflower_blue]{server['name']}[/cornflower_blue]，延迟: [cornflower_blue]{latency:.2f}ms[/cornflower_blue]")
         results.append((server, latency))
     
     available_servers = [(s, l) for s, l in results if l != float('inf')]
     
     if not available_servers:
-        console.log("[bold red]所有下载源均无法连接[/bold red]")
+        console.log("安装时[red1]发生意外错误[/red1]，所有下载源均[red1]无法连接[/red1]。")
         return None
     
     best_server, best_latency = min(available_servers, key=lambda x: x[1])
-    console.log(f"[bold blue]已选择最快下载源: {best_server['name']} (延迟: {best_latency:.2f}ms)[/bold blue]")
+    console.log(f"已选择最快下载源：[cornflower_blue]{best_server['name']}[/cornflower_blue]。")
     return best_server['url']
 
 def run():
@@ -101,8 +102,8 @@ def run():
             DownloadServerURL = selectBestServer()
             if not DownloadServerURL:
                 status.stop()
-                console.print("[bold red]未能连接至可用下载服务器。[/bold red]")
-                console.input("按 Enter 返回主菜单...")
+                console.print("[red1]未能连接[/red1]至可用下载服务器。")
+                console.input("按 [plum1]Enter[/plum1] 返回主菜单...")
                 return
             status.update("备份已有文件...")
             try:
@@ -111,70 +112,69 @@ def run():
                     if os.path.exists(regionInfoBakPath):
                         setFileWritable(regionInfoBakPath)
                     shutil.copy2(regionInfoPath, regionInfoBakPath)
-                    console.log(f"[bold green]原始私服文件已备份至 {regionInfoBakPath}[/bold green]")
+                    console.log(f"原始私服文件[green1]已备份[/green1]至[cornflower_blue]{regionInfoBakPath}[/cornflower_blue]。")
                 else:
-                    console.log("未找到原始私服文件，跳过备份")
+                    console.log("[orange1]未找到[/orange1]原始私服文件，跳过备份。")
             except Exception as e:
-                console.log(f"[bold red]备份原始私服文件失败[/bold red]: {str(e)}")
+                console.log(f"[orange1]未能备份[/orange1]原始私服文件: {str(e)}")
             status.update("删除原有文件...")
             try:
                 if os.path.exists(regionInfoPath):
                     setFileWritable(regionInfoPath)
                     os.remove(regionInfoPath)
-                    console.log("[bold green]原始私服文件已删除[/bold green]")
+                    console.log("[green1]已删除[/green1]原始私服文件。")
                 else:
-                    console.log("原始私服文件不存在，跳过删除")
+                    console.log("原始私服文件[organe1]不存在[/orange1]，跳过删除。")
             except Exception as e:
-                console.log(f"[bold red]删除原始文件失败[/bold red]: {str(e)}")
+                console.log(f"[orange1]未能删除[/orange1]原始私服文件: {str(e)}")
                 try:
                     status.update("强制删除原始文件...")
                     os.chmod(regionInfoPath, stat.S_IWRITE | stat.S_IREAD)
                     os.remove(regionInfoPath)
-                    console.log("[bold green]原始私服文件强制删除成功[/bold green]")
+                    console.log("[green1]成功强制删除[/green1]原始私服文件。")
                 except:
-                    console.log("[bold red]强制删除失败[/bold red]")
+                    console.log("安装时[red1]发生意外错误[/red1]，[red1]未能强制删除[/red1]原始私服文件。")
             status.update("下载文件...")
             try:
                 response = requests.get(DownloadServerURL)
                 response.raise_for_status()
                 ServerFileResponse = response.content
-                console.log(f"[bold green]文件下载成功，大小: {len(ServerFileResponse)}B[/bold green]")
+                console.log(f"[green1]文件下载成功[/green1]，大小：[cornflower_blue]{len(ServerFileResponse)}B[/cornflower_blue]。")
             except Exception as e:
-                console.log(f"[bold red]文件下载失败[/bold red]: {str(e)}")
+                console.log(f"[red1]文件下载失败[/red1]: {str(e)}")
                 if os.path.exists(regionInfoBakPath):
                     try:
                         if os.path.exists(regionInfoPath):
                             setFileWritable(regionInfoPath)
                         shutil.copy2(regionInfoBakPath, regionInfoPath)
                         setFileWritable(regionInfoPath)
-                        console.log("[bold green]已从备份恢复原始文件[/bold green]")
+                        console.log("[green1]成功从备份中恢复[/green1]原始文件。")
                     except Exception as restoreError:
-                        console.log(f"[bold red]恢复备份失败:[/bold red] {str(restoreError)}")
+                        console.log(f"[red1]恢复备份失败:[/red1] {str(restoreError)}")
                 raise
             status.update("校验文件...")
             try:
                 if "清风服".encode('utf-8') not in ServerFileResponse:
                     raise ValueError("下载的私服文件缺少必备字符，疑似下载文件不正确。")
-                console.log("[bold green]文件校验成功[/bold green]")
+                console.log("文件[green1]校验成功[/green1]。")
             except Exception as e:
-                console.log(f"[bold red]文件校验失败[/bold red]: {str(e)}")
+                console.log(f"文件[red1]校验失败[/red1]: {str(e)}")
                 if os.path.exists(regionInfoBakPath):
                     try:
                         if os.path.exists(regionInfoPath):
                             setFileWritable(regionInfoPath)
                         shutil.copy2(regionInfoBakPath, regionInfoPath)
                         setFileWritable(regionInfoPath)
-                        console.log("已从备份恢复原始文件")
+                        console.log("[green1]成功从备份中恢复[/green1]原始文件。")
                     except Exception as restoreError:
-                        console.log(f"[bold red]恢复备份失败[/bold red]: {str(restoreError)}")
-                console.print("[bold red]发生了错误[/bold red]。")
-                console.print("[bold red]下载的文件存在问题，已回滚更改。[/bold red]")
-                console.print("下方为工具箱获取到的 JSON 文件内容:")
+                        console.log(f"[red1]恢复备份失败[/red1]: {str(restoreError)}")
+                console.print("[red1]发生意外错误[/red1]，下载的文件存在问题，已回滚更改。")
+                console.print("下方为工具箱获取到的文件内容:")
                 try:
                     content = ServerFileResponse.decode('utf-8', errors='replace')
-                    console.print(Syntax(content, "json", theme="github-dark", line_numbers=False))
+                    console.print(Syntax(content, theme="github-dark", line_numbers=False))
                 except:
-                    console.print(f"[bold red]解码内容失败: {ServerFileResponse[:100].hex()}[/bold red]")
+                    console.print(f"[red1]解码内容失败[/red1]: {ServerFileResponse[:100].hex()}")
                 raise
             status.update("导入文件...")
             try:
@@ -183,49 +183,46 @@ def run():
                     setFileWritable(regionInfoPath)
                 with open(regionInfoPath, 'wb') as f:
                     f.write(ServerFileResponse)
-                console.log(f"[bold green]文件导入成功[/bold green]")
+                console.log(f"文件[green1]导入成功[/green1]。")
                 if os.path.exists(regionInfoBakPath):
                     try:
                         setFileWritable(regionInfoBakPath)
                         os.remove(regionInfoBakPath)
                     except Exception as e:
-                        console.log(f"[bold yellow]清理备份文件失败[/bold yellow]: {str(e)}")
+                        console.log(f"[orange1]未能清理[/orange1]备份文件: {str(e)}")
                 success = True    
             except Exception as e:
-                console.log(f"[bold red]导入失败[/bold red]: {str(e)}")
+                console.log(f"[red1]导入文件失败[/red1]: {str(e)}")
                 if os.path.exists(regionInfoBakPath):
                     try:
                         if os.path.exists(regionInfoPath):
                             setFileWritable(regionInfoPath) 
                         shutil.copy2(regionInfoBakPath, regionInfoPath)
                         setFileWritable(regionInfoPath)
-                        console.log("[bold green]已从备份恢复原始文件[/bold green]")
+                        console.log("[green1]成功从备份恢复[/green1]原始文件。")
                     except Exception as restoreError:
-                        console.log(f"[bold red]恢复备份失败[/bold red]: {str(restoreError)}")
+                        console.log(f"[red1]恢复备份失败[/red1]: {str(restoreError)}")
                 raise
             status.update("设置只读...")
             try:
-                if os.path.exists(regionInfoPath):
-                    os.chmod(regionInfoPath, stat.S_IREAD)
-                    console.log("[bold green]已设置私服文件为只读属性[/bold green]")
-                else:
-                    console.log("[bold yellow]文件不存在，跳过设置只读属性[/bold yellow]")
+                os.chmod(regionInfoPath, stat.S_IREAD)
+                console.log("[green1]成功设置[/green1]私服文件为只读属性。")
             except Exception as e:
-                console.log(f"[bold red]设置只读属性失败: {str(e)}[/bold red]")
+                console.log(f"[red1]设置只读属性失败: {str(e)}[/red1]")
             status.update("请稍后...")
             sleep(2)
     
     except Exception as e:
-        console.log(f"[bold red]安装过程中发生错误[/bold red]: {str(e)}")
+        console.log(f"[red1]发生意外错误[/red1]，安装失败: {str(e)}")
         success = False
         console.print("\n如果你确认这是工具箱问题，请截图相关信息并通过 GitHub Issue 报告问题。\n")
-        console.input("按 Enter 继续...")
+        console.input("按 [plum1]Enter[/plum1] 返回主菜单。")
         return
     if success:
         finalMessage = "\n服务器安装完成。\n"
         generalMainMenu(finalMessage, MenuTitle)
     else:
         finalMessage = "\n服务器安装失败，请查看日志以了解详情。\n"
-        console.print(Panel(Text(finalMessage, style="bold red"), title=Text(MenuTitle, style="bold")))
+        console.print(Panel(Text(finalMessage, style="red1"), title=Text(MenuTitle, style="bold")))
     
-    console.input("按 Enter 返回主菜单...")
+    console.input("按 [plum1]Enter[/plum1] 返回主菜单...")

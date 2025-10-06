@@ -54,10 +54,10 @@ def setFileWritable(filePath):
     if os.path.exists(filePath):
         try:
             os.chmod(filePath, stat.S_IWRITE)
-            console.log(f"已移除文件只读属性。")
+            console.log(f"[green1]成功移除[/green1]文件只读属性。")
             return True
         except Exception as e:
-            console.log(f"[bold red]未能成功移除文件只读属性: {str(e)}[/bold red]")
+            console.log(f"[red1]未能移除[/red1]文件只读属性: {str(e)}")
     return False
 
 def testSettingsLatency(base_url, filename, timeout=5):
@@ -109,7 +109,7 @@ def run():
     while True:
         generalMainMenu(MenuMainText, MenuTitle)
         sleep(1)
-        downloadFileConfirm = console.input("你确定要继续吗? (Y / N)").strip()
+        downloadFileConfirm = console.input("你确定要继续吗？( [green1]Y[/green1] [white]/[/white] [red1]N[/red1] )").strip()
         if downloadFileConfirm.upper() == "Y":
             break
         elif downloadFileConfirm.upper() == "N":

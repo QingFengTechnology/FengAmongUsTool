@@ -24,11 +24,11 @@ console = Console()
 
 defaultHeader()
 if platform.version().find("10") != 0:
-  console.print("当前系统版本[bold red]不满足[/bold red]所需的要求，请升级你的 Windows 版本。")
-  console.print("此项目不支持 [bold red]Windows 7 及以下版本[/bold red]。")
-  console.input("按 Enter 退出...")
+  console.print("当前系统版本[red1]不满足[/red1]所需的要求，请升级你的 Windows 版本。")
+  console.print("此项目不支持[red1]Windows 7 及以下版本[/red1]。")
+  console.input("按下 [plum1]Enter[/plum1] 退出[white]...[/white]")
   sys.exit(1)
-console.log(f"Windows 版本有效, 当前版本：{platform.version()}")
+console.log(f"Windows 版本[green1]有效[/green1], 当前版本：[cornflower_blue]{platform.version()}[/cornflower_blue]")
 update_result = checkUpdate()
 if update_result:
   import function.variable
@@ -64,5 +64,5 @@ while True:
   elif commandNumber == "4":
     sys.exit(0)
   else:
-    console.print("[bold red]输入的命令编号无效，请重新输入。[/bold red]")
+    console.print("[red1]输入的命令编号无效，请重新输入。[/red1]")
     sleep(1)
