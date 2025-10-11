@@ -34,7 +34,7 @@ class LogManager:
         
         # 创建格式化器
         formatter = logging.Formatter(
-            fmt='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+            fmt='[%(asctime)s] [%(levelname)s] - %(message)s',
             datefmt='%H:%M:%S'
         )
         
