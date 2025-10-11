@@ -2,32 +2,21 @@
 
 # 清风工具箱
 
-一个简单的 Among Us 工具箱，使用 Python 编写。\
-如果您有任何建议或问题，欢迎在 [issue](https://github.com/QingFengTechnology/FengAmongUsTool/issues) 中提出。
+清风工具箱是一个简洁而优雅的工具箱，只需点击几下即可方便的安装 Among Us 私服、切换 Among Us 版本配置。
 
-## 安装
+> [!Note]
+> v4 版本仍在 alpha 阶段，欢迎各位提出反馈与做出贡献。
 
-访问 [Release](https://github.com/QingFengTechnology/FengAmongUsTool/releases) 页面，下载最新版本的压缩包，解压后运行解压目录的`.exe`文件即可。 
-
-## Todo
-
-- [x] 一键安装清风服
-  - [ ] 支持安装大部分主流私服
-    - [ ] 模块化设计，支持自由组合私服
-- [x] Among Us 配置文件切换
-  - [x] 旧版 Among Us 配置文件切换（旧版修复）
-  - [x] 新版 Among Us 配置文件切换
-    - [ ] 优先使用玩家自己的配置文件，而不是直接覆盖 
-- [x] 工具箱更新检查
-  - [ ] 支持自动更新工具箱
-- [ ] Among Us 皮肤解锁器
-- [ ] 图形界面支持
-- [ ] 模组管理器
-  - [ ] 模组文件下载
-  - [ ] 模组文件管理
 
 ## 贡献
 
 请参阅[贡献指南](CONTRIBUTING.md)。
 
 ![Repobeats](https://repobeats.axiom.co/api/embed/3b89eff8cff2ed650ba8fc937ed4aa8b8f4f0fcf.svg "Repobeats analytics image")
+
+## 鸣谢
+
+- **[PyQt-Fluent-Widgets](https://github.com/zhiyiYo/PyQt-Fluent-Widgets)** v4 版本工具箱使用的 Fluent Design 风格组件库。
+- **[YvonneOfficial](https://github.com/YvonneOfficial)** v4 版本工具箱实际上是基于这位开发者的[工具箱](https://github.com/YvonneOfficial/AmongUsTools)爆改而来。
+- **DeepSeek & GLM & Qwen3** v4 版本大量使用了 Ai 生成的代码，大大减少了开发难度。
+- ~~**[QingFeng-awa](https://github.com/QingFeng-awa)** 幸苦我了~~
