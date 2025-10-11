@@ -55,11 +55,8 @@ class SimpleComboBoxSettingCard(SettingCard):
         self.comboBox.currentTextChanged.connect(slot)
 
 
-def logMessage(message):
-    """添加日志到控制台"""
-    timestamp = datetime.now().strftime(LOG_CONFIG["timestamp_format"])
-    logEntry = f"[{timestamp}] {message}"
-    print(logEntry)
+# 从logManager导入日志函数
+from .logManager import logMessage, logWarning, logError, getLogger
 
 
 def showInfoBar(parent, title, content, position=InfoBarPosition.TOP):

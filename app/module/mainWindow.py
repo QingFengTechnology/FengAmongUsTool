@@ -46,9 +46,11 @@ class MainWindow(FluentWindow):
         
         if os.path.exists(logo_path):
             self.setWindowIcon(QIcon(logo_path))
-            print(f"图标加载成功: {logo_path}")
+            from ..function.logManager import logInfo
+            logInfo(f"图标加载成功: {logo_path}")
         else:
-            print(f"警告: 图标文件不存在: {logo_path}")
+            from ..function.logManager import logWarning
+            logWarning(f"图标文件不存在: {logo_path}")
             # 创建一个空的图标作为备用
             self.setWindowIcon(QIcon())
         

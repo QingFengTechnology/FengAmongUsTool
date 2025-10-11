@@ -12,6 +12,10 @@ from app.module.appManager import AppManager
 
 def main():
     """主函数"""
+    # 初始化日志系统
+    from app.function.logManager import logInfo
+    logInfo("清风工具箱启动中...")
+    
     # 启用高DPI缩放（PySide6现代方式）
     QApplication.setHighDpiScaleFactorRoundingPolicy(Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
     
