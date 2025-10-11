@@ -37,7 +37,20 @@ class MainWindow(FluentWindow):
         """初始化窗口"""
         self.resize(WINDOW_CONFIG["width"], WINDOW_CONFIG["height"])
         self.setWindowTitle(WINDOW_CONFIG["title"])
-        self.setWindowIcon(QIcon(':/qfluentwidgets/images/logo.png'))
+        
+        # 设置窗口图标 - 使用绝对路径确保正确加载
+        import os
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        logo_path = os.path.join(current_dir, '..', 'asset', 'logo.png')
+        logo_path = os.path.abspath(logo_path)
+        
+        if os.path.exists(logo_path):
+            self.setWindowIcon(QIcon(logo_path))
+            print(f"图标加载成功: {logo_path}")
+        else:
+            print(f"警告: 图标文件不存在: {logo_path}")
+            # 创建一个空的图标作为备用
+            self.setWindowIcon(QIcon())
         
         # 创建状态栏
         self.StatusLabel = BodyLabel('就绪')
