@@ -137,10 +137,10 @@ class HomeInterface(ScrollArea):
         """初始化功能卡片"""
         # 只添加实际需要的功能卡片
         cards = [
-            (FluentIcon.SETTING, "设置", "程序设置和配置管理", "settingInterface"),
-            (FluentIcon.GAME, "私服管理", "私人服务器管理功能", "privateServerInterface"),
-            (FluentIcon.APPLICATION, "工具集", "各种实用工具集合", "toolsInterface"),
-            (FluentIcon.INFO, "关于", "程序信息和版本信息", "aboutInterface")
+            (FluentIcon.DOWNLOAD, "私服安装", "快速安装多种服务器", "privateServerInterface"),
+            (FluentIcon.APPLICATION, "工具集合", "各种实用工具集合", "toolsInterface"),
+            (FluentIcon.SETTING, "程序设置", "程序设置和配置管理", "settingInterface"),
+            (FluentIcon.HEART, "赞助我们", "赞助以帮助我们长久开发", "donateInterface")
         ]
 
         for icon, title, content, routeKey in cards:
