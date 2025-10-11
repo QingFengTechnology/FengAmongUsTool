@@ -10,8 +10,8 @@ from qfluentwidgets import (
 )
 
 from ..function.variableConfig import WINDOW_CONFIG, THEME_CONFIG
-from .settingInterface import SettingInterface
-from .homeInterface import HomeInterface
+from ..view.settingInterface import SettingInterface
+from ..view.homeInterface import HomeInterface
 
 
 class MainWindow(FluentWindow):

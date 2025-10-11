@@ -30,9 +30,9 @@ class HomeInterface(ScrollArea):
             self.scrollWidget
         )
         
-        self.InitWidget()
+        self.initWidget()
 
-    def InitWidget(self):
+    def initWidget(self):
         """初始化界面"""
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setWidget(self.scrollWidget)

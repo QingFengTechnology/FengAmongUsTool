@@ -27,7 +27,7 @@ class SettingInterface(ScrollArea):
         self.settingLabel = TitleLabel("设置", self)
 
         # 个性化设置组
-        self.personalGroup = self.CreateSettingGroup("个性化设置", self.scrollWidget)
+        self.personalGroup = self.createSettingGroup("个性化设置", self.scrollWidget)
         
         # 主题设置
         self.themeCard = SimpleComboBoxSettingCard(
@@ -50,7 +50,7 @@ class SettingInterface(ScrollArea):
         )
 
         # 关于组
-        self.aboutGroup = self.CreateSettingGroup("关于", self.scrollWidget)
+        self.aboutGroup = self.createSettingGroup("关于", self.scrollWidget)
         
         # 帮助卡片
         # self.helpCard = HyperlinkCard(
@@ -81,19 +81,19 @@ class SettingInterface(ScrollArea):
             self.aboutGroup
         )
 
-        self.InitWidget()
+        self.initWidget()
         
         # 加载配置
         load_config()
 
-    def CreateSettingGroup(self, title, parent):
+    def createSettingGroup(self, title, parent):
         """创建设置组"""
         from qfluentwidgets import SettingCardGroup
         group = SettingCardGroup(title, parent)
         setFont(group.titleLabel, 14, QFont.Weight.DemiBold)
         return group
 
-    def InitWidget(self):
+    def initWidget(self):
         """初始化界面"""
         self.resize(1000, 800)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -112,10 +112,10 @@ class SettingInterface(ScrollArea):
         self.setStyleSheet("SettingInterface{background:transparent}")
 
         # 初始化布局
-        self.InitLayout()
-        self.ConnectSignalToSlot()
+        self.initLayout()
+        self.connectSignalToSlot()
 
-    def InitLayout(self):
+    def initLayout(self):
         """初始化布局"""
         self.settingLabel.move(36, 30)
 
@@ -133,18 +133,18 @@ class SettingInterface(ScrollArea):
         self.expandLayout.addWidget(self.personalGroup)
         self.expandLayout.addWidget(self.aboutGroup)
 
-    def ConnectSignalToSlot(self):
+    def connectSignalToSlot(self):
         """连接信号到槽"""
         # 主题切换
-        self.themeCard.connectValueChanged(self.OnThemeChanged)
+        self.themeCard.connectValueChanged(self.onThemeChanged)
         
         # 界面缩放
-        self.zoomCard.connectValueChanged(self.OnZoomChanged)
+        self.zoomCard.connectValueChanged(self.onZoomChanged)
         
         # 关于
-        self.aboutCard.clicked.connect(self.CheckForUpdates)
+        self.aboutCard.clicked.connect(self.checkForUpdates)
 
-    def OnThemeChanged(self, theme_text):
+    def onThemeChanged(self, theme_text):
         """主题切换处理"""
         theme = get_theme_from_text(theme_text)
         
@@ -154,9 +154,9 @@ class SettingInterface(ScrollArea):
         
         # 应用主题
         setTheme(theme)
-        self.ShowSuccessMessage("主题已更新", "主题设置已生效")
+        self.showSuccessMessage("主题已更新", "主题设置已生效")
 
-    def OnZoomChanged(self, zoom_text):
+    def onZoomChanged(self, zoom_text):
         """缩放切换处理"""
         zoom_value = get_zoom_from_text(zoom_text)
         
@@ -166,15 +166,15 @@ class SettingInterface(ScrollArea):
         
         # 如果是自动缩放，不需要重启
         if zoom_value == "Auto":
-            self.ShowSuccessMessage("缩放设置已保存", "缩放设置已生效")
+            self.showSuccessMessage("缩放设置已保存", "缩放设置已生效")
         else:
-            self.ShowRestartMessage("缩放设置已保存", "缩放设置将在重启后生效")
+            self.showRestartMessage("缩放设置已保存", "缩放设置将在重启后生效")
 
-    def CheckForUpdates(self):
+    def checkForUpdates(self):
         """检查更新"""
-        self.ShowSuccessMessage("检查更新", "已检查最新版本")
+        self.showSuccessMessage("检查更新", "已检查最新版本")
 
-    def ShowSuccessMessage(self, title, content):
+    def showSuccessMessage(self, title, content):
         """显示成功消息"""
         InfoBar.success(
             title,
@@ -183,7 +183,7 @@ class SettingInterface(ScrollArea):
             parent=self
         )
     
-    def ShowRestartMessage(self, title, content):
+    def showRestartMessage(self, title, content):
         """显示重启提示消息"""
         InfoBar.info(
             title,

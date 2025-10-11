@@ -3,7 +3,7 @@
 应用管理模块
 """
 from .mainWindow import MainWindow
-from .privateServerInterface import PrivateServerInterface
+from ..view.privateServerInterface import PrivateServerInterface
 
 
 class AppManager:
