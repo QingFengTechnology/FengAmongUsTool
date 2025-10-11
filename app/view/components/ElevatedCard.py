@@ -5,7 +5,7 @@
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import QVBoxLayout, QLabel
-from qfluentwidgets import ElevatedCardWidget, IconWidget, FluentIcon
+from qfluentwidgets import ElevatedCardWidget, IconWidget, FluentIcon, isDarkTheme
 
 
 class ElevatedCard(ElevatedCardWidget):
@@ -27,6 +27,7 @@ class ElevatedCard(ElevatedCardWidget):
         self.contentLabel.setFont(QFont('Microsoft YaHei', 9))
         
         self.initWidget()
+        self.updateTextColor()
 
     def initWidget(self):
         """初始化组件"""
@@ -56,6 +57,17 @@ class ElevatedCard(ElevatedCardWidget):
         
         # 设置卡片固定大小
         self.setFixedSize(200, 160)
+
+    def updateTextColor(self):
+        """根据主题更新文字颜色"""
+        if isDarkTheme():
+            # 深色主题使用白色文字
+            self.titleLabel.setStyleSheet("color: white;")
+            self.contentLabel.setStyleSheet("color: rgba(255, 255, 255, 0.8);")
+        else:
+            # 浅色主题使用黑色文字
+            self.titleLabel.setStyleSheet("color: black;")
+            self.contentLabel.setStyleSheet("color: rgba(0, 0, 0, 0.7);")
 
     def mouseReleaseEvent(self, event):
         """鼠标释放事件"""

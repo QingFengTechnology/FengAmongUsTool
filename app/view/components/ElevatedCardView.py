@@ -4,7 +4,7 @@
 """
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel
-from qfluentwidgets import FlowLayout, ScrollArea
+from qfluentwidgets import FlowLayout, ScrollArea, qconfig
 
 from .ElevatedCard import ElevatedCard
 
@@ -53,6 +53,9 @@ class ElevatedCardView(ScrollArea):
         
         # 存储卡片列表
         self.cards = []
+        
+        # 监听主题变化
+        qconfig.themeChanged.connect(self.onThemeChanged)
 
     def addElevatedCard(self, icon, title, content, routeKey, onClick=None):
         """添加功能卡片"""
@@ -71,3 +74,8 @@ class ElevatedCardView(ScrollArea):
             card.setParent(None)
             card.deleteLater()
         self.cards.clear()
+        
+    def onThemeChanged(self):
+        """主题变化处理，更新所有卡片的文字颜色"""
+        for card in self.cards:
+            card.updateTextColor()
