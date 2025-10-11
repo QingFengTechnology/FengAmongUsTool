@@ -54,6 +54,12 @@ class MainWindow(FluentWindow):
             # 创建一个空的图标作为备用
             self.setWindowIcon(QIcon())
         
+        # 禁用窗口大小调整 - 参考March7thAssistant的实现
+        self.titleBar.maxBtn.setHidden(True)
+        self.titleBar.maxBtn.setDisabled(True)
+        self.titleBar.setDoubleClickEnabled(False)
+        self.setResizeEnabled(False)
+        
         # 创建状态栏
         self.StatusLabel = BodyLabel('就绪')
         self.StatusWidget = QWidget()

@@ -31,6 +31,13 @@ def main():
     
     app = QApplication(sys.argv)
     
+    # 导入Qt资源模块
+    try:
+        from app.asset import resource_rc
+        logInfo("Qt资源模块导入成功")
+    except ImportError as e:
+        logInfo(f"Qt资源模块导入失败: {e}")
+    
     # 应用主题设置
     setTheme(cfg.themeMode.value)
     
