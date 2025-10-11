@@ -30,18 +30,17 @@ class BannerWidget(QWidget):
         self.titleLabel.setFont(QFont('Microsoft YaHei', 28, QFont.Weight.DemiBold))
         self.titleLabel.setStyleSheet("color: white;")
         
-        self.subtitleLabel.setText(f"版本 {PROJECT_CONFIG['version']} | 作者 {PROJECT_CONFIG['author']}")
+        self.subtitleLabel.setText(f"版本 {PROJECT_CONFIG['version']}")
         self.subtitleLabel.setFont(QFont('Microsoft YaHei', 12))
         self.subtitleLabel.setStyleSheet("color: rgba(255, 255, 255, 0.8);")
 
         # 设置布局 - 增加顶部和底部边距，给背景图片更多空间
         self.vBoxLayout.setSpacing(0)
-        self.vBoxLayout.setContentsMargins(18, 60, 18, 40)  # 增加顶部和底部边距
-        self.vBoxLayout.addStretch(1)  # 顶部弹性空间
+        self.vBoxLayout.setContentsMargins(0, 60, 0, 40)  # 移除左右边距，因为我们在样式表中设置了margin-left
         self.vBoxLayout.addWidget(self.titleLabel)
         self.vBoxLayout.addSpacing(10)
         self.vBoxLayout.addWidget(self.subtitleLabel)
-        self.vBoxLayout.addStretch(2)  # 底部弹性空间，给背景图片更多展示空间
+        self.vBoxLayout.addStretch(1)  # 只保留底部弹性空间，让标题和副标题靠上显示
 
         self.titleLabel.setObjectName('titleLabel')
         self.subtitleLabel.setObjectName('subtitleLabel')

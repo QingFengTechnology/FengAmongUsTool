@@ -84,7 +84,7 @@ class HomeInterface(ScrollArea):
                     font: 12px 'Microsoft YaHei';
                     color: rgba(255, 255, 255, 0.8);
                     background: transparent;
-                    margin-left: 18px;
+                    margin-left: 24px;
                 }
                 QLabel#viewTitleLabel {
                     font: 18px 'Microsoft YaHei';
@@ -122,7 +122,7 @@ class HomeInterface(ScrollArea):
                     font: 12px 'Microsoft YaHei';
                     color: rgba(255, 255, 255, 0.8);
                     background: transparent;
-                    margin-left: 18px;
+                    margin-left: 24px;
                 }
                 QLabel#viewTitleLabel {
                     font: 18px 'Microsoft YaHei';
