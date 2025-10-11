@@ -2,10 +2,11 @@
 """
 私服安装界面模块
 """
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QFrame
 from qfluentwidgets import (
     SubtitleLabel, BodyLabel, CheckBox, PrimaryPushButton,
-    SimpleCardWidget, VBoxLayout, FluentIcon, InfoBarPosition
+    SimpleCardWidget, VBoxLayout, FluentIcon, InfoBarPosition, ScrollArea
 )
 
 from ..function.variableConfig import SERVER_CONFIG, INSTALL_CONFIG
@@ -15,31 +16,39 @@ from ..function.funcUtils import (
 )
 
 
-class PrivateServerInterface:
+class PrivateServerInterface(ScrollArea):
     """私服安装界面类"""
     
-    def __init__(self, mainWindow):
-        self.mainWindow = mainWindow
+    def __init__(self, parent=None):
+        super().__init__(parent=parent)
         self.serverConfig = SERVER_CONFIG.copy()
         self.serverCheckboxes = {}
-        self.interface = None
         
-    def createInterface(self):
-        """创建私服安装界面"""
-        self.interface = QWidget()
-        self.interface.setObjectName("privateServerInterface")
+        self.scrollWidget = QWidget()
+        self.vBoxLayout = QVBoxLayout(self.scrollWidget)
         
-        layout = QVBoxLayout(self.interface)
+        self.initWidget()
+        
+    def initWidget(self):
+        """初始化界面"""
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.setWidget(self.scrollWidget)
+        self.setWidgetResizable(True)
+        self.setObjectName('privateServerInterface')
+        
+        # 设置布局边距，与其他界面保持一致
+        self.vBoxLayout.setSpacing(20)
+        self.vBoxLayout.setContentsMargins(36, 36, 36, 36)
         
         # 标题
         titleLabel = SubtitleLabel('私服安装')
-        layout.addWidget(titleLabel)
+        self.vBoxLayout.addWidget(titleLabel)
         
         # 分隔线
         separator = QFrame()
         separator.setFrameShape(QFrame.HLine)
         separator.setFrameShadow(QFrame.Sunken)
-        layout.addWidget(separator)
+        self.vBoxLayout.addWidget(separator)
         
         # 服务器选择区域
         serverCard = SimpleCardWidget()
@@ -58,7 +67,7 @@ class PrivateServerInterface:
             serverLayout.addWidget(checkbox)
             self.serverCheckboxes[serverId] = checkbox
         
-        layout.addWidget(serverCard)
+        self.vBoxLayout.addWidget(serverCard)
         
         # 按钮区域
         buttonCard = SimpleCardWidget()
@@ -68,10 +77,12 @@ class PrivateServerInterface:
         self.installButton.clicked.connect(self.installPrivateServer)
         buttonLayout.addWidget(self.installButton)
         
-        layout.addWidget(buttonCard)
-        layout.addStretch(1)
+        self.vBoxLayout.addWidget(buttonCard)
+        self.vBoxLayout.addStretch(1)
         
-        return self.interface
+        # 设置样式，与其他界面保持一致
+        self.scrollWidget.setStyleSheet("QWidget{background:transparent}")
+        self.setStyleSheet("PrivateServerInterface{background:transparent}")
     
     def toggleServer(self, serverId, state):
         """切换服务器状态"""
@@ -84,7 +95,7 @@ class PrivateServerInterface:
             self.serverConfig,
             self.log,
             lambda title, content, position=InfoBarPosition.TOP: 
-                showInfoBar(self.mainWindow, title, content, position)
+                showInfoBar(self.parent(), title, content, position)
         )
         
         if success:
@@ -102,11 +113,12 @@ class PrivateServerInterface:
         """添加日志"""
         logMessage(message)
         
-    def addToNavigation(self, widget):
+    def addToNavigation(self, mainWindow):
         """添加到导航栏"""
-        if widget:
-            self.mainWindow.addSubInterface(
-                widget, 
-                FluentIcon.SETTING, 
-                '私服安装'
-            )
+        from qfluentwidgets import NavigationItemPosition
+        mainWindow.addSubInterface(
+            self, 
+            FluentIcon.DOWNLOAD, 
+            '私服安装',
+            NavigationItemPosition.SCROLL
+        )

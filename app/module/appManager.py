@@ -20,10 +20,9 @@ class AppManager:
         
         # 创建私服安装界面
         self.privateServerInterface = PrivateServerInterface(self.mainWindow)
-        privateServerWidget = self.privateServerInterface.createInterface()
         
         # 添加到导航栏
-        self.privateServerInterface.addToNavigation(privateServerWidget)
+        self.privateServerInterface.addToNavigation(self.mainWindow)
         
         return self.mainWindow
     
