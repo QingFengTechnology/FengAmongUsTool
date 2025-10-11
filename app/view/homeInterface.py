@@ -2,13 +2,14 @@
 """
 首页界面
 """
+from asyncio.windows_events import NULL
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QWidget, QVBoxLayout
 from qfluentwidgets import ScrollArea, FluentIcon, qconfig, isDarkTheme
 
 from ..function.variableConfig import PROJECT_CONFIG
 from .components.BannerWidget import BannerWidget
-from .components.SampleCardView import SampleCardView
+from .components.ElevatedCardView import ElevatedCardView
 
 
 class HomeInterface(ScrollArea):
@@ -27,7 +28,7 @@ class HomeInterface(ScrollArea):
         self.setWidgetResizable(True)
 
         self.banner = BannerWidget(self.view)
-        self.functionCardView = SampleCardView("功能模块", self.view)
+        self.functionCardView = ElevatedCardView("", self.view)
 
         self.initWidget()
 
@@ -35,9 +36,9 @@ class HomeInterface(ScrollArea):
         """初始化组件"""
         self.vBoxLayout.setSpacing(0)
         self.vBoxLayout.setContentsMargins(0, 0, 0, 0)
-        self.vBoxLayout.addWidget(self.banner, 6.5)
+        self.vBoxLayout.addWidget(self.banner, 6)
         self.vBoxLayout.addSpacing(10)
-        self.vBoxLayout.addWidget(self.functionCardView, 3.5)
+        self.vBoxLayout.addWidget(self.functionCardView, 4)
         
         # 添加功能卡片
         self.initFunctionCards()
@@ -68,7 +69,7 @@ class HomeInterface(ScrollArea):
                     background-color: transparent;
                     border: none;
                 }
-                SampleCardView {
+                ElevatedCardView {
                     background-color: transparent;
                     border: none;
                 }
@@ -85,25 +86,12 @@ class HomeInterface(ScrollArea):
                     background: transparent;
                     margin-left: 18px;
                 }
-                SampleCard {
-                    background-color: #2b2b2b;
-                    border-radius: 8px;
-                    border: 1px solid #404040;
-                }
-                SampleCard:hover {
-                    background-color: #333333;
-                    border: 1px solid #505050;
-                }
-                SampleCard QLabel#titleLabel {
-                    font: 14px 'Microsoft YaHei';
+                QLabel#viewTitleLabel {
+                    font: 18px 'Microsoft YaHei';
                     font-weight: 600;
                     color: white;
                     background: transparent;
-                }
-                SampleCard QLabel#contentLabel {
-                    font: 12px 'Microsoft YaHei';
-                    color: #aaaaaa;
-                    background: transparent;
+                    margin-bottom: 12px;
                 }
             """)
         else:
@@ -119,7 +107,7 @@ class HomeInterface(ScrollArea):
                     background-color: transparent;
                     border: none;
                 }
-                SampleCardView {
+                ElevatedCardView {
                     background-color: transparent;
                     border: none;
                 }
@@ -136,29 +124,14 @@ class HomeInterface(ScrollArea):
                     background: transparent;
                     margin-left: 18px;
                 }
-                SampleCard {
-                    background-color: white;
-                    border-radius: 8px;
-                    border: 1px solid #e0e0e0;
-                }
-                SampleCard:hover {
-                    background-color: #f5f5f5;
-                    border: 1px solid #d0d0d0;
-                }
-                SampleCard QLabel#titleLabel {
-                    font: 14px 'Microsoft YaHei';
+                QLabel#viewTitleLabel {
+                    font: 18px 'Microsoft YaHei';
                     font-weight: 600;
                     color: black;
                     background: transparent;
-                }
-                SampleCard QLabel#contentLabel {
-                    font: 12px 'Microsoft YaHei';
-                    color: #606060;
-                    background: transparent;
+                    margin-bottom: 12px;
                 }
             """)
-
-
 
     def initFunctionCards(self):
         """初始化功能卡片"""
@@ -170,9 +143,9 @@ class HomeInterface(ScrollArea):
             (FluentIcon.INFO, "关于", "程序信息和版本信息", "aboutInterface")
         ]
 
-        for i, (icon, title, content, routeKey) in enumerate(cards):
-            self.functionCardView.addSampleCard(
-                icon, title, content, routeKey, i, self.onCardClicked
+        for icon, title, content, routeKey in cards:
+            self.functionCardView.addElevatedCard(
+                icon, title, content, routeKey, self.onCardClicked
             )
 
     def onCardClicked(self, routeKey):
