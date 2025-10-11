@@ -34,10 +34,24 @@ def main():
     """主函数"""
     # 启用高DPI缩放（PySide6现代方式）
     QApplication.setHighDpiScaleFactorRoundingPolicy(Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
+    
+    # 加载配置并应用主题和缩放设置
+    from app.function.configManager import load_config, cfg, setTheme
+    load_config()
+    
+    # 应用缩放设置
+    if cfg.dpiScale.value != "Auto":
+        # 将百分比转换为浮点数
+        scale_factor = float(cfg.dpiScale.value.rstrip('%')) / 100.0
+        os.environ["QT_SCALE_FACTOR"] = str(scale_factor)
+    
     app = QApplication(sys.argv)
     
     # 加载资源文件
     load_resources()
+    
+    # 应用主题设置
+    setTheme(cfg.themeMode.value)
     
     # 创建应用管理器
     appManagerInstance = AppManager()

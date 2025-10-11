@@ -12,6 +12,7 @@ from qfluentwidgets import (
 
 from ..function.variableConfig import WINDOW_CONFIG, THEME_CONFIG, PROJECT_CONFIG
 from ..function.funcUtils import SimpleComboBoxSettingCard
+from ..function.configManager import cfg, load_config, save_config, get_theme_text, get_theme_from_text, get_zoom_text, get_zoom_from_text
 
 
 class SettingInterface(ScrollArea):
@@ -34,6 +35,7 @@ class SettingInterface(ScrollArea):
             "应用主题",
             "更改应用程序的外观",
             texts=["浅色", "深色", "跟随系统"],
+            configItem=cfg.themeMode,
             parent=self.personalGroup
         )
         
@@ -43,6 +45,7 @@ class SettingInterface(ScrollArea):
             "界面缩放",
             "更改控件和字体的大小",
             texts=["100%", "125%", "150%", "175%", "200%", "跟随系统"],
+            configItem=cfg.dpiScale,
             parent=self.personalGroup
         )
 
@@ -79,6 +82,9 @@ class SettingInterface(ScrollArea):
         )
 
         self.InitWidget()
+        
+        # 加载配置
+        load_config()
 
     def CreateSettingGroup(self, title, parent):
         """创建设置组"""
@@ -130,22 +136,39 @@ class SettingInterface(ScrollArea):
     def ConnectSignalToSlot(self):
         """连接信号到槽"""
         # 主题切换
-        self.themeCard.comboBox.currentTextChanged.connect(self.OnThemeChanged)
+        self.themeCard.connectValueChanged(self.OnThemeChanged)
+        
+        # 界面缩放
+        self.zoomCard.connectValueChanged(self.OnZoomChanged)
         
         # 关于
         self.aboutCard.clicked.connect(self.CheckForUpdates)
 
     def OnThemeChanged(self, theme_text):
         """主题切换处理"""
-        theme_map = {
-            "浅色": Theme.LIGHT,
-            "深色": Theme.DARK,
-            "跟随系统": Theme.AUTO
-        }
+        theme = get_theme_from_text(theme_text)
         
-        if theme_text in theme_map:
-            setTheme(theme_map[theme_text])
-            self.ShowSuccessMessage("主题已更新", "主题设置已生效")
+        # 更新配置
+        cfg.set(cfg.themeMode, theme)
+        save_config()
+        
+        # 应用主题
+        setTheme(theme)
+        self.ShowSuccessMessage("主题已更新", "主题设置已生效")
+
+    def OnZoomChanged(self, zoom_text):
+        """缩放切换处理"""
+        zoom_value = get_zoom_from_text(zoom_text)
+        
+        # 更新配置
+        cfg.set(cfg.dpiScale, zoom_value)
+        save_config()
+        
+        # 如果是自动缩放，不需要重启
+        if zoom_value == "Auto":
+            self.ShowSuccessMessage("缩放设置已保存", "缩放设置已生效")
+        else:
+            self.ShowRestartMessage("缩放设置已保存", "缩放设置将在重启后生效")
 
     def CheckForUpdates(self):
         """检查更新"""
@@ -157,6 +180,15 @@ class SettingInterface(ScrollArea):
             title,
             content,
             duration=1500,
+            parent=self
+        )
+    
+    def ShowRestartMessage(self, title, content):
+        """显示重启提示消息"""
+        InfoBar.info(
+            title,
+            content,
+            duration=3000,
             parent=self
         )
 
