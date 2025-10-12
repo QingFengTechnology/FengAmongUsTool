@@ -3,17 +3,23 @@
 首页界面
 """
 from asyncio.windows_events import NULL
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QWidget, QVBoxLayout
-from qfluentwidgets import ScrollArea, FluentIcon, qconfig, isDarkTheme
+from PySide6.QtGui import QDesktopServices
+from PySide6.QtCore import QUrl
+from qfluentwidgets import ScrollArea, FluentIcon, qconfig, isDarkTheme, InfoBar
 
 from ..function.variableConfig import PROJECT_CONFIG
+from ..function.logManager import logInfo, logWarning
 from .components.BannerWidget import BannerWidget
 from .components.ElevatedCardView import ElevatedCardView
 
 
 class HomeInterface(ScrollArea):
     """首页界面"""
+    
+    # 定义信号，用于界面切换
+    navigateToInterface = Signal(str)
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
@@ -150,7 +156,22 @@ class HomeInterface(ScrollArea):
 
     def onCardClicked(self, routeKey):
         """卡片点击事件"""
-        print(f"点击了卡片: {routeKey}")
-        # 这里可以添加导航逻辑
-        if hasattr(self.parent(), 'switchToInterface'):
-            self.parent().switchToInterface(routeKey)
+        logInfo(f"点击了卡片: {routeKey}")
+        # 根据routeKey执行不同的操作
+        if routeKey == "privateServerInterface":
+            # 导航到私服安装页面
+            self.navigateToInterface.emit(routeKey)
+        elif routeKey == "toolsInterface":
+            # 提示"敬请期待"
+            InfoBar.info(
+                "提示",
+                "敬请期待",
+                duration=2000,
+                parent=self
+            )
+        elif routeKey == "settingInterface":
+            # 导航到设置页面
+            self.navigateToInterface.emit(routeKey)
+        elif routeKey == "donateInterface":
+            # 跳转到赞助页面
+            QDesktopServices.openUrl(QUrl("https://docs.qingfengawa.top/Donate.html"))

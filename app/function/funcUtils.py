@@ -4,11 +4,15 @@
 """
 import threading
 import time
+import requests
+import json
+import re
 from datetime import datetime
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, Signal, QObject
 from qfluentwidgets import InfoBar, InfoBarPosition, SettingCard, ComboBox
 
 from .variableConfig import LOG_CONFIG, INSTALL_CONFIG
+from .logManager import logMessage, logWarning, logError, getLogger
 
 
 class SimpleComboBoxSettingCard(SettingCard):
@@ -55,8 +59,60 @@ class SimpleComboBoxSettingCard(SettingCard):
         self.comboBox.currentTextChanged.connect(slot)
 
 
-# 从logManager导入日志函数
-from .logManager import logMessage, logWarning, logError, getLogger
+class ServerLoader(QObject):
+    """服务器加载器"""
+    serversLoaded = Signal(dict)  # 服务器加载完成信号
+    loadFailed = Signal(str)      # 加载失败信号
+    
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        
+    def loadServers(self):
+        """从GitHub加载服务器列表"""
+        try:
+            # GitHub原始内容URL
+            url = "https://raw.githubusercontent.com/YvonneOfficial/Temp-Resources/main/servers.dat"
+            
+            # 发送GET请求
+            response = requests.get(url, timeout=10)
+            response.raise_for_status()  # 检查请求是否成功
+            
+            # 解析自定义格式数据
+            servers_data = self.parseServerConfig(response.text)
+            
+            # 转换数据格式以匹配现有代码
+            server_config = {}
+            for i, (name, filename) in enumerate(servers_data.items()):
+                server_id = f"server{i+1}"
+                server_config[server_id] = {
+                    "name": name,
+                    "filename": filename,
+                    "enabled": False  # 默认不启用任何服务器
+                }
+            
+            # 发出加载完成信号
+            self.serversLoaded.emit(server_config)
+            
+        except requests.exceptions.RequestException as e:
+            error_msg = f"网络请求错误: {str(e)}"
+            logError(error_msg)
+            self.loadFailed.emit(error_msg)
+        except Exception as e:
+            error_msg = f"加载服务器列表时发生未知错误: {str(e)}"
+            logError(error_msg)
+            self.loadFailed.emit(error_msg)
+    
+    def parseServerConfig(self, content):
+        """解析服务器配置文件"""
+        servers = {}
+        # 使用正则表达式匹配 "名称" = "文件名" 格式
+        pattern = r'"([^"]+)"\s*=\s*"([^"]+)"'
+        matches = re.findall(pattern, content)
+        
+        for name, filename in matches:
+            servers[name] = filename
+            
+        return servers
 
 
 def showInfoBar(parent, title, content, position=InfoBarPosition.TOP):
