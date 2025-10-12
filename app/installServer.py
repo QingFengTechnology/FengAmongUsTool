@@ -1,10 +1,10 @@
 from time import sleep, time
-from tkinter import E
 import requests
 import os
 import shutil
 import stat
 import random
+import json
 
 from rich.console import Console
 from rich.syntax import Syntax
@@ -94,6 +94,9 @@ def run():
     regionInfoPath = getRegionInfoPath()
     regionInfoBakPath = regionInfoPath + '.bak'
     success = False
+    # 初始化计数器
+    added_servers_count = 0
+    duplicate_servers_count = 0
     try:
         defaultHeader()
         br()
@@ -117,23 +120,6 @@ def run():
                     console.log("[orange1]未找到[/orange1]原始私服文件，跳过备份。")
             except Exception as e:
                 console.log(f"[orange1]未能备份[/orange1]原始私服文件: {str(e)}")
-            status.update("删除原有文件...")
-            try:
-                if os.path.exists(regionInfoPath):
-                    setFileWritable(regionInfoPath)
-                    os.remove(regionInfoPath)
-                    console.log("[green1]已删除[/green1]原始私服文件。")
-                else:
-                    console.log("原始私服文件[organe1]不存在[/orange1]，跳过删除。")
-            except Exception as e:
-                console.log(f"[orange1]未能删除[/orange1]原始私服文件: {str(e)}")
-                try:
-                    status.update("强制删除原始文件...")
-                    os.chmod(regionInfoPath, stat.S_IWRITE | stat.S_IREAD)
-                    os.remove(regionInfoPath)
-                    console.log("[green1]成功强制删除[/green1]原始私服文件。")
-                except:
-                    console.log("安装时[red1]发生意外错误[/red1]，[red1]未能强制删除[/red1]原始私服文件。")
             status.update("下载文件...")
             try:
                 response = requests.get(DownloadServerURL)
@@ -156,6 +142,7 @@ def run():
             try:
                 if "清风服".encode('utf-8') not in ServerFileResponse:
                     raise ValueError("下载的私服文件缺少必备字符，疑似下载文件不正确。")
+                remote_region_data = json.loads(ServerFileResponse)
                 console.log("文件[green1]校验成功[/green1]。")
             except Exception as e:
                 console.log(f"文件[red1]校验失败[/red1]: {str(e)}")
@@ -176,13 +163,89 @@ def run():
                 except:
                     console.print(f"[red1]解码内容失败[/red1]: {ServerFileResponse[:100].hex()}")
                 raise
+            status.update("合并配置文件...")
+            try:
+                # 读取本地文件
+                if os.path.exists(regionInfoPath):
+                    with open(regionInfoPath, 'r', encoding='utf-8') as f:
+                        local_region_data = json.load(f)
+                else:
+                    # 如果本地没有文件，创建一个默认结构
+                    local_region_data = {
+                        "CurrentRegionIdx": 0,
+                        "Regions": []
+                    }
+                
+                # 记录添加的服务器数量和重复的服务器数量
+                added_servers_count = 0
+                duplicate_servers_count = 0
+                
+                # 将远程服务器添加到本地配置中（逐个检查重复）
+                for region in remote_region_data["Regions"]:
+                    new_ping_server = region.get("PingServer", "")
+                    new_ip = ""
+                    if region.get("Servers"):
+                        new_ip = region["Servers"][0].get("Ip", "") if region["Servers"] else ""
+                    
+                    # 检查本地是否已有相同的服务器
+                    duplicate_found = False
+                    for existing_region in local_region_data["Regions"]:
+                        existing_ping_server = existing_region.get("PingServer", "")
+                        existing_ip = ""
+                        if existing_region.get("Servers"):
+                            existing_ip = existing_region["Servers"][0].get("Ip", "") if existing_region["Servers"] else ""
+                        
+                        # 如果PingServer或Ip相同，则认为是重复的服务器
+                        if new_ping_server == existing_ping_server or new_ip == existing_ip:
+                            duplicate_found = True
+                            # 直接使用HTML颜色代码，但转换为rich可识别的格式
+                            server_name = region['Name']
+                            # 将 <color=#XXXXXX>内容</color> 转换为 [#{XXXXXX}]内容[/{XXXXXX}] 格式
+                            import re
+                        
+                            def html_to_rich_color(match):
+                                color = match.group(1)
+                                content = match.group(2)
+                                return f"[#{color}]{content}[/{color}]"
+                        
+                            # 转换HTML颜色标签为rich格式（但使用正确的结束标签）
+                            rich_formatted_name = re.sub(r'<color=#([0-9A-F]{6})>([^<]+)</color>', html_to_rich_color, server_name)
+                            # 修复结束标签格式，应该使用[/]而不是具体的颜色名
+                            rich_formatted_name = re.sub(r'\[/[0-9A-F]{6}\]', '[/]', rich_formatted_name)
+                            console.log(f"检测到重复服务器，跳过安装: {rich_formatted_name}")
+                            break
+                    
+                    # 如果没有重复，则添加服务器
+                    if not duplicate_found:
+                        local_region_data["Regions"].append(region)
+                        added_servers_count += 1
+                    else:
+                        duplicate_servers_count += 1
+                
+                # 更新 CurrentRegionIdx 指向新添加的最后一个服务器
+                if added_servers_count > 0:
+                    local_region_data["CurrentRegionIdx"] = len(local_region_data["Regions"]) - 1
+                
+                console.log(f"[green1]成功合并[/green1]服务器配置，新增 {added_servers_count} 个服务器。")
+            except Exception as e:
+                console.log(f"[red1]合并配置失败[/red1]: {str(e)}")
+                if os.path.exists(regionInfoBakPath):
+                    try:
+                        if os.path.exists(regionInfoPath):
+                            setFileWritable(regionInfoPath)
+                        shutil.copy2(regionInfoBakPath, regionInfoPath)
+                        setFileWritable(regionInfoPath)
+                        console.log("[green1]成功从备份中恢复[/green1]原始文件。")
+                    except Exception as restoreError:
+                        console.log(f"[red1]恢复备份失败[/red1]: {str(restoreError)}")
+                raise
             status.update("导入文件...")
             try:
                 os.makedirs(os.path.dirname(regionInfoPath), exist_ok=True)
                 if os.path.exists(regionInfoPath):
                     setFileWritable(regionInfoPath)
-                with open(regionInfoPath, 'wb') as f:
-                    f.write(ServerFileResponse)
+                with open(regionInfoPath, 'w', encoding='utf-8') as f:
+                    json.dump(local_region_data, f, ensure_ascii=False, indent=2)
                 console.log(f"文件[green1]导入成功[/green1]。")
                 if os.path.exists(regionInfoBakPath):
                     try:
@@ -219,7 +282,7 @@ def run():
         console.input("按 [plum1]Enter[/plum1] 返回主菜单。")
         return
     if success:
-        finalMessage = "\n服务器安装完成。\n"
+        finalMessage = f"\n服务器安装完成。\n成功安装 {added_servers_count} 个服务器，{duplicate_servers_count} 个服务器重复跳过。\n"
         generalMainMenu(finalMessage, MenuTitle)
     else:
         finalMessage = "\n服务器安装失败，请查看日志以了解详情。\n"
