@@ -6,12 +6,12 @@ from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QFrame
 from qfluentwidgets import (
     SubtitleLabel, BodyLabel, CheckBox, PrimaryPushButton,
-    SimpleCardWidget, VBoxLayout, FluentIcon, InfoBarPosition, ScrollArea
+    SimpleCardWidget, VBoxLayout, FluentIcon, InfoBarPosition, ScrollArea, InfoBar
 )
 
-from ..function.variableConfig import SERVER_CONFIG, INSTALL_CONFIG
+from ..function.variableConfig import INSTALL_CONFIG
 from ..function.funcUtils import (
-    toggleServerState, installPrivateServer,
+    ServerLoader, installPrivateServer,
     logMessage, showInfoBar
 )
 
@@ -21,13 +21,21 @@ class PrivateServerInterface(ScrollArea):
     
     def __init__(self, parent=None):
         super().__init__(parent=parent)
-        self.serverConfig = SERVER_CONFIG.copy()
+        self.serverConfig = {}
         self.serverCheckboxes = {}
         
         self.scrollWidget = QWidget()
         self.vBoxLayout = QVBoxLayout(self.scrollWidget)
         
         self.initWidget()
+        
+        # 创建服务器加载器
+        self.serverLoader = ServerLoader(self)
+        self.serverLoader.serversLoaded.connect(self.onServersLoaded)
+        self.serverLoader.loadFailed.connect(self.onLoadFailed)
+        
+        # 开始加载服务器列表
+        self.loadServers()
         
     def initWidget(self):
         """初始化界面"""
@@ -51,23 +59,17 @@ class PrivateServerInterface(ScrollArea):
         self.vBoxLayout.addWidget(separator)
         
         # 服务器选择区域
-        serverCard = SimpleCardWidget()
-        serverLayout = VBoxLayout(serverCard)
+        self.serverCard = SimpleCardWidget()
+        self.serverLayout = VBoxLayout(self.serverCard)
         
-        serverTitle = BodyLabel('选择服务器:')
-        serverLayout.addWidget(serverTitle)
+        self.serverTitle = BodyLabel('选择服务器:')
+        self.serverLayout.addWidget(self.serverTitle)
         
-        # 服务器复选框
-        for serverId, config in self.serverConfig.items():
-            checkbox = CheckBox(config['name'])
-            checkbox.setChecked(config['enabled'])
-            checkbox.stateChanged.connect(
-                lambda state, sid=serverId: self.toggleServer(sid, state)
-            )
-            serverLayout.addWidget(checkbox)
-            self.serverCheckboxes[serverId] = checkbox
+        # 添加加载提示
+        self.loadingLabel = BodyLabel('正在加载服务器列表...')
+        self.serverLayout.addWidget(self.loadingLabel)
         
-        self.vBoxLayout.addWidget(serverCard)
+        self.vBoxLayout.addWidget(self.serverCard)
         
         # 按钮区域
         buttonCard = SimpleCardWidget()
@@ -84,13 +86,84 @@ class PrivateServerInterface(ScrollArea):
         self.scrollWidget.setStyleSheet("QWidget{background:transparent}")
         self.setStyleSheet("PrivateServerInterface{background:transparent}")
     
+    def loadServers(self):
+        """加载服务器列表"""
+        self.serverLoader.loadServers()
+    
+    def onServersLoaded(self, server_config):
+        """服务器列表加载完成"""
+        logMessage("服务器列表加载成功")
+        self.serverConfig = server_config
+        self.updateServerCheckboxes()
+        
+    def onLoadFailed(self, error_msg):
+        """服务器列表加载失败"""
+        logMessage(f"服务器列表加载失败: {error_msg}")
+        # 移除加载提示
+        self.loadingLabel.setParent(None)
+        self.loadingLabel.deleteLater()
+        
+        # 显示错误信息
+        errorLabel = BodyLabel(f'加载失败: {error_msg}')
+        errorLabel.setStyleSheet("color: red;")
+        self.serverLayout.addWidget(errorLabel)
+        
+        # 使用默认配置
+        self.serverConfig = {
+            "server1": {"name": "清风", "filename": "QingFeng.json", "enabled": True},
+            "server2": {"name": "帆船", "filename": "FanChuan.json", "enabled": False}
+        }
+        self.updateServerCheckboxes()
+    
+    def updateServerCheckboxes(self):
+        """更新服务器复选框"""
+        # 移除加载提示
+        if self.loadingLabel:
+            self.loadingLabel.setParent(None)
+            self.loadingLabel.deleteLater()
+            self.loadingLabel = None
+            
+        # 清除现有的复选框
+        for checkbox in self.serverCheckboxes.values():
+            checkbox.setParent(None)
+            checkbox.deleteLater()
+        self.serverCheckboxes.clear()
+        
+        # 创建新的复选框
+        for serverId, config in self.serverConfig.items():
+            checkbox = CheckBox(config['name'])
+            checkbox.setChecked(config['enabled'])
+            checkbox.stateChanged.connect(
+                lambda state, sid=serverId: self.toggleServer(sid, state)
+            )
+            self.serverLayout.addWidget(checkbox)
+            self.serverCheckboxes[serverId] = checkbox
+    
     def toggleServer(self, serverId, state):
         """切换服务器状态"""
-        self.serverConfig = toggleServerState(self.serverConfig, serverId, state)
-        logMessage(f"服务器 {self.serverConfig[serverId]['name']} {'启用' if state else '禁用'}")
+        if serverId in self.serverConfig:
+            self.serverConfig[serverId]['enabled'] = (state == Qt.CheckState.Checked.value)
+            logMessage(f"服务器 {self.serverConfig[serverId]['name']} {'启用' if state else '禁用'}")
         
     def installPrivateServer(self):
         """安装私服"""
+        # 检查是否有服务器被选中
+        enabledServers = [config for config in self.serverConfig.values() if config['enabled']]
+        
+        if not enabledServers:
+            InfoBar.warning(
+                title='警告',
+                content='请至少选择一个服务器！',
+                orient=Qt.Horizontal,
+                isClosable=True,
+                position=InfoBarPosition.TOP,
+                duration=2000,
+                parent=self
+            )
+            return False
+            
+        logMessage(f"开始安装私服，选择的服务器: {', '.join([s['name'] for s in enabledServers])}")
+        
         success = installPrivateServer(
             self.serverConfig,
             self.log,

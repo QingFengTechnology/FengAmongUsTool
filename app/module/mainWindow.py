@@ -12,6 +12,7 @@ from qfluentwidgets import (
 from ..function.variableConfig import WINDOW_CONFIG, THEME_CONFIG
 from ..view.settingInterface import SettingInterface
 from ..view.homeInterface import HomeInterface
+from ..view.privateServerInterface import PrivateServerInterface
 
 
 class MainWindow(FluentWindow):
@@ -29,6 +30,10 @@ class MainWindow(FluentWindow):
         # 创建子界面
         self.homeInterface = HomeInterface(self)
         self.settingInterface = SettingInterface(self)
+        self.privateServerInterface = PrivateServerInterface(self)
+        
+        # 连接信号
+        self.homeInterface.navigateToInterface.connect(self.switchToInterface)
         
         # 初始化导航
         self.initNavigation()
@@ -77,6 +82,10 @@ class MainWindow(FluentWindow):
         # 添加主界面到导航顶部
         self.addSubInterface(self.homeInterface, FIF.HOME, '主页')
         
+        # 添加私服安装界面到导航
+        self.addSubInterface(
+            self.privateServerInterface, FIF.DOWNLOAD, '私服安装', NavigationItemPosition.SCROLL)
+        
         # 添加设置界面到导航底部
         self.addSubInterface(
             self.settingInterface, FIF.SETTING, '设置', NavigationItemPosition.BOTTOM)
@@ -87,3 +96,29 @@ class MainWindow(FluentWindow):
     def updateStatus(self, message):
         """更新状态栏消息"""
         self.StatusLabel.setText(message)
+        
+    def switchToInterface(self, routeKey):
+        """切换到指定界面"""
+        from ..function.logManager import logInfo, logWarning
+        logInfo(f"尝试切换到界面: {routeKey}")
+        
+        # 直接使用switchTo方法切换界面
+        interface_map = {
+            'privateServerInterface': self.privateServerInterface,
+            'settingInterface': self.settingInterface
+        }
+        
+        if routeKey in interface_map:
+            try:
+                self.switchTo(interface_map[routeKey])
+                logInfo(f"成功切换到界面: {routeKey}")
+            except Exception as e:
+                logWarning(f"切换界面时出错: {routeKey}, 错误: {str(e)}")
+        elif routeKey == 'homeInterface':
+            try:
+                self.switchTo(self.homeInterface)
+                logInfo(f"成功切换到界面: {routeKey}")
+            except Exception as e:
+                logWarning(f"切换界面时出错: {routeKey}, 错误: {str(e)}")
+        else:
+            logWarning(f"未找到对应的界面: {routeKey}")
