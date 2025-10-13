@@ -34,7 +34,7 @@ python app/main.py
 这将 clone 项目并使用虚拟环境安装依赖，最后启动工具箱。
 
 > [!Note]
-> 如果你想要向工具箱做出贡献，你应当 fork 此项目到你自己的 Github 账户再 clone 自己仓库来进行开发。
+> 如果你想要向工具箱做出贡献，你应当 fork 此项目到你自己的 Github 账户再 clone 自己的仓库来进行开发。
 
 ## 开发规范
 
@@ -48,7 +48,7 @@ python app/main.py
   - 注意需要为通用函数，即多个文件都使用了此函数，如果只被一个文件使用，请将其放在对应的`/app/module`文件夹中对应的文件，或者直接放在使用了此函数的文件中；
 - 在`/app/function/variableConfig.py`中放置大部分变量；
 - 在`/app/module`中放置工具箱的主要功能模块；
-- 在`/app/view`中放置前端 UI 代码，该文件夹中的文件通常以`Interface.py`结尾。
+- 在`/app/view`中放置前端 UI 代码，该文件夹中的文件通常应以`Interface.py`结尾。
 
 以预想中的设置模块举例：
 - 在`module`文件夹中放置`setting.py`，主要用于设置页面的后端代码，如处理交互逻辑等。
