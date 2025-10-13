@@ -83,8 +83,8 @@ class ServerLoader(QObject):
         logMessage("开始从多个源加载服务器列表...")
         
         # 创建两个线程分别从不同源加载
-        github_thread = threading.Thread(target=self._loadFromSource, args=("GitHub", "https://raw.githubusercontent.com/YvonneOfficial/Temp-Resources/main/servers.dat"))
-        mirror_thread = threading.Thread(target=self._loadFromSource, args=("镜像源", "https://gh-proxy.com/https://raw.githubusercontent.com/YvonneOfficial/Temp-Resources/main/servers.dat"))
+        github_thread = threading.Thread(target=self._loadFromSource, args=("GitHub", "https://raw.githubusercontent.com/QingFengTechnology/FengAmongUsTool-Asset/main/servers.dat"))
+        mirror_thread = threading.Thread(target=self._loadFromSource, args=("镜像源", "https://gh-proxy.com/https://raw.githubusercontent.com/QingFengTechnology/FengAmongUsTool-Asset/main/servers.dat"))
         
         # 启动线程
         github_thread.start()
@@ -189,8 +189,8 @@ class ServerConfigLoader(QThread):
                 filename = server['filename']
                 
                 # 从GitHub和镜像源同时加载
-                github_url = f"https://raw.githubusercontent.com/YvonneOfficial/Temp-Resources/main/Servers/{filename}"
-                mirror_url = f"https://gh-proxy.com/https://raw.githubusercontent.com/YvonneOfficial/Temp-Resources/main/Servers/{filename}"
+                github_url = f"https://raw.githubusercontent.com/QingFengTechnology/FengAmongUsTool-Asset/main/Servers/{filename}"
+                mirror_url = f"https://gh-proxy.com/https://raw.githubusercontent.com/QingFengTechnology/FengAmongUsTool-Asset/main/Servers/{filename}"
                 
                 # 使用线程事件来实现双线程加载
                 server_load_event = threading.Event()
