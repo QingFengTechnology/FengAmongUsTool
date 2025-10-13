@@ -2,7 +2,7 @@
 """
 私服安装界面模块
 """
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, Signal, QObject
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QFrame
 from qfluentwidgets import (
     SubtitleLabel, BodyLabel, CheckBox, PrimaryPushButton,
@@ -19,6 +19,9 @@ from ..function.funcUtils import (
 class PrivateServerInterface(ScrollArea):
     """私服安装界面类"""
     
+    # 定义信号用于在主线程中显示消息
+    showMessageSignal = Signal(str, str, object)
+    
     def __init__(self, parent=None):
         super().__init__(parent=parent)
         self.serverConfig = {}
@@ -26,6 +29,9 @@ class PrivateServerInterface(ScrollArea):
         
         self.scrollWidget = QWidget()
         self.vBoxLayout = QVBoxLayout(self.scrollWidget)
+        
+        # 连接信号
+        self.showMessageSignal.connect(self._showMessage)
         
         self.initWidget()
         
@@ -110,7 +116,7 @@ class PrivateServerInterface(ScrollArea):
         
         # 使用默认配置
         self.serverConfig = {
-            "server1": {"name": "清风", "filename": "QingFeng.json", "enabled": True},
+            "server1": {"name": "清风", "filename": "QingFeng.json", "enabled": False},
             "server2": {"name": "帆船", "filename": "FanChuan.json", "enabled": False}
         }
         self.updateServerCheckboxes()
@@ -164,23 +170,55 @@ class PrivateServerInterface(ScrollArea):
             
         logMessage(f"开始安装私服，选择的服务器: {', '.join([s['name'] for s in enabledServers])}")
         
+        # 创建一个包装函数来处理消息回调
+        def messageCallback(title, content, position):
+            # 在显示消息后重新启用按钮
+            self.installButton.setEnabled(True)
+            self.showMessageSignal.emit(title, content, position)
+        
         success = installPrivateServer(
             self.serverConfig,
             self.log,
-            lambda title, content, position=InfoBarPosition.TOP: 
-                showInfoBar(self.parent(), title, content, position)
+            messageCallback
         )
         
         if success:
             self.installButton.setEnabled(False)
             # 安装完成后重新启用按钮
-            import threading
-            def enableButton():
-                import time
-                time.sleep(INSTALL_CONFIG["steps"] * INSTALL_CONFIG["step_delay"] + 1)
-                self.installButton.setEnabled(True)
-            
-            threading.Thread(target=enableButton).start()
+            # 按钮启用操作将在消息回调中执行
+    
+    def _showMessage(self, title, content, position):
+        """在主线程中显示消息"""
+        if title == '成功':
+            InfoBar.success(
+                title=title,
+                content=content,
+                orient=Qt.Horizontal,
+                isClosable=True,
+                position=position,
+                duration=2000,
+                parent=self
+            )
+        elif title == '警告':
+            InfoBar.warning(
+                title=title,
+                content=content,
+                orient=Qt.Horizontal,
+                isClosable=True,
+                position=position,
+                duration=2000,
+                parent=self
+            )
+        else:
+            InfoBar.error(
+                title=title,
+                content=content,
+                orient=Qt.Horizontal,
+                isClosable=True,
+                position=position,
+                duration=2000,
+                parent=self
+            )
     
     def log(self, message):
         """添加日志"""
