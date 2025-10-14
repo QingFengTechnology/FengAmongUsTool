@@ -10,10 +10,9 @@ from qfluentwidgets import (
 )
 
 from ..function.variableConfig import INSTALL_CONFIG
-from ..function.funcUtils import (
-    ServerLoader, installPrivateServer,
-    logMessage, showInfoBar
-)
+from ..function.serverManager import ServerLoader, installPrivateServer
+from ..function.funcUtils import showInfoBar
+from ..function.logManager import logMessage
 
 
 class PrivateServerInterface(ScrollArea):
@@ -139,22 +138,25 @@ class PrivateServerInterface(ScrollArea):
         for serverId, config in self.serverConfig.items():
             checkbox = CheckBox(config['name'])
             checkbox.setChecked(config['enabled'])
-            checkbox.stateChanged.connect(
-                lambda state, sid=serverId: self.toggleServer(sid, state)
-            )
+            # 使用默认参数捕获当前的serverId值
+            checkbox.stateChanged.connect(lambda state, sid=serverId: self.toggleServer(sid, state))
             self.serverLayout.addWidget(checkbox)
             self.serverCheckboxes[serverId] = checkbox
     
     def toggleServer(self, serverId, state):
         """切换服务器状态"""
         if serverId in self.serverConfig:
-            self.serverConfig[serverId]['enabled'] = (state == Qt.CheckState.Checked.value)
-            logMessage(f"服务器 {self.serverConfig[serverId]['name']} {'启用' if state else '禁用'}")
+            # PyQt6/PySide6中，选中状态的值为2
+            self.serverConfig[serverId]['enabled'] = (state == 2)
+            logMessage(f"服务器 {self.serverConfig[serverId]['name']} {'启用' if state == 2 else '禁用'}")
         
     def installPrivateServer(self):
         """安装私服"""
         # 检查是否有服务器被选中
-        enabledServers = [config for config in self.serverConfig.values() if config['enabled']]
+        enabledServers = []
+        for config in self.serverConfig.values():
+            if config['enabled']:
+                enabledServers.append(config)
         
         if not enabledServers:
             InfoBar.warning(
@@ -168,7 +170,10 @@ class PrivateServerInterface(ScrollArea):
             )
             return False
             
-        logMessage(f"开始安装私服，选择的服务器: {', '.join([s['name'] for s in enabledServers])}")
+        server_names = []
+        for s in enabledServers:
+            server_names.append(s['name'])
+        logMessage(f"开始安装私服，选择的服务器: {', '.join(server_names)}")
         
         # 创建一个包装函数来处理消息回调
         def messageCallback(title, content, position):

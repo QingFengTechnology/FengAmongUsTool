@@ -158,8 +158,8 @@ class HomeInterface(ScrollArea):
         """卡片点击事件"""
         logInfo(f"点击了卡片: {routeKey}")
         # 根据routeKey执行不同的操作
-        if routeKey == "privateServerInterface":
-            # 导航到私服安装页面
+        if routeKey in ["privateServerInterface", "settingInterface"]:
+            # 导航到指定页面
             self.navigateToInterface.emit(routeKey)
         elif routeKey == "toolsInterface":
             # 提示"敬请期待"
@@ -169,9 +169,6 @@ class HomeInterface(ScrollArea):
                 duration=2000,
                 parent=self
             )
-        elif routeKey == "settingInterface":
-            # 导航到设置页面
-            self.navigateToInterface.emit(routeKey)
         elif routeKey == "donateInterface":
             # 跳转到赞助页面
             QDesktopServices.openUrl(QUrl("https://docs.qingfengawa.top/Donate.html"))
