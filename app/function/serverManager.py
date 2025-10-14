@@ -15,7 +15,7 @@ from pathlib import Path
 from PySide6.QtCore import Qt, Signal, QObject, QThread
 from qfluentwidgets import InfoBarPosition
 
-from .logManager import logMessage, logWarning, logError
+from .logManager import logInfo, logWarning, logError
 from .variableConfig import INSTALL_CONFIG
 
 
@@ -31,7 +31,7 @@ class ServerLoader(QObject):
         
     def loadServers(self):
         """从多个源加载服务器列表"""
-        logMessage("开始从多个源加载服务器列表...")
+        logInfo("开始从多个源加载服务器列表...")
         
         # 创建两个线程分别从不同源加载
         github_thread = threading.Thread(target=self._loadFromSource, args=("GitHub", "https://raw.githubusercontent.com/QingFengTechnology/FengAmongUsTool-Asset/main/servers.dat"))
@@ -55,7 +55,7 @@ class ServerLoader(QObject):
     def _loadFromSource(self, source_name, url):
         """从指定源加载数据"""
         try:
-            logMessage(f"正在从{source_name}加载: {url}")
+            logInfo(f"正在从{source_name}加载: {url}")
             start_time = time.time()
             
             # 发送GET请求
@@ -67,10 +67,10 @@ class ServerLoader(QObject):
             
             # 检查是否已经有其他线程完成加载
             if self.load_event.is_set():
-                logMessage(f"从{source_name}加载完成，耗时: {elapsed_time:.2f}秒，但数据已被采用，此数据被忽略")
+                logInfo(f"从{source_name}加载完成，耗时: {elapsed_time:.2f}秒，但数据已被采用，此数据被忽略")
                 return
             
-            logMessage(f"从{source_name}加载完成，耗时: {elapsed_time:.2f}秒")
+            logInfo(f"从{source_name}加载完成，耗时: {elapsed_time:.2f}秒")
             
             # 解析自定义格式数据
             servers_data = self.parseServerConfig(response.text)
@@ -89,11 +89,11 @@ class ServerLoader(QObject):
             if not self.load_event.is_set():
                 self.servers_data = server_config
                 self.load_event.set()  # 通知其他线程已经有结果了
-                logMessage(f"使用{source_name}的数据")
+                logInfo(f"使用{source_name}的数据")
                 # 发出加载完成信号
                 self.serversLoaded.emit(server_config)
             else:
-                logMessage(f"{source_name}返回的数据被忽略（已有更快的源）")
+                logInfo(f"{source_name}返回的数据被忽略（已有更快的源）")
                     
         except requests.exceptions.RequestException as e:
             error_msg = f"从{source_name}加载失败: {str(e)}"
@@ -149,7 +149,7 @@ class ServerConfigLoader(QThread):
                 
                 def load_from_github():
                     try:
-                        logMessage(f"正在从GitHub加载服务器配置: {server_name} ({filename})")
+                        logInfo(f"正在从GitHub加载服务器配置: {server_name} ({filename})")
                         start_time = time.time()
                         response = requests.get(github_url, timeout=10)
                         response.raise_for_status()
@@ -159,7 +159,7 @@ class ServerConfigLoader(QThread):
                         if not server_load_event.is_set():
                             server_config[0] = server_data
                             server_load_event.set()
-                            logMessage(f"从GitHub加载服务器配置完成: {server_name}，耗时: {end_time - start_time:.2f}秒")
+                            logInfo(f"从GitHub加载服务器配置完成: {server_name}，耗时: {end_time - start_time:.2f}秒")
                     except Exception as e:
                         logError(f"从GitHub加载服务器配置 {server_name} 失败: {str(e)}")
                         # 检查是否两个线程都失败了
@@ -169,7 +169,7 @@ class ServerConfigLoader(QThread):
                         
                 def load_from_mirror():
                     try:
-                        logMessage(f"正在从镜像源加载服务器配置: {server_name} ({filename})")
+                        logInfo(f"正在从镜像源加载服务器配置: {server_name} ({filename})")
                         start_time = time.time()
                         response = requests.get(mirror_url, timeout=10)
                         response.raise_for_status()
@@ -179,7 +179,7 @@ class ServerConfigLoader(QThread):
                         if not server_load_event.is_set():
                             server_config[0] = server_data
                             server_load_event.set()
-                            logMessage(f"从镜像源加载服务器配置完成: {server_name}，耗时: {end_time - start_time:.2f}秒")
+                            logInfo(f"从镜像源加载服务器配置完成: {server_name}，耗时: {end_time - start_time:.2f}秒")
                     except Exception as e:
                         logError(f"从镜像源加载服务器配置 {server_name} 失败: {str(e)}")
                         # 检查是否两个线程都失败了
