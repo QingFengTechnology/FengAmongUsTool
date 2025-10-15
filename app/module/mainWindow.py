@@ -2,11 +2,12 @@
 """
 主窗口模块
 """
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QSize
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QWidget, QHBoxLayout, QApplication
 from qfluentwidgets import (
-    FluentWindow, setTheme, Theme, BodyLabel, NavigationItemPosition, FluentIcon as FIF
+    FluentWindow, setTheme, Theme, BodyLabel, NavigationItemPosition, FluentIcon as FIF,
+    SplashScreen
 )
 
 from ..function.variableConfig import WINDOW_CONFIG, THEME_CONFIG
@@ -27,6 +28,16 @@ class MainWindow(FluentWindow):
         # 初始化窗口
         self.initWindow()
         
+        # 创建启动画面
+        self.splashScreen = SplashScreen(self.windowIcon(), self)
+        self.splashScreen.setIconSize(QSize(128, 128))
+        self.splashScreen.titleBar.maxBtn.setHidden(True)
+        self.splashScreen.raise_()
+        
+        # 显示窗口
+        self.show()
+        QApplication.processEvents()
+        
         # 创建子界面
         self.homeInterface = HomeInterface(self)
         self.settingInterface = SettingInterface(self)
@@ -37,6 +48,12 @@ class MainWindow(FluentWindow):
         
         # 初始化导航
         self.initNavigation()
+        
+        # 完成启动画面
+        # sleep用于开发调试，release时请注释
+        # from time import sleep
+        # sleep(3)
+        self.splashScreen.finish()
         
     def initWindow(self):
         """初始化窗口"""
