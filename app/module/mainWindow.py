@@ -50,9 +50,6 @@ class MainWindow(FluentWindow):
         self.initNavigation()
         
         # 完成启动画面
-        # sleep用于开发调试，release时请注释
-        # from time import sleep
-        # sleep(3)
         self.splashScreen.finish()
         
     def initWindow(self):
