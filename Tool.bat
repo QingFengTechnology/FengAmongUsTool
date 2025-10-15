@@ -1,6 +1,6 @@
 chcp 65001 > nul
 @echo off
-set "Version=2.2.1 LTS"
+set "Version=2.2.2 LTS"
 title 清风 Among Us 工具箱
 echo.
 echo ======================================================
@@ -61,13 +61,11 @@ cls
 echo.
 echo ======================================================
 echo.
-echo 警告：v2 版本工具箱已被标记为弃用。
+echo 警告：v2 版本工具箱已停止更新。
 echo.
-echo 警告：即使 LTS 版本会受到更长的支持期限，但我们也不再推荐使用。
+echo 警告：这意味着 v2 版本工具箱已不再可靠，可能将无法使用完整功能，随着时间推移可能也会出现兼容问题。
 echo.
-echo 警告：除非您是 Windows 7 版本，否则请下载 v3 版本工具箱。
-echo.
-echo v3 工具箱下载：
+echo 新版本工具箱下载：
 echo.
 echo https://github.com/QingFengTechnology/FengAmongUsTool/releases
 echo.
@@ -161,11 +159,11 @@ timeout /t 1 /NoBreak > nul
 choice /c 12 /n /m "请输入你的选择[1，2]："
 if "%ERRORLEVEL%"=="0" goto install_server_region_choose
 if "%ERRORLEVEL%"=="1" (
-  set "ServerDownloadURL=https://raw.githubusercontent.com/QingFengTechnology/FengAmongUsTool/refs/heads/v2/regionInfo.json"
+  set "ServerDownloadURL=https://raw.githubusercontent.com/QingFengTechnology/FengAmongUsTool-Asset/refs/heads/main/regionInfo.json"
   goto install_server_download
 )
 if "%ERRORLEVEL%"=="2" (
-  set "ServerDownloadURL=https://cn.api.qingfengawa.top/regionInfo.json"
+  set "ServerDownloadURL=https://api.qingfengawa.top/FengAmongUsTool-Asset/regionInfo.json"
   goto install_server_download
 )
 goto install_server_region_choose
