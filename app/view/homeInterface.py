@@ -172,3 +172,8 @@ class HomeInterface(ScrollArea):
         elif routeKey == "donateInterface":
             # 跳转到赞助页面
             QDesktopServices.openUrl(QUrl("https://docs.qingfengawa.top/Donate.html"))
+
+    def setCardsEnabled(self, enabled):
+        """设置功能卡片的启用状态"""
+        for card in self.functionCardView.cards:
+            card.setEnabled(enabled)

@@ -49,8 +49,22 @@ class MainWindow(FluentWindow):
         # 初始化导航
         self.initNavigation()
         
+        # 在SplashScreen期间阻止事件传播到主窗口
+        self.setAttribute(Qt.WA_TransparentForMouseEvents, True)
+        
         # 完成启动画面
         self.splashScreen.finish()
+        
+        # 处理所有待处理事件，清除可能积压的鼠标事件
+        QApplication.processEvents()
+        
+        # 短暂禁用主窗口以清除事件状态
+        self.setEnabled(False)
+        QApplication.processEvents()
+        
+        # 启动画面完成后恢复事件处理
+        self.setAttribute(Qt.WA_TransparentForMouseEvents, False)
+        self.setEnabled(True)
         
     def initWindow(self):
         """初始化窗口"""
