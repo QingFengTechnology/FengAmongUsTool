@@ -20,7 +20,7 @@ class AppManager:
     
     def run(self):
         """运行应用"""
+        # 主窗口已经在初始化时显示，这里只需返回True
         if self.mainWindow:
-            self.mainWindow.show()
             return True
         return False
