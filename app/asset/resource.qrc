@@ -2,5 +2,6 @@
 <RCC version="1.0">
     <qresource prefix="/app">
         <file>AmongUs-BG.jpg</file>
+        <file>HarmonyOS_Sans_SC_Regular.ttf</file>
     </qresource>
 </RCC>
