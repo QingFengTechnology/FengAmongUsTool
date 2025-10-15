@@ -16,7 +16,6 @@ class ElevatedCard(ElevatedCardWidget):
     def __init__(self, icon, title, content, routeKey, parent=None):
         super().__init__(parent=parent)
         self.routeKey = routeKey
-        self._enabled = True  # 自定义启用状态
         
         # 创建组件
         self.iconWidget = IconWidget(icon, self)
@@ -70,23 +69,17 @@ class ElevatedCard(ElevatedCardWidget):
             self.titleLabel.setStyleSheet("color: black;")
             self.contentLabel.setStyleSheet("color: rgba(0, 0, 0, 0.7);")
 
-    def setEnabled(self, enabled):
-        """设置组件启用状态"""
-        self._enabled = enabled
-        super().setEnabled(enabled)
-        
-    def isEnabled(self):
-        """获取组件启用状态"""
-        # 确保属性存在，避免初始化过程中的访问错误
-        return getattr(self, '_enabled', True)
-
     def mousePressEvent(self, event):
         """鼠标按下事件"""
-        # 不调用父类方法，完全控制事件
-        pass
+        if self.isEnabled():
+            event.accept()
+        else:
+            event.ignore()
 
     def mouseReleaseEvent(self, event):
         """鼠标释放事件"""
-        # 只有在启用状态下才响应点击事件
-        if self._enabled:
+        if self.isEnabled():
             self.clicked.emit(self.routeKey)
+            event.accept()
+        else:
+            event.ignore()
