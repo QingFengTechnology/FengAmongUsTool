@@ -2,7 +2,7 @@
 """
 主窗口模块
 """
-from PySide6.QtCore import Qt, QSize
+from PySide6.QtCore import Qt, QSize, QTimer
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QWidget, QHBoxLayout, QApplication
 from qfluentwidgets import (
@@ -14,6 +14,17 @@ from ..function.variableConfig import WINDOW_CONFIG, THEME_CONFIG
 from ..view.settingInterface import SettingInterface
 from ..view.homeInterface import HomeInterface
 from ..view.privateServerInterface import PrivateServerInterface
+
+
+class SplashScreenWithEventCapture(SplashScreen):
+    """自定义SplashScreen，捕获所有鼠标事件"""
+    def mousePressEvent(self, event):
+        """捕获鼠标按下事件"""
+        event.accept()
+
+    def mouseReleaseEvent(self, event):
+        """捕获鼠标释放事件"""
+        event.accept()
 
 
 class MainWindow(FluentWindow):
@@ -29,10 +40,12 @@ class MainWindow(FluentWindow):
         self.initWindow()
         
         # 创建启动画面
-        self.splashScreen = SplashScreen(self.windowIcon(), self)
+        self.splashScreen = SplashScreenWithEventCapture(self.windowIcon(), self)
         self.splashScreen.setIconSize(QSize(128, 128))
         self.splashScreen.titleBar.maxBtn.setHidden(True)
         self.splashScreen.raise_()
+        # 设置主窗口对鼠标事件透明
+        self.setAttribute(Qt.WA_TransparentForMouseEvents, True)
         
         # 显示窗口
         self.show()
@@ -40,6 +53,7 @@ class MainWindow(FluentWindow):
         
         # 创建子界面
         self.homeInterface = HomeInterface(self)
+        self.homeInterface.setCardsEnabled(False)
         self.settingInterface = SettingInterface(self)
         self.privateServerInterface = PrivateServerInterface(self)
         
@@ -49,17 +63,13 @@ class MainWindow(FluentWindow):
         # 初始化导航
         self.initNavigation()
         
-        # 在SplashScreen期间阻止事件传播到主窗口
-        self.setAttribute(Qt.WA_TransparentForMouseEvents, True)
-        
         # 完成启动画面
         self.splashScreen.finish()
-        
-        # 处理所有待处理事件，清除可能积压的鼠标事件
-        QApplication.processEvents()
-        
-        # 启动画面完成后恢复事件处理
-        self.setAttribute(Qt.WA_TransparentForMouseEvents, False)
+        # 延迟恢复鼠标事件处理和卡片启用状态，确保SplashScreen动画完成
+        def on_splash_finished():
+            self.setAttribute(Qt.WA_TransparentForMouseEvents, False)
+            self.homeInterface.setCardsEnabled(True)
+        QTimer.singleShot(50, on_splash_finished)
         
     def initWindow(self):
         """初始化窗口"""
