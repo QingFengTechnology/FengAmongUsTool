@@ -16,6 +16,7 @@ class ElevatedCard(ElevatedCardWidget):
     def __init__(self, icon, title, content, routeKey, parent=None):
         super().__init__(parent=parent)
         self.routeKey = routeKey
+        self._pressAccepted = False
         
         # 创建组件
         self.iconWidget = IconWidget(icon, self)
@@ -69,8 +70,19 @@ class ElevatedCard(ElevatedCardWidget):
             self.titleLabel.setStyleSheet("color: black;")
             self.contentLabel.setStyleSheet("color: rgba(0, 0, 0, 0.7);")
 
+    def mousePressEvent(self, event):
+        """鼠标按下事件"""
+        self._pressAccepted = self.isEnabled()
+        if self._pressAccepted:
+            event.accept()
+        else:
+            event.ignore()
+
     def mouseReleaseEvent(self, event):
         """鼠标释放事件"""
-        # 不调用父类的mouseReleaseEvent，避免触发父类的clicked信号
-        # super().mouseReleaseEvent(event)
-        self.clicked.emit(self.routeKey)
+        if self._pressAccepted and self.isEnabled():
+            self.clicked.emit(self.routeKey)
+            event.accept()
+        else:
+            event.ignore()
+        self._pressAccepted = False
