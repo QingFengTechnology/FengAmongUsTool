@@ -98,8 +98,9 @@ def load_config():
             # 如果配置文件不存在，保存默认配置
             save_config()
     except Exception as e:
-        from .logManager import logError
-        logError(f"加载配置失败: {e}")
+        import logging
+        logger = logging.getLogger("FengAmongUsTool")
+        logger.error(f"加载配置失败: {e}")
         # 使用默认配置
         save_config()
 
@@ -109,8 +110,9 @@ def save_config():
     try:
         cfg.save()
     except Exception as e:
-        from .logManager import logError
-        logError(f"保存配置失败: {e}")
+        import logging
+        logger = logging.getLogger("FengAmongUsTool")
+        logger.error(f"保存配置失败: {e}")
 
 
 def get_theme_text(theme):

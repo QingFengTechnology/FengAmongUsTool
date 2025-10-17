@@ -9,8 +9,10 @@ from qfluentwidgets import (
     SimpleCardWidget, VBoxLayout, FluentIcon, InfoBarPosition, ScrollArea, InfoBar
 )
 
+import logging
 from ..function.serverManager import ServerLoader, installPrivateServer
-from ..function.logManager import logInfo
+
+logger = logging.getLogger("FengAmongUsTool")
 
 
 class PrivateServerInterface(ScrollArea):
@@ -95,13 +97,13 @@ class PrivateServerInterface(ScrollArea):
     
     def onServersLoaded(self, server_config):
         """服务器列表加载完成"""
-        logInfo("服务器列表加载成功")
+        logger.info("服务器列表加载成功。")
         self.serverConfig = server_config
         self.updateServerCheckboxes()
         
     def onLoadFailed(self, error_msg):
         """服务器列表加载失败"""
-        logInfo(f"服务器列表加载失败: {error_msg}")
+        logger.error(f"服务器列表加载失败: {error_msg}")
         # 移除加载提示
         self.loadingLabel.setParent(None)
         self.loadingLabel.deleteLater()
@@ -146,7 +148,7 @@ class PrivateServerInterface(ScrollArea):
         if serverId in self.serverConfig:
             # PyQt6/PySide6中，选中状态的值为2
             self.serverConfig[serverId]['enabled'] = (state == 2)
-            logInfo(f"服务器 {self.serverConfig[serverId]['name']} {'启用' if state == 2 else '禁用'}")
+            logger.debug(f"已{'启用' if state == 2 else '禁用'}服务器{self.serverConfig[serverId]['name']}。")
         
     def installPrivateServer(self):
         """安装私服"""
@@ -171,7 +173,7 @@ class PrivateServerInterface(ScrollArea):
         server_names = []
         for s in enabledServers:
             server_names.append(s['name'])
-        logInfo(f"开始安装私服，选择的服务器: {', '.join(server_names)}")
+        logger.info(f"开始安装私服，选择的服务器: {', '.join(server_names)}")
         
         # 创建一个包装函数来处理消息回调
         def messageCallback(title, content, position):
@@ -225,7 +227,7 @@ class PrivateServerInterface(ScrollArea):
     
     def log(self, message):
         """添加日志"""
-        logInfo(message)
+        logger.info(message)
         
     def addToNavigation(self, mainWindow):
         """添加到导航栏"""

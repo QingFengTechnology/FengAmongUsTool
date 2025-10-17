@@ -8,9 +8,11 @@ from PySide6.QtGui import QDesktopServices
 from PySide6.QtCore import QUrl
 from qfluentwidgets import ScrollArea, FluentIcon, qconfig, isDarkTheme, InfoBar
 
-from ..function.logManager import logInfo
+import logging
 from .components.BannerWidget import BannerWidget
 from .components.ElevatedCardView import ElevatedCardView
+
+logger = logging.getLogger("FengAmongUsTool")
 
 
 class HomeInterface(ScrollArea):
@@ -154,7 +156,7 @@ class HomeInterface(ScrollArea):
 
     def onCardClicked(self, routeKey):
         """卡片点击事件"""
-        logInfo(f"点击了卡片: {routeKey}")
+        logger.debug(f"卡片{routeKey}被点击。")
         # 根据routeKey执行不同的操作
         if routeKey in ["privateServerInterface", "settingInterface"]:
             # 导航到指定页面

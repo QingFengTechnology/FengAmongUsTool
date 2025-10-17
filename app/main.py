@@ -1,6 +1,8 @@
 # coding:utf-8
 import sys
 import os
+import logging
+from pathlib import Path
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QApplication
 
@@ -10,11 +12,46 @@ sys.path.insert(0, project_root)
 
 from app.module.appManager import AppManager
 
+def setupLogging():
+    """设置标准logging配置"""
+    # 在项目根目录创建日志文件
+    log_file = Path(project_root) / "FengAmongUsTool.log"
+    
+    # 配置根日志记录器
+    logger = logging.getLogger("FengAmongUsTool")
+    logger.setLevel(logging.DEBUG)
+    
+    # 清除已有的处理器
+    for handler in logger.handlers[:]:
+        logger.removeHandler(handler)
+    
+    # 创建格式化器
+    formatter = logging.Formatter(
+        fmt='[%(asctime)s] [%(levelname)s] - %(message)s',
+        datefmt='%H:%M:%S'
+    )
+    
+    # 文件处理器（每次启动时覆盖）
+    file_handler = logging.FileHandler(log_file, mode='w', encoding='utf-8')
+    file_handler.setLevel(logging.INFO)
+    file_handler.setFormatter(formatter)
+    
+    # 控制台处理器
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(logging.DEBUG)
+    console_handler.setFormatter(formatter)
+    
+    # 添加处理器
+    logger.addHandler(file_handler)
+    logger.addHandler(console_handler)
+    
+    return logger
+
 def main():
     """主函数"""
     # 初始化日志系统
-    from app.function.logManager import logInfo
-    logInfo("清风工具箱启动中...")
+    logger = setupLogging()
+    logger.debug("清风工具箱启动中...")
     
     # 启用高DPI缩放（PySide6现代方式）
     QApplication.setHighDpiScaleFactorRoundingPolicy(Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
@@ -34,9 +71,9 @@ def main():
     # 导入Qt资源模块
     try:
         from app.asset import resource_rc
-        logInfo("Qt资源模块导入成功")
+        logger.debug("Qt资源模块导入成功。")
     except ImportError as e:
-        logInfo(f"Qt资源模块导入失败: {e}")
+        logger.error(f"Qt资源模块导入失败: {e}")
     
     # 应用主题设置
     setTheme(cfg.themeMode.value)
