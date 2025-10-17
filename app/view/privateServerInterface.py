@@ -2,16 +2,14 @@
 """
 私服安装界面模块
 """
-from PySide6.QtCore import Qt, Signal, QObject
+from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QFrame
 from qfluentwidgets import (
     SubtitleLabel, BodyLabel, CheckBox, PrimaryPushButton,
     SimpleCardWidget, VBoxLayout, FluentIcon, InfoBarPosition, ScrollArea, InfoBar
 )
 
-from ..function.variableConfig import INSTALL_CONFIG
 from ..function.serverManager import ServerLoader, installPrivateServer
-from ..function.funcUtils import showInfoBar
 from ..function.logManager import logInfo
 
 

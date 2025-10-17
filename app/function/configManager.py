@@ -2,8 +2,6 @@
 """
 配置管理器 - 基于QFluentWidgets的配置系统
 """
-import os
-import json
 from enum import Enum
 from pathlib import Path
 

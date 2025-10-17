@@ -3,11 +3,7 @@
 日志管理器 - 基于Python logging库的日志系统
 """
 import logging
-import os
 from pathlib import Path
-from datetime import datetime
-
-from .variableConfig import LOG_CONFIG
 
 
 class LogManager:

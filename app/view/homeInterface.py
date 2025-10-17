@@ -2,15 +2,13 @@
 """
 首页界面
 """
-from asyncio.windows_events import NULL
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QWidget, QVBoxLayout
 from PySide6.QtGui import QDesktopServices
 from PySide6.QtCore import QUrl
 from qfluentwidgets import ScrollArea, FluentIcon, qconfig, isDarkTheme, InfoBar
 
-from ..function.variableConfig import PROJECT_CONFIG
-from ..function.logManager import logInfo, logWarning
+from ..function.logManager import logInfo
 from .components.BannerWidget import BannerWidget
 from .components.ElevatedCardView import ElevatedCardView
 

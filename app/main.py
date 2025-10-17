@@ -1,7 +1,7 @@
 # coding:utf-8
 import sys
 import os
-from PySide6.QtCore import Qt, QResource
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QApplication
 
 # 添加项目根目录到Python路径

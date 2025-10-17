@@ -15,8 +15,7 @@ from pathlib import Path
 from PySide6.QtCore import Qt, Signal, QObject, QThread
 from qfluentwidgets import InfoBarPosition
 
-from .logManager import logInfo, logWarning, logError
-from .variableConfig import INSTALL_CONFIG
+from .logManager import logInfo, logError
 
 
 class ServerLoader(QObject):

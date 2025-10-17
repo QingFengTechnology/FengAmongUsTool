@@ -3,22 +3,8 @@
 工具函数文件
 """
 
-import os
-import stat
-import platform
-from datetime import datetime
-from pathlib import Path
 from PySide6.QtCore import Qt
 from qfluentwidgets import InfoBar, InfoBarPosition, SettingCard, ComboBox
-
-# 从新模块导入需要的内容
-from .serverManager import (
-    ServerLoader, ServerConfigLoader, installPrivateServer,
-    fetchAndInstallServers, getEnabledServers, toggleServerState
-)
-from .variableConfig import LOG_CONFIG, INSTALL_CONFIG
-from .logManager import logMessage, logWarning, logError, getLogger
-
 
 class SimpleComboBoxSettingCard(SettingCard):
     """简化的组合框设置卡片"""
