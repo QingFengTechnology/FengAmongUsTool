@@ -95,22 +95,22 @@ def selectBestSettingsSource(filename):
     random.shuffle(SettingsSources)
     
     for source in SettingsSources:
-        console.log(f"测试 {source['name']}...")
+        console.log(f"测试[cornflower_blue]{source['name']}[/cornflower_blue]延迟[white]...[/white]")
         latency = testSettingsLatency(source['base_url'], filename)
         if latency == float('inf'):
-            console.log(f"[bold yellow]{source['name']} 不可用[/bold yellow]")
+            console.log(f"[orange1]未能连接[/orange1]到[cornflower_blue]{source['name']}[/cornflower_blue]。")
         else:
-            console.log(f"[bold green]{source['name']} 延迟: {latency:.2f}ms[/bold green]")
+            console.log(f"[green1]成功连接[/green1]到[cornflower_blue]{source['name']}[/cornflower_blue]延迟: [cornflower_blue]{latency:.2f}ms[/cornflower_blue]")
         results.append((source, latency))
     
     available_sources = [(s, l) for s, l in results if l != float('inf')]
     
     if not available_sources:
-        console.log("[bold red]所有下载源均无法连接[/bold red]")
+        console.log("[red1]所有下载源均无法连接。[/red1]")
         return None
     
     best_source, best_latency = min(available_sources, key=lambda x: x[1])
-    console.log(f"[bold blue]已选择最快下载源: {best_source['name']} (延迟: {best_latency:.2f}ms)[/bold blue]")
+    console.log(f"已选择[cornflower_blue]{best_source['name']}[/cornflower_blue]为下载源。")
     return best_source['base_url'] + filename
 
 def download_and_install_config(config_type):
@@ -131,7 +131,7 @@ def download_and_install_config(config_type):
             sleep(2)
             return
         else:
-            console.print("[bold red]输入无效，请重新输入。[/bold red]")
+            console.print("[red1]输入无效[/red1]，请重新输入。")
             sleep(1)
 
     try:
@@ -142,8 +142,8 @@ def download_and_install_config(config_type):
             DownloadSettingsURL = selectBestSettingsSource(config["filename"])
             if not DownloadSettingsURL:
                 status.stop()
-                console.print("[bold red]未能连接至可用下载服务器。[/bold red]")
-                console.input("按 Enter 返回主菜单...")
+                console.print("[red1]未能连接[/red1]至可用下载服务器。")
+                console.input("按 [plum1]Enter[/plum1] 返回主菜单...")
                 return
             status.update("备份已有文件...")
             try:
@@ -152,70 +152,68 @@ def download_and_install_config(config_type):
                     if os.path.exists(settingsFileBakPath):
                         setFileWritable(settingsFileBakPath)
                     shutil.copy2(settingsFilePath, settingsFileBakPath)
-                    console.log(f"[bold green]原始设置文件已备份至 {settingsFileBakPath}[/bold green]")
+                    console.log(f"[green1]成功备份[/green1]原始设置文件。")
                 else:
-                    console.log("未找到原始设置文件，跳过备份")
+                    console.log("[orange1]未找到[/orange1]原始设置文件，跳过备份。")
             except Exception as e:
-                console.log(f"[bold red]备份原始设置文件失败[/bold red]: {str(e)}")
+                console.log(f"[red1]未能备份[/red1]原始设置文件: {str(e)}")
             status.update("删除原有文件...")
             try:
                 if os.path.exists(settingsFilePath):
                     setFileWritable(settingsFilePath)
                     os.remove(settingsFilePath)
-                    console.log("[bold green]原始设置文件已删除[/bold green]")
+                    console.log("[green1]成功删除[/green1]原始设置文件。")
                 else:
-                    console.log("原始设置文件不存在，跳过删除")
+                    console.log("原始设置文件[orange1]不存在[/orange1]，跳过删除。")
             except Exception as e:
-                console.log(f"[bold red]删除原始文件失败[/bold red]: {str(e)}")
+                console.log(f"[orange1]未能删除[/orange1]原始文件: {str(e)}")
                 try:
                     status.update("强制删除原始文件...")
                     os.chmod(settingsFilePath, stat.S_IWRITE | stat.S_IREAD)
                     os.remove(settingsFilePath)
-                    console.log("[bold green]原始设置文件强制删除成功[/bold green]")
+                    console.log("[green1]成功强制删除[/green1]原始设置文件。")
                 except:
-                    console.log("[bold red]强制删除失败[/bold red]")
+                    console.log("[orange1]未能强制删除[/orange1]原始设置文件，将直接尝试下载并覆盖。")
             status.update("下载文件...")
             try:
                 response = requests.get(DownloadSettingsURL)
                 response.raise_for_status()
                 SettingsFileResponse = response.content
-                console.log(f"[bold green]文件下载成功，大小: {len(SettingsFileResponse)}B[/bold green]")
+                console.log(f"[green1]成功下载[/green1]设置文件，大小: [cornflower_blue]{len(SettingsFileResponse)}B[/cornflower_blue]。")
             except Exception as e:
-                console.log(f"[bold red]文件下载失败[/bold red]: {str(e)}")
+                console.log(f"[red1]未能下载[/red1]文件下载: {str(e)}")
                 if os.path.exists(settingsFileBakPath):
                     try:
                         if os.path.exists(settingsFilePath):
                             setFileWritable(settingsFilePath)
                         shutil.copy2(settingsFileBakPath, settingsFilePath)
                         setFileWritable(settingsFilePath)
-                        console.log("[bold green]已从备份恢复原始文件[/bold green]")
+                        console.log("[green1]已从备份恢复[/green1]原始文件。")
                     except Exception as restoreError:
-                        console.log(f"[bold red]恢复备份失败:[/bold red] {str(restoreError)}")
+                        console.log(f"[red1]未能从备份恢复[/red1]原始文件: {str(restoreError)}")
                 raise
             status.update("校验文件...")
             try:
                 if "currentLanguage".encode('utf-8') not in SettingsFileResponse:
                     raise ValueError("下载的设置文件缺少必备字符，疑似下载文件不正确。")
-                console.log("[bold green]文件校验成功[/bold green]")
+                console.log("[green1]成功校验[/green1]文件正确性。")
             except Exception as e:
-                console.log(f"[bold red]文件校验失败[/bold red]: {str(e)}")
+                console.log(f"[red1]未能校验[/red1]文件: {str(e)}")
                 if os.path.exists(settingsFileBakPath):
                     try:
                         if os.path.exists(settingsFilePath):
                             setFileWritable(settingsFilePath)
                         shutil.copy2(settingsFileBakPath, settingsFilePath)
                         setFileWritable(settingsFilePath)
-                        console.log("已从备份恢复原始文件")
+                        console.log("[green1]已从备份恢复[/green1]原始文件。")
                     except Exception as restoreError:
-                        console.log(f"[bold red]恢复备份失败[/bold red]: {str(restoreError)}")
-                console.print("[bold red]发生了错误[/bold red]。")
-                console.print("[bold red]下载的文件存在问题，已回滚更改。[/bold red]")
+                        console.log(f"[red1]未能从备份恢复[/red1]原始文件: {str(restoreError)}")
                 console.print("下方为工具箱获取到的文件内容:")
                 try:
                     content = SettingsFileResponse.decode('utf-8', errors='replace')
                     console.print(Syntax(content, "text", theme="github-dark", line_numbers=False))
                 except:
-                    console.print(f"[bold red]解码内容失败: {SettingsFileResponse[:100].hex()}[/bold red]")
+                    console.print(f"[red1]未能解码内容[/red1]: {SettingsFileResponse[:100].hex()}")
                 raise
             status.update("导入文件...")
             try:
@@ -224,45 +222,45 @@ def download_and_install_config(config_type):
                     setFileWritable(settingsFilePath)
                 with open(settingsFilePath, 'wb') as f:
                     f.write(SettingsFileResponse)
-                console.log(f"[bold green]文件导入成功[/bold green]")
+                console.log(f"[green1]成功导入[/green1]文件。")
                 if os.path.exists(settingsFileBakPath):
                     try:
                         setFileWritable(settingsFileBakPath)
                         os.remove(settingsFileBakPath)
                     except Exception as e:
-                        console.log(f"[bold yellow]清理备份文件失败[/bold yellow]: {str(e)}")
+                        console.log(f"[orange1]未能清理[/orange1]备份文件: {str(e)}")
                 success = True
                 
             except Exception as e:
-                console.log(f"[bold red]导入失败[/bold red]: {str(e)}")
+                console.log(f"[red1]未能导入[/red1]文件: {str(e)}")
                 if os.path.exists(settingsFileBakPath):
                     try:
                         if os.path.exists(settingsFilePath):
                             setFileWritable(settingsFilePath) 
                         shutil.copy2(settingsFileBakPath, settingsFilePath)
                         setFileWritable(settingsFilePath)
-                        console.log("[bold green]已从备份恢复原始文件[/bold green]")
+                        console.log("[green1]成功从备份恢复[/green1]原始文件。")
                     except Exception as restoreError:
-                        console.log(f"[bold red]恢复备份失败[/bold red]: {str(restoreError)}")
+                        console.log(f"[red1]未能从备份恢复[/red1]原始文件: {str(restoreError)}")
                 raise
             status.update("请稍后...")
             sleep(2)
 
     except Exception as e:
-        console.log(f"[bold red]{config['header']}过程中发生错误[/bold red]: {str(e)}")
+        console.log(f"[red1]{config['header']}过程中发生意外错误[/red1]: {str(e)}")
         success = False
         console.print("\n如果你确认这是工具箱问题，请截图相关信息并通过 GitHub Issue 报告问题。\n")
-        console.input("按 Enter 返回主菜单...")
+        console.input("按 [plum1]Enter[/plum1] 返回主菜单...")
         return
 
     if success:
         finalMessage = f"\n{config['success_message']}\n"
         generalMainMenu(finalMessage, config["title"])
     else:
-        finalMessage = f"\n{config['header']}失败，请查看日志以了解详情。\n"
-        console.print(Panel(Text(finalMessage, style="bold red"), title=Text(config["title"], style="bold")))
+        finalMessage = f"\n[red1]{config['header']}失败[/red1]，请查看日志以了解详情。\n"
+        console.print(Panel(Text(finalMessage, style="red1"), title=Text(config["title"], style="bold")))
     
-    console.input("按 Enter 返回主菜单...")
+    console.input("按 [plum1]Enter[/plum1] 返回主菜单。")
 
 def run():
     """工具箱主模块：修复旧版 Among Us"""
