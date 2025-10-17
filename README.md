@@ -9,23 +9,6 @@
 
 访问 [Release](https://github.com/QingFengTechnology/FengAmongUsTool/releases) 页面，下载最新版本的压缩包，解压后运行解压目录的`.exe`文件即可。 
 
-## Todo
-
-- [x] 一键安装清风服
-  - [ ] 支持安装大部分主流私服
-    - [ ] 模块化设计，支持自由组合私服
-- [x] Among Us 配置文件切换
-  - [x] 旧版 Among Us 配置文件切换（旧版修复）
-  - [x] 新版 Among Us 配置文件切换
-    - [ ] 优先使用玩家自己的配置文件，而不是直接覆盖 
-- [x] 工具箱更新检查
-  - [ ] 支持自动更新工具箱
-- [ ] Among Us 皮肤解锁器
-- [ ] 图形界面支持
-- [ ] 模组管理器
-  - [ ] 模组文件下载
-  - [ ] 模组文件管理
-
 ## 贡献
 
 请参阅[贡献指南](CONTRIBUTING.md)。
