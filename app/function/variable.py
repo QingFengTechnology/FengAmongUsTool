@@ -1,4 +1,4 @@
-Version = "v3.0.0"
+Version = "v3.1.0LTS"
 VersionType = "release"
 versionDate = "2025-10-07T02:00"
 
