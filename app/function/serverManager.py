@@ -149,7 +149,7 @@ class ServerConfigLoader(QThread):
                 
                 def load_from_github():
                     try:
-                        logger.info(f"正在从GitHub加载服务器配置: {server_name} ({filename})")
+                        logger.debug(f"正在从GitHub加载服务器配置: {server_name} ({filename})")
                         start_time = time.time()
                         response = requests.get(github_url, timeout=10)
                         response.raise_for_status()
@@ -159,7 +159,7 @@ class ServerConfigLoader(QThread):
                         if not server_load_event.is_set():
                             server_config[0] = server_data
                             server_load_event.set()
-                            logger.info(f"从GitHub加载服务器配置完成: {server_name}，耗时: {end_time - start_time:.2f}秒")
+                            logger.debug(f"从GitHub加载服务器配置完成: {server_name}，耗时: {end_time - start_time:.2f}秒。")
                     except Exception as e:
                         logger.error(f"从GitHub加载服务器配置 {server_name} 失败: {str(e)}")
                         # 检查是否两个线程都失败了
@@ -169,7 +169,7 @@ class ServerConfigLoader(QThread):
                         
                 def load_from_mirror():
                     try:
-                        logger.info(f"正在从镜像源加载服务器配置: {server_name} ({filename})")
+                        logger.debug(f"正在从镜像源加载服务器配置: {server_name} ({filename})")
                         start_time = time.time()
                         response = requests.get(mirror_url, timeout=10)
                         response.raise_for_status()
@@ -179,7 +179,7 @@ class ServerConfigLoader(QThread):
                         if not server_load_event.is_set():
                             server_config[0] = server_data
                             server_load_event.set()
-                            logger.info(f"从镜像源加载服务器配置完成: {server_name}，耗时: {end_time - start_time:.2f}秒")
+                            logger.debug(f"从镜像源加载服务器配置完成: {server_name}，耗时: {end_time - start_time:.2f}秒。")
                     except Exception as e:
                         logger.error(f"从镜像源加载服务器配置 {server_name} 失败: {str(e)}")
                         # 检查是否两个线程都失败了
@@ -219,7 +219,7 @@ class ServerConfigLoader(QThread):
             if self.config_data:
                 self.configLoaded.emit(self.config_data)
             else:
-                self.loadFailed.emit("未能加载任何服务器配置")
+                self.loadFailed.emit("未能加载任何服务器配置。")
             
         except Exception as e:
             error_msg = f"加载服务器配置时发生错误: {str(e)}"
@@ -241,7 +241,7 @@ def installPrivateServer(serverConfig, logCallback, messageCallback):
     for s in enabledServers:
         server_names.append(s['name'])
     logCallback(f"开始安装私服，选择的服务器: {', '.join(server_names)}")
-    
+      
     # 创建安装线程
     def installThread():
         try:
@@ -266,7 +266,7 @@ def installPrivateServer(serverConfig, logCallback, messageCallback):
             else:
                 logCallback(f"私服安装失败！错误: {error_msg}")
                 # 检查是否所有服务器都是重复项
-                if error_msg == "检测到所有服务器配置均与现有配置重复，已取消本次安装":
+                if error_msg == "检测到所有服务器配置均与现有配置重复，已取消本次安装。":
                     # 通知调用者安装取消，使用警告颜色
                     messageCallback('警告', error_msg, InfoBarPosition.TOP)
                 else:

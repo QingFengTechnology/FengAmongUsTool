@@ -173,7 +173,7 @@ class PrivateServerInterface(ScrollArea):
         server_names = []
         for s in enabledServers:
             server_names.append(s['name'])
-        logger.info(f"开始安装私服，选择的服务器: {', '.join(server_names)}")
+        logger.info(f"开始安装服务器。")
         
         # 创建一个包装函数来处理消息回调
         def messageCallback(title, content, position):
