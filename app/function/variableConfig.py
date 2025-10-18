@@ -3,13 +3,6 @@
 变量定义文件
 """
 
-# 服务器配置
-SERVER_CONFIG = {
-    "server1": {"name": "服务器1", "enabled": True},
-    "server2": {"name": "服务器2", "enabled": False},
-    "server3": {"name": "服务器3", "enabled": False}
-}
-
 # 窗口配置
 WINDOW_CONFIG = {
     "width": 1000,
@@ -25,12 +18,6 @@ THEME_CONFIG = {
 # 日志配置
 LOG_CONFIG = {
     "timestamp_format": "%H:%M:%S"
-}
-
-# 安装配置
-INSTALL_CONFIG = {
-    "steps": 5,
-    "step_delay": 1  # 秒
 }
 
 # 项目信息配置

@@ -11,6 +11,7 @@ from qfluentwidgets import (
 )
 
 from ..function.variableConfig import WINDOW_CONFIG, THEME_CONFIG
+import logging
 from ..view.settingInterface import SettingInterface
 from ..view.homeInterface import HomeInterface
 from ..view.privateServerInterface import PrivateServerInterface
@@ -36,6 +37,9 @@ class MainWindow(FluentWindow):
 
     def __init__(self):
         super().__init__()
+        
+        # 初始化logger
+        self.logger = logging.getLogger("FengAmongUsTool")
 
         # 设置主题
         setTheme(getattr(Theme, THEME_CONFIG["theme"]))
@@ -130,11 +134,9 @@ class MainWindow(FluentWindow):
 
         if os.path.exists(logo_path):
             self.setWindowIcon(QIcon(logo_path))
-            from ..function.logManager import logInfo
-            logInfo(f"图标加载成功: {logo_path}")
+            self.logger.debug("成功加载图标文件。")
         else:
-            from ..function.logManager import logWarning
-            logWarning(f"图标文件不存在: {logo_path}")
+            self.logger.warning(f"图标文件不存在: {logo_path}")
             self.setWindowIcon(QIcon())
 
         # 禁用窗口大小调整
@@ -177,8 +179,7 @@ class MainWindow(FluentWindow):
 
     def switchToInterface(self, routeKey):
         """切换到指定界面"""
-        from ..function.logManager import logInfo, logWarning
-        logInfo(f"尝试切换到界面 {routeKey}")
+        self.logger.debug(f"尝试切换到界面{routeKey}。")
 
         interface_map = {
             'privateServerInterface': self.privateServerInterface,
@@ -188,14 +189,14 @@ class MainWindow(FluentWindow):
         if routeKey in interface_map:
             try:
                 self.switchTo(interface_map[routeKey])
-                logInfo(f"成功切换到界面 {routeKey}")
+                self.logger.debug(f"成功切换到界面{routeKey}。")
             except Exception as e:
-                logWarning(f"切换界面时出错: {routeKey}, 错误: {str(e)}")
+                self.logger.error(f"切换到{routeKey}时出错: {str(e)}")
         elif routeKey == 'homeInterface':
             try:
                 self.switchTo(self.homeInterface)
-                logInfo(f"成功切换到界面 {routeKey}")
+                self.logger.debug(f"成功切换到{routeKey}。")
             except Exception as e:
-                logWarning(f"切换界面时出错: {routeKey}, 错误: {str(e)}")
+                self.logger.error(f"切换到{routeKey}时出错: {str(e)}")
         else:
-            logWarning(f"未找到对应的界面: {routeKey}")
+            self.logger.warning(f"未找到{routeKey}，该页面是否存在?")

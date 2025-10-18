@@ -11,12 +11,13 @@ import re
 import stat
 import platform
 import os
+import logging
 from pathlib import Path
 from PySide6.QtCore import Qt, Signal, QObject, QThread
 from qfluentwidgets import InfoBarPosition
 
-from .logManager import logInfo, logWarning, logError
-from .variableConfig import INSTALL_CONFIG
+# 获取日志记录器
+logger = logging.getLogger("FengAmongUsTool")
 
 
 class ServerLoader(QObject):
@@ -31,7 +32,7 @@ class ServerLoader(QObject):
         
     def loadServers(self):
         """从多个源加载服务器列表"""
-        logInfo("开始从多个源加载服务器列表...")
+        logger.info("开始从多个源加载服务器列表...")
         
         # 创建两个线程分别从不同源加载
         github_thread = threading.Thread(target=self._loadFromSource, args=("GitHub", "https://raw.githubusercontent.com/QingFengTechnology/FengAmongUsTool-Asset/main/servers.dat"))
@@ -55,7 +56,7 @@ class ServerLoader(QObject):
     def _loadFromSource(self, source_name, url):
         """从指定源加载数据"""
         try:
-            logInfo(f"正在从{source_name}加载: {url}")
+            logger.info(f"正在从{source_name}加载服务数据。")
             start_time = time.time()
             
             # 发送GET请求
@@ -67,10 +68,10 @@ class ServerLoader(QObject):
             
             # 检查是否已经有其他线程完成加载
             if self.load_event.is_set():
-                logInfo(f"从{source_name}加载完成，耗时: {elapsed_time:.2f}秒，但数据已被采用，此数据被忽略")
+                logger.info(f"从{source_name}加载完成，耗时: {elapsed_time:.2f}秒，但数据已被采用，此数据被忽略")
                 return
             
-            logInfo(f"从{source_name}加载完成，耗时: {elapsed_time:.2f}秒")
+            logger.info(f"从{source_name}加载完成，耗时: {elapsed_time:.2f}秒")
             
             # 解析自定义格式数据
             servers_data = self.parseServerConfig(response.text)
@@ -89,22 +90,21 @@ class ServerLoader(QObject):
             if not self.load_event.is_set():
                 self.servers_data = server_config
                 self.load_event.set()  # 通知其他线程已经有结果了
-                logInfo(f"使用{source_name}的数据")
+                logger.info(f"使用{source_name}的数据")
                 # 发出加载完成信号
                 self.serversLoaded.emit(server_config)
             else:
-                logInfo(f"{source_name}返回的数据被忽略（已有更快的源）")
+                logger.info(f"{source_name}返回的数据被忽略（已有更快的源）")
                     
         except requests.exceptions.RequestException as e:
             error_msg = f"从{source_name}加载失败: {str(e)}"
-            logError(error_msg)
+            logger.error(error_msg)
             # 检查是否所有线程都失败了
             if not self.load_event.is_set():
                 # 可以在这里添加重试逻辑或其他错误处理
                 pass
         except Exception as e:
-            error_msg = f"从{source_name}加载时发生未知错误: {str(e)}"
-            logError(error_msg)
+            logger.error(f"从{source_name}加载时发生未知错误: {str(e)}")
     
     def parseServerConfig(self, content):
         """解析服务器配置文件"""
@@ -149,7 +149,7 @@ class ServerConfigLoader(QThread):
                 
                 def load_from_github():
                     try:
-                        logInfo(f"正在从GitHub加载服务器配置: {server_name} ({filename})")
+                        logger.debug(f"正在从GitHub加载服务器配置: {server_name} ({filename})")
                         start_time = time.time()
                         response = requests.get(github_url, timeout=10)
                         response.raise_for_status()
@@ -159,9 +159,9 @@ class ServerConfigLoader(QThread):
                         if not server_load_event.is_set():
                             server_config[0] = server_data
                             server_load_event.set()
-                            logInfo(f"从GitHub加载服务器配置完成: {server_name}，耗时: {end_time - start_time:.2f}秒")
+                            logger.debug(f"从GitHub加载服务器配置完成: {server_name}，耗时: {end_time - start_time:.2f}秒。")
                     except Exception as e:
-                        logError(f"从GitHub加载服务器配置 {server_name} 失败: {str(e)}")
+                        logger.error(f"从GitHub加载服务器配置 {server_name} 失败: {str(e)}")
                         # 检查是否两个线程都失败了
                         if not server_load_event.is_set():
                             # 如果镜像线程也完成了，就发出失败信号
@@ -169,7 +169,7 @@ class ServerConfigLoader(QThread):
                         
                 def load_from_mirror():
                     try:
-                        logInfo(f"正在从镜像源加载服务器配置: {server_name} ({filename})")
+                        logger.debug(f"正在从镜像源加载服务器配置: {server_name} ({filename})")
                         start_time = time.time()
                         response = requests.get(mirror_url, timeout=10)
                         response.raise_for_status()
@@ -179,9 +179,9 @@ class ServerConfigLoader(QThread):
                         if not server_load_event.is_set():
                             server_config[0] = server_data
                             server_load_event.set()
-                            logInfo(f"从镜像源加载服务器配置完成: {server_name}，耗时: {end_time - start_time:.2f}秒")
+                            logger.debug(f"从镜像源加载服务器配置完成: {server_name}，耗时: {end_time - start_time:.2f}秒。")
                     except Exception as e:
-                        logError(f"从镜像源加载服务器配置 {server_name} 失败: {str(e)}")
+                        logger.error(f"从镜像源加载服务器配置 {server_name} 失败: {str(e)}")
                         # 检查是否两个线程都失败了
                         if not server_load_event.is_set():
                             # 如果GitHub线程也完成了，就发出失败信号
@@ -209,7 +209,7 @@ class ServerConfigLoader(QThread):
                     else:
                         self.config_data.append(server_data)
                 else:
-                    logError(f"无法从任何源加载服务器配置: {server_name}")
+                    logger.error(f"无法从任何源加载服务器配置: {server_name}")
                     # 如果这是最后一个服务器且没有加载任何配置，则发出失败信号
                     if not self.config_data:
                         self.loadFailed.emit(f"无法从任何源加载服务器配置: {server_name}")
@@ -219,11 +219,11 @@ class ServerConfigLoader(QThread):
             if self.config_data:
                 self.configLoaded.emit(self.config_data)
             else:
-                self.loadFailed.emit("未能加载任何服务器配置")
+                self.loadFailed.emit("未能加载任何服务器配置。")
             
         except Exception as e:
             error_msg = f"加载服务器配置时发生错误: {str(e)}"
-            logError(error_msg)
+            logger.error(error_msg)
             self.loadFailed.emit(error_msg)
             # 确保事件被设置，防止无限等待
             server_load_event.set()
@@ -241,7 +241,7 @@ def installPrivateServer(serverConfig, logCallback, messageCallback):
     for s in enabledServers:
         server_names.append(s['name'])
     logCallback(f"开始安装私服，选择的服务器: {', '.join(server_names)}")
-    
+      
     # 创建安装线程
     def installThread():
         try:
@@ -266,7 +266,7 @@ def installPrivateServer(serverConfig, logCallback, messageCallback):
             else:
                 logCallback(f"私服安装失败！错误: {error_msg}")
                 # 检查是否所有服务器都是重复项
-                if error_msg == "检测到所有服务器配置均与现有配置重复，已取消本次安装":
+                if error_msg == "检测到所有服务器配置均与现有配置重复，已取消本次安装。":
                     # 通知调用者安装取消，使用警告颜色
                     messageCallback('警告', error_msg, InfoBarPosition.TOP)
                 else:
@@ -274,7 +274,7 @@ def installPrivateServer(serverConfig, logCallback, messageCallback):
                     messageCallback('错误', f'安装失败: {error_msg}', InfoBarPosition.TOP)
         except Exception as e:
             error_msg = str(e)
-            logError(f"安装过程中发生错误: {error_msg}")
+            logger.error(f"安装过程中发生错误: {error_msg}")
             logCallback(f"安装过程中发生错误: {error_msg}")
             messageCallback('错误', f'安装失败: {error_msg}', InfoBarPosition.TOP)
     
@@ -315,12 +315,12 @@ def fetchAndInstallServers(servers, logCallback):
         config_loader.wait()
         
         if load_error:
-            logError(f"服务器配置加载失败: {load_error}")
+            logger.error(f"服务器配置加载失败: {load_error}")
             return False, 0, f"服务器配置加载失败: {load_error}"
         
         if not loaded_configs:
             error_msg = "未能加载任何服务器配置"
-            logError(error_msg)
+            logger.error(error_msg)
             return False, 0, error_msg
         
         server_regions = loaded_configs
@@ -363,7 +363,7 @@ def fetchAndInstallServers(servers, logCallback):
                 region_info = json.load(f)
         except Exception as e:
             error_msg = f"读取regionInfo文件失败: {str(e)}"
-            logError(error_msg)
+            logger.error(error_msg)
             return False, 0, error_msg
         
         # 4. 添加新的服务器配置
@@ -430,7 +430,7 @@ def fetchAndInstallServers(servers, logCallback):
         
     except Exception as e:
         error_msg = str(e)
-        logError(f"安装服务器时发生错误: {error_msg}")
+        logger.error(f"安装服务器时发生错误: {error_msg}")
         return False, 0, "安装失败"  # 失败，返回简单错误信息
 
 

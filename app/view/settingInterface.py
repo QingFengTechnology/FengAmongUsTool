@@ -1,18 +1,18 @@
 # coding:utf-8
 """
-设置界面模块 - 基于QFluentWidgets脚手架简化版
+设置界面模块
 """
-from PySide6.QtCore import Qt, QUrl
-from PySide6.QtGui import QFont, QDesktopServices
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QFont
 from PySide6.QtWidgets import QWidget
 from qfluentwidgets import (
     PrimaryPushSettingCard, HyperlinkCard, ScrollArea, ExpandLayout, 
     Theme, setTheme, setFont, InfoBar, FluentIcon as FIF, TitleLabel
 )
 
-from ..function.variableConfig import WINDOW_CONFIG, THEME_CONFIG, PROJECT_CONFIG
+from ..function.variableConfig import PROJECT_CONFIG
 from ..function.funcUtils import SimpleComboBoxSettingCard
-from ..function.configManager import cfg, load_config, save_config, get_theme_text, get_theme_from_text, get_zoom_text, get_zoom_from_text
+from ..function.configManager import cfg, load_config, save_config, get_theme_from_text, get_zoom_from_text
 
 
 class SettingInterface(ScrollArea):

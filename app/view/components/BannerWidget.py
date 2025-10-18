@@ -3,10 +3,9 @@
 横幅组件
 """
 import os
-from PySide6.QtCore import Qt, QRectF
-from PySide6.QtGui import QPixmap, QPainter, QPainterPath, QFont, QColor
-from PySide6.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout
-from qfluentwidgets import FluentIcon, IconWidget
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QPixmap, QPainter, QFont, QColor
+from PySide6.QtWidgets import QWidget, QLabel, QVBoxLayout
 
 from ...function.variableConfig import PROJECT_CONFIG
 
