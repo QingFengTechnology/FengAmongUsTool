@@ -31,8 +31,8 @@ def setupLogging():
         datefmt='%H:%M:%S'
     )
     
-    # 文件处理器（每次启动时覆盖）
-    file_handler = logging.FileHandler(log_file, mode='w', encoding='utf-8')
+    # 文件处理器（追加模式，保留历史日志）
+    file_handler = logging.FileHandler(log_file, mode='a', encoding='utf-8')
     file_handler.setLevel(logging.INFO)
     file_handler.setFormatter(formatter)
     
