@@ -126,17 +126,12 @@ class MainWindow(FluentWindow):
         self.resize(WINDOW_CONFIG["width"], WINDOW_CONFIG["height"])
         self.setWindowTitle(WINDOW_CONFIG["title"])
 
-        # 设置窗口图标 - 使用绝对路径确保正确加载
-        import os
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-        logo_path = os.path.join(current_dir, '..', 'asset', 'logo.png')
-        logo_path = os.path.abspath(logo_path)
-
-        if os.path.exists(logo_path):
-            self.setWindowIcon(QIcon(logo_path))
+        # 设置窗口图标 - 使用Qt资源系统
+        try:
+            self.setWindowIcon(QIcon(":/asset/logo.png"))
             self.logger.debug("成功加载图标文件。")
-        else:
-            self.logger.warning(f"图标文件不存在: {logo_path}")
+        except Exception as e:
+            self.logger.warning(f"图标文件加载失败: {str(e)}")
             self.setWindowIcon(QIcon())
 
         # 禁用窗口大小调整
