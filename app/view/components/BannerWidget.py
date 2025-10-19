@@ -53,12 +53,8 @@ class BannerWidget(QWidget):
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
         
         try:
-            # 加载背景图片文件 - 首先尝试Qt资源系统，如果失败则使用文件路径
+            # 加载背景图片文件 - 使用Qt资源系统
             pixmap = QPixmap(":/asset/AmongUs-BG.jpg")
-            if pixmap.isNull():
-                # 如果资源加载失败，尝试直接加载文件
-                bg_path = os.path.join(os.path.dirname(__file__), "..", "..", "..", "asset", "AmongUs-BG.jpg")
-                pixmap = QPixmap(bg_path)
             
             if not pixmap.isNull():
                 # 缩放图片以适应组件大小
