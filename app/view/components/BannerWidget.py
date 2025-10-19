@@ -54,7 +54,7 @@ class BannerWidget(QWidget):
         
         try:
             # 加载背景图片文件 - 首先尝试Qt资源系统，如果失败则使用文件路径
-            pixmap = QPixmap(":/app/AmongUs-BG.jpg")
+            pixmap = QPixmap(":/asset/AmongUs-BG.jpg")
             if pixmap.isNull():
                 # 如果资源加载失败，尝试直接加载文件
                 bg_path = os.path.join(os.path.dirname(__file__), "..", "..", "..", "asset", "AmongUs-BG.jpg")

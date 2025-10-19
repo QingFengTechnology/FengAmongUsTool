@@ -1,6 +1,7 @@
 <!DOCTYPE RCC>
 <RCC version="1.0">
-    <qresource prefix="/app">
+    <qresource prefix="/asset">
+        <file>logo.png</file>
         <file>AmongUs-BG.jpg</file>
     </qresource>
 </RCC>
