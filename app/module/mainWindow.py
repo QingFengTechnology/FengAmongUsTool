@@ -1,7 +1,9 @@
+#!/usr/bin/env python3
 # coding:utf-8
 """
 主窗口模块
 """
+import logging
 from PySide6.QtCore import Qt, QSize, Signal, QEvent
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QWidget, QHBoxLayout, QApplication
@@ -11,14 +13,14 @@ from qfluentwidgets import (
 )
 
 from ..function.variableConfig import WINDOW_CONFIG, THEME_CONFIG
-import logging
 from ..view.settingInterface import SettingInterface
 from ..view.homeInterface import HomeInterface
 from ..view.privateServerInterface import PrivateServerInterface
+from ..view.toolsInterface import ToolsInterface
 
 
 class SplashScreenWithEventCapture(SplashScreen):
-    """自定义SplashScreen，捕获所有鼠标事件"""
+    """自定义 SplashScreen，捕获所有鼠标事件"""
     splashHidden = Signal()
 
     def mousePressEvent(self, event):
@@ -37,11 +39,11 @@ class MainWindow(FluentWindow):
 
     def __init__(self):
         super().__init__()
-        
-        # 初始化logger
+
+        # 初始化 logger
         self.logger = logging.getLogger("FengAmongUsTool")
 
-        # 设置主题
+        # 设置主题（遵循 variableConfig 的配置）
         setTheme(getattr(Theme, THEME_CONFIG["theme"]))
         self._splashActive = True
         self._eventFilterInstalled = False
@@ -70,6 +72,7 @@ class MainWindow(FluentWindow):
         self.homeInterface.setCardsEnabled(False)
         self.settingInterface = SettingInterface(self)
         self.privateServerInterface = PrivateServerInterface(self)
+        self.toolsInterface = ToolsInterface(self)
 
         # 连接信号
         self.homeInterface.navigateToInterface.connect(self.switchToInterface)
@@ -78,19 +81,7 @@ class MainWindow(FluentWindow):
         self.initNavigation()
 
         # 完成启动画面
-        # 延迟恢复鼠标事件处理和卡片启用状态，确保SplashScreen动画完成
         def on_splash_finished():
-            # 继续保持事件过滤开启，先清空可能排队的用户输入
-            try:
-                from PySide6.QtCore import QEventLoop, QCoreApplication
-                app = QApplication.instance()
-                if app is not None:
-                    app.processEvents(QEventLoop.AllEvents, 50)
-                    app.processEvents(QEventLoop.AllEvents, 50)
-                    QCoreApplication.removePostedEvents(None)
-            except Exception:
-                pass
-
             # 关闭拦截，恢复正常输入
             self._splashActive = False
             self.setAttribute(Qt.WA_TransparentForMouseEvents, False)
@@ -105,7 +96,7 @@ class MainWindow(FluentWindow):
         self.splashScreen.finish()
 
     def eventFilter(self, obj, event):
-        """在启动画面显示时屏蔽所有鼠标相关事件（包括悬停/移动/滚轮/菜单）"""
+        """在启动画面显示时屏蔽所有鼠标相关事件（悬停/移动/滚轮/菜单等）"""
         if getattr(self, "_splashActive", False):
             if event.type() in {
                 QEvent.MouseButtonPress,
@@ -126,10 +117,10 @@ class MainWindow(FluentWindow):
         self.resize(WINDOW_CONFIG["width"], WINDOW_CONFIG["height"])
         self.setWindowTitle(WINDOW_CONFIG["title"])
 
-        # 设置窗口图标 - 使用Qt资源系统
+        # 设置窗口图标 - 使用 Qt 资源系统
         try:
             self.setWindowIcon(QIcon(":/asset/logo.png"))
-            self.logger.debug("成功加载图标文件。")
+            self.logger.debug("成功加载图标文件")
         except Exception as e:
             self.logger.warning(f"图标文件加载失败: {str(e)}")
             self.setWindowIcon(QIcon())
@@ -161,6 +152,10 @@ class MainWindow(FluentWindow):
         self.addSubInterface(
             self.privateServerInterface, FIF.DOWNLOAD, '私服安装', NavigationItemPosition.SCROLL)
 
+        # 添加工具箱界面到导航滚动区
+        self.addSubInterface(
+            self.toolsInterface, FIF.APPLICATION, '工具箱', NavigationItemPosition.SCROLL)
+
         # 添加设置界面到导航底部
         self.addSubInterface(
             self.settingInterface, FIF.SETTING, '设置', NavigationItemPosition.BOTTOM)
@@ -174,24 +169,26 @@ class MainWindow(FluentWindow):
 
     def switchToInterface(self, routeKey):
         """切换到指定界面"""
-        self.logger.debug(f"尝试切换到界面{routeKey}。")
+        self.logger.debug(f"尝试切换到界面 {routeKey}")
 
         interface_map = {
             'privateServerInterface': self.privateServerInterface,
-            'settingInterface': self.settingInterface
+            'settingInterface': self.settingInterface,
+            'toolsInterface': self.toolsInterface
         }
 
         if routeKey in interface_map:
             try:
                 self.switchTo(interface_map[routeKey])
-                self.logger.debug(f"成功切换到界面{routeKey}。")
+                self.logger.debug(f"成功切换到界面 {routeKey}")
             except Exception as e:
-                self.logger.error(f"切换到{routeKey}时出错: {str(e)}")
+                self.logger.error(f"切换到 {routeKey} 时出错: {str(e)}")
         elif routeKey == 'homeInterface':
             try:
                 self.switchTo(self.homeInterface)
-                self.logger.debug(f"成功切换到{routeKey}。")
+                self.logger.debug(f"成功切换到 {routeKey}")
             except Exception as e:
-                self.logger.error(f"切换到{routeKey}时出错: {str(e)}")
+                self.logger.error(f"切换到 {routeKey} 时出错: {str(e)}")
         else:
-            self.logger.warning(f"未找到{routeKey}，该页面是否存在?")
+            self.logger.warning(f"未找到 {routeKey}，该页面是否存在？")
+
