@@ -9,25 +9,25 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
-from .variableConfig import NEW_HOST_OPTIONS, OLD_HOST_OPTIONS
+from ..function.variableConfig import NEW_HOST_OPTIONS, OLD_HOST_OPTIONS
 
 logger = logging.getLogger("FengAmongUsTool")
 
 
-def get_settings_path() -> Optional[Path]:
+def getSettingsPath() -> Optional[Path]:
     """获取 Among Us 设置文件路径"""
     if appdata := os.getenv('APPDATA'):
         return Path(appdata).parent / 'LocalLow' / 'Innersloth' / 'Among Us' / 'settings.amogus'
     return None
 
 
-def load_settings(path: Path) -> dict:
+def loadSettings(path: Path) -> dict:
     """加载配置文件"""
     with path.open('r', encoding='utf-8') as fp:
         return json.load(fp)
 
 
-def save_settings(path: Path, data: dict) -> None:
+def saveSettings(path: Path, data: dict) -> None:
     """原子方式写入配置文件"""
     path.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.NamedTemporaryFile('w', encoding='utf-8', dir=path.parent, delete=False) as tmp_fp:
@@ -41,16 +41,26 @@ def save_settings(path: Path, data: dict) -> None:
         raise
 
 
-def backup_settings(source: Path) -> Path:
-    """创建带时间戳的备份文件"""
+def backupSettings(source: Path) -> Path:
+    """创建带时间戳的备份文件，并清理旧备份"""
+    backup_dir = source.parent
+    prefix = 'settings.amogus.bak'
+
+    for existing in backup_dir.glob(f'{prefix}*'):
+        try:
+            existing.unlink()
+            logger.info('已删除旧备份: %s', existing)
+        except Exception as exc:
+            logger.warning('删除旧备份 %s 失败: %s', existing, exc)
+
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    backup_path = source.parent / f'settings.amogus.bak.{timestamp}'
+    backup_path = backup_dir / f'{prefix}.{timestamp}'
     shutil.copy2(source, backup_path)
     logger.info('配置备份已创建: %s', backup_path)
     return backup_path
 
 
-def apply_old_config(data: dict) -> None:
+def applyOldConfig(data: dict) -> None:
     """调整配置以兼容旧版本"""
     input_section = data.setdefault('input', {})
     input_section.pop('inputData', None)
@@ -61,7 +71,7 @@ def apply_old_config(data: dict) -> None:
         multiplayer.pop(extra_key, None)
 
 
-def apply_new_config(data: dict) -> None:
+def applyNewConfig(data: dict) -> None:
     """调整配置以适配新版本"""
     input_section = data.setdefault('input', {})
     input_section['inputData'] = {'initialization': 'initialized'}

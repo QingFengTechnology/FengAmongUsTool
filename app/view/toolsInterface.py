@@ -12,13 +12,13 @@ from qfluentwidgets import (
     InfoBar, InfoBarPosition, MessageBox
 )
 
-from ..function.configSwitcher import (
-    apply_new_config,
-    apply_old_config,
-    backup_settings,
-    get_settings_path,
-    load_settings,
-    save_settings,
+from ..module.configSwitcher import (
+    applyNewConfig,
+    applyOldConfig,
+    backupSettings,
+    getSettingsPath,
+    loadSettings,
+    saveSettings,
 )
 
 logger = logging.getLogger("FengAmongUsTool")
@@ -100,13 +100,13 @@ class ToolsInterface(ScrollArea):
         if not dialog.exec():
             return
 
-        settings_path = get_settings_path()
+        settings_path = getSettingsPath()
         if not settings_path:
             self._show_info_bar('error', '错误', '未找到 APPDATA 环境变量，无法定位配置文件')
             return
 
         try:
-            config = load_settings(settings_path)
+            config = loadSettings(settings_path)
         except FileNotFoundError:
             self._show_info_bar('error', '错误', '未找到 settings.amogus 文件')
             return
@@ -120,7 +120,7 @@ class ToolsInterface(ScrollArea):
             return
 
         try:
-            backup_settings(settings_path)
+            backupSettings(settings_path)
         except FileNotFoundError:
             self._show_info_bar('error', '错误', '无法找到原始配置文件进行备份')
             return
@@ -130,14 +130,14 @@ class ToolsInterface(ScrollArea):
             return
 
         if option == '切换旧版配置':
-            apply_old_config(config)
+            applyOldConfig(config)
             target = '旧版'
         else:
-            apply_new_config(config)
+            applyNewConfig(config)
             target = '新版'
 
         try:
-            save_settings(settings_path, config)
+            saveSettings(settings_path, config)
         except Exception as exc:
             logger.exception('保存 settings.amogus 时发生异常')
             self._show_info_bar('error', '错误', '保存配置失败，请查看日志了解详情')
