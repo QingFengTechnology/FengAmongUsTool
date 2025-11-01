@@ -11,6 +11,7 @@ project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
 
 from app.module.appManager import AppManager
+from app.function.updateChecker import startUpdateCheck
 
 def setupLogging():
     """设置标准logging配置"""
@@ -81,7 +82,8 @@ def main():
     # 创建应用管理器
     appManagerInstance = AppManager()
     
-    appManagerInstance.initialize()
+    mainWindow = appManagerInstance.initialize()
+    startUpdateCheck(mainWindow)
     
     # 运行应用
     appManagerInstance.run()
