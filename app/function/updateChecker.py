@@ -5,6 +5,7 @@
 
 import logging
 import threading
+from datetime import datetime, timezone
 from typing import Any, Dict, Optional, Tuple
 
 import requests
@@ -53,14 +54,40 @@ def startUpdateCheck(parentWindow) -> None:
     worker.start()
 
 
-def _runUpdateCheck(parentWindow, channel: str, localDate: str) -> None:
+def _parse_version_date(value: Any) -> Optional[datetime]:
+    """解析版本日期，统一转换为 UTC"""
+    if isinstance(value, datetime):
+        return value.astimezone(timezone.utc) if value.tzinfo else value.replace(tzinfo=timezone.utc)
+
+    if not value:
+        return None
+
+    normalized = str(value).strip()
+    if normalized.endswith("Z"):
+        normalized = normalized[:-1] + "+00:00"
+
+    try:
+        parsed = datetime.fromisoformat(normalized)
+    except ValueError:
+        fallback_format = PROJECT_CONFIG.get("versionDateFormat")
+        if not fallback_format:
+            return None
+        try:
+            parsed = datetime.strptime(normalized, fallback_format)
+        except ValueError:
+            return None
+
+    if parsed.tzinfo is None:
+        return parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc)
+
+
+def _runUpdateCheck(parentWindow, channel: str, localDate: Any) -> None:
     """后台线程主体：拉取远程版本信息并比较"""
     LOGGER.debug("启动版本检查线程，通道=%s，本地日期=%s", channel, localDate)
     resultLock = threading.Lock()
     finishEvent = threading.Event()
     fetchResult: Dict[str, Any] = {"data": None, "source": None}
-
-    threads = []
 
     def fetchFromSource(sourceName: str, url: str) -> None:
         if finishEvent.is_set():
@@ -89,6 +116,7 @@ def _runUpdateCheck(parentWindow, channel: str, localDate: str) -> None:
             finishEvent.set()
             LOGGER.info("版本信息已从%s获取成功", sourceName)
 
+    threads = []
     for sourceName, url in VERSION_SOURCES:
         thread = threading.Thread(target=fetchFromSource, args=(sourceName, url), daemon=True)
         threads.append(thread)
@@ -104,8 +132,13 @@ def _runUpdateCheck(parentWindow, channel: str, localDate: str) -> None:
         LOGGER.warning("未能从任何源获取到版本信息，更新检查终止")
         return
 
+    local_date_obj = _parse_version_date(localDate)
+    if local_date_obj is None:
+        LOGGER.warning("本地版本日期解析失败：%s，将视为最早时间", localDate)
+        local_date_obj = datetime.min.replace(tzinfo=timezone.utc)
+
     channel_priority = ["alpha", "beta", "preview", "release"]
-    local_channel = channel.lower()
+    local_channel = str(channel).lower()
     try:
         start_index = channel_priority.index(local_channel)
     except ValueError:
@@ -114,6 +147,7 @@ def _runUpdateCheck(parentWindow, channel: str, localDate: str) -> None:
 
     selected_channel: Optional[str] = None
     selected_data: Optional[Dict[str, Any]] = None
+    selected_remote_date: Optional[datetime] = None
 
     for channel_name in channel_priority[start_index:]:
         channel_data: Optional[Dict[str, Any]] = remoteData.get(channel_name)
@@ -125,35 +159,40 @@ def _runUpdateCheck(parentWindow, channel: str, localDate: str) -> None:
             LOGGER.debug("通道 %s 已被禁用，跳过", channel_name)
             continue
 
-        remote_date = channel_data.get("versionDate")
-        if not remote_date:
+        remote_date_str = channel_data.get("versionDate")
+        if not remote_date_str:
             LOGGER.warning("通道 %s 的版本信息缺少 versionDate 字段，跳过", channel_name)
             continue
 
-        if remote_date <= localDate:
+        remote_date_obj = _parse_version_date(remote_date_str)
+        if remote_date_obj is None:
+            LOGGER.warning("通道 %s 的版本日期解析失败：%s，跳过", channel_name, remote_date_str)
+            continue
+
+        if remote_date_obj <= local_date_obj:
             LOGGER.debug(
                 "通道 %s 版本已是最新 (local=%s, remote=%s)",
                 channel_name,
-                localDate,
-                remote_date,
+                local_date_obj.isoformat(),
+                remote_date_obj.isoformat(),
             )
             continue
 
         selected_channel = channel_name
         selected_data = channel_data
+        selected_remote_date = remote_date_obj
         break
 
-    if not selected_data or not selected_channel:
+    if not selected_data or not selected_channel or not selected_remote_date:
         LOGGER.debug("未检测到比本地更新的版本，更新检查结束")
         return
 
     remote_version = selected_data.get("version") or "未知版本"
-    remote_date = selected_data.get("versionDate")
     LOGGER.info(
         "检测到通道 %s 有新版本: localDate=%s, remoteDate=%s, version=%s",
         selected_channel,
-        localDate,
-        remote_date,
+        local_date_obj.isoformat(),
+        selected_remote_date.isoformat(),
         remote_version,
     )
 
@@ -168,4 +207,4 @@ def _runUpdateCheck(parentWindow, channel: str, localDate: str) -> None:
         if dialog.exec():
             QDesktopServices.openUrl(QUrl(LATEST_RELEASE_URL))
 
-    QTimer.singleShot(0, parentWindow, notifyUser)
+    QTimer.singleShot(0, notifyUser)
