@@ -1,4 +1,4 @@
-# coding:utf-8
+﻿# coding:utf-8
 """
 变量定义文件
 """
@@ -24,6 +24,8 @@ LOG_CONFIG = {
 PROJECT_CONFIG = {
     "name": "清风工具箱",
     "version": "4.0.0-alpha.1",
+    "versionType": "alpha",
+    "versionDate": "2025-10-31T23:22",
     "author": "QingFeng",
     "year": "2025",
     "github_url": "https://github.com/QingFengTechnology/FengAmongUsTool",
