@@ -35,7 +35,7 @@ VersionSources: Tuple[Tuple[str, str], ...] = (
 )
 
 
-def startUpdateCheck(parentWindow) -> None:
+def startUpdateCheck(parentWindow, onNoUpdateCallback=None) -> None:
     """入口：启动后台线程进行版本检查"""
     if not parentWindow:
         logger.debug("跳过更新检查：缺少父窗口引用。")
@@ -49,7 +49,12 @@ def startUpdateCheck(parentWindow) -> None:
     worker = threading.Thread(
         target=_runUpdateCheck,
         name="UpdateCheckWorker",
-        args=(parentWindow, PROJECT_CONFIG.get("versionType", "release"), localDate),
+        args=(
+            parentWindow,
+            PROJECT_CONFIG.get("versionType", "release"),
+            localDate,
+            onNoUpdateCallback,
+        ),
         daemon=True,
     )
     worker.start()
@@ -81,7 +86,7 @@ def _parseVersionDate(value: Any) -> Optional[datetime]:
     return parsed.astimezone(timezone.utc) if parsed.tzinfo else parsed.replace(tzinfo=timezone.utc)
 
 
-def _runUpdateCheck(parentWindow, channel: str, localDate: Any) -> None:
+def _runUpdateCheck(parentWindow, channel: str, localDate: Any, onNoUpdateCallback=None) -> None:
     """后台线程主体：拉取远程版本信息并比较"""
     logger.debug(f"启动版本检查线程，通道={channel}，本地日期={localDate}")
     resultLock = threading.Lock()
@@ -181,6 +186,16 @@ def _runUpdateCheck(parentWindow, channel: str, localDate: Any) -> None:
 
     if not selectedData or not selectedChannel or not selectedRemoteDate:
         logger.debug("未检测到更新版本，更新检查结束。")
+
+        if onNoUpdateCallback:
+
+            def notifyNoUpdate():
+                try:
+                    onNoUpdateCallback()
+                except Exception as exc:
+                    logger.exception("执行未更新回调时出错: %s", exc)
+
+            QTimer.singleShot(0, parentWindow, notifyNoUpdate)
         return
 
     remoteVersion = selectedData.get("version") or "未知版本"
@@ -200,4 +215,4 @@ def _runUpdateCheck(parentWindow, channel: str, localDate: Any) -> None:
         if dialog.exec():
             QDesktopServices.openUrl(QUrl(UPDATE_CHECK_LATEST_RELEASE_URL))
 
-    QTimer.singleShot(0, notifyUser)
+    QTimer.singleShot(0, parentWindow, notifyUser)

@@ -11,6 +11,7 @@ from qfluentwidgets import (
 )
 
 from ..function.variableConfig import PROJECT_CONFIG
+from ..function.updateChecker import startUpdateCheck
 from ..function.funcUtils import SimpleComboBoxSettingCard
 from ..function.configManager import cfg, load_config, save_config, get_theme_from_text, get_zoom_from_text
 
@@ -172,7 +173,11 @@ class SettingInterface(ScrollArea):
 
     def checkForUpdates(self):
         """检查更新"""
-        self.showSuccessMessage("检查更新", "已检查最新版本")
+
+        def _notify_up_to_date():
+            self.showSuccessMessage("检查更新", "已经是最新版本")
+
+        startUpdateCheck(self.window(), onNoUpdateCallback=_notify_up_to_date)
 
     def showSuccessMessage(self, title, content):
         """显示成功消息"""
