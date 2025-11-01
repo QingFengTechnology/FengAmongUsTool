@@ -28,6 +28,11 @@ VERSION_DATE_FORMAT = "%Y-%m-%dT%H:%M"
 # 版本发布日期
 VERSION_RELEASE_DATE = datetime(2025, 10, 31, 23, 22)
 
+# 更新检查配置
+UPDATE_CHECK_FETCH_TIMEOUT = 10
+UPDATE_CHECK_WAIT_TIMEOUT = 30
+UPDATE_CHECK_LATEST_RELEASE_URL = "https://github.com/QingFengTechnology/FengAmongUsTool/releases/latest"
+
 # 项目信息配置
 PROJECT_CONFIG = {
     "name": "清风工具箱",
