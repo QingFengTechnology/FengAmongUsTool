@@ -1,4 +1,4 @@
-# coding:utf-8
+﻿# coding:utf-8
 """
 变量定义文件
 """
@@ -32,7 +32,7 @@ VERSION_RELEASE_DATE = datetime(2025, 10, 31, 23, 22)
 PROJECT_CONFIG = {
     "name": "清风工具箱",
     "version": "4.0.0-alpha.1",
-    "versionType": "release",
+    "versionType": "alpha",
     "versionDateFormat": VERSION_DATE_FORMAT,
     "versionDate": VERSION_RELEASE_DATE.strftime(VERSION_DATE_FORMAT),
     "author": "QingFeng",
