@@ -162,8 +162,13 @@ class HomeInterface(ScrollArea):
             # 导航到指定页面
             self.navigateToInterface.emit(routeKey)
         elif routeKey == "toolsInterface":
-            # 导航到工具箱界面
-            self.navigateToInterface.emit(routeKey)
+            # 提示"敬请期待"
+            InfoBar.info(
+                "提示",
+                "敬请期待",
+                duration=2000,
+                parent=self
+            )
         elif routeKey == "donateInterface":
             # 跳转到赞助页面
             QDesktopServices.openUrl(QUrl("https://docs.qingfengawa.top/Donate.html"))
