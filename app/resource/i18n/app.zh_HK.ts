@@ -119,7 +119,7 @@
     <message>
         <location filename="../../view/setting_interface.py" line="102"/>
         <source>Help us improve FengAmongUsTool by providing feedback</source>
-        <translation>提供反饋以幫助我們改善 FengAmongUsTool</translation>
+        <translation>提供反饋以幫助我們改善清風工具箱</translation>
     </message>
     <message>
         <location filename="../../view/setting_interface.py" line="109"/>
