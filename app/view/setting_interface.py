@@ -13,7 +13,7 @@ from PyQt5.QtWidgets import QWidget, QLabel, QFileDialog
 
 from ..common.config import cfg, isWin11
 from ..common.setting import HELP_URL, FEEDBACK_URL, AUTHOR, VERSION, YEAR
-from ..common.signal_bus import signalBus
+from ..common.signal_bus import getSignalBus
 from ..common.style_sheet import StyleSheet
 
 
@@ -90,25 +90,16 @@ class SettingInterface(ScrollArea):
 
         # application
         self.aboutGroup = SettingCardGroup(self.tr('About'), self.scrollWidget)
-        self.helpCard = HyperlinkCard(
-            HELP_URL,
-            self.tr('Open help page'),
-            FIF.HELP,
-            self.tr('Help'),
-            self.tr(
-                'Discover new features and learn useful tips about Fluent Client'),
-            self.aboutGroup
-        )
         self.feedbackCard = PrimaryPushSettingCard(
             self.tr('Provide feedback'),
             FIF.FEEDBACK,
             self.tr('Provide feedback'),
-            self.tr('Help us improve Fluent Client by providing feedback'),
+            self.tr('Help us improve FengAmongUsTool by providing feedback'),
             self.aboutGroup
         )
         self.aboutCard = PrimaryPushSettingCard(
             self.tr('Check update'),
-            ":/qfluentwidgets/images/logo.png",
+            FIF.INFO,
             self.tr('About'),
             '© ' + self.tr('Copyright') + f" {YEAR}, {AUTHOR}. " +
             self.tr('Version') + " " + VERSION,
@@ -148,7 +139,6 @@ class SettingInterface(ScrollArea):
 
         self.updateSoftwareGroup.addSettingCard(self.updateOnStartUpCard)
 
-        self.aboutGroup.addSettingCard(self.helpCard)
         self.aboutGroup.addSettingCard(self.feedbackCard)
         self.aboutGroup.addSettingCard(self.aboutCard)
 
@@ -174,10 +164,10 @@ class SettingInterface(ScrollArea):
 
         # personalization
         cfg.themeChanged.connect(setTheme)
-        self.micaCard.checkedChanged.connect(signalBus.micaEnableChanged)
+        self.micaCard.checkedChanged.connect(getSignalBus().micaEnableChanged)
 
         # check update
-        self.aboutCard.clicked.connect(signalBus.checkUpdateSig)
+        self.aboutCard.clicked.connect(getSignalBus().checkUpdateSig)
 
         # about
         self.feedbackCard.clicked.connect(

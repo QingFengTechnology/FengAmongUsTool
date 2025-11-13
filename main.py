@@ -2,7 +2,7 @@
 import os
 import sys
 
-from PyQt5.QtCore import Qt, QTranslator
+from PyQt5.QtCore import Qt, QTranslator, QLocale
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QApplication
 from qfluentwidgets import FluentTranslator
@@ -26,7 +26,8 @@ app.setAttribute(Qt.AA_DontCreateNativeWidgetSiblings)
 
 # internationalization
 locale = cfg.get(cfg.language).value
-translator = FluentTranslator(locale)
+translator = QTranslator()
+translator.load(f":/qfluentwidgets/i18n/qfluentwidgets.{locale.name()}.qm")
 galleryTranslator = QTranslator()
 galleryTranslator.load(locale, "app", ".", ":/app/i18n")
 

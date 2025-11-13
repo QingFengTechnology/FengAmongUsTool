@@ -108,8 +108,8 @@
     </message>
     <message>
         <location filename="../../view/setting_interface.py" line="93"/>
-        <source>Discover new features and learn useful tips about Fluent Client</source>
-        <translation>髮現並了解關於 Fluent Client 的新特性和最佳實踐</translation>
+        <source>Discover new features and learn useful tips about FengAmongUsTool</source>
+        <translation>髮現並了解關於清風工具箱的新特性和最佳實踐</translation>
     </message>
     <message>
         <location filename="../../view/setting_interface.py" line="102"/>
@@ -118,8 +118,8 @@
     </message>
     <message>
         <location filename="../../view/setting_interface.py" line="102"/>
-        <source>Help us improve Fluent Client by providing feedback</source>
-        <translation>提供反饋以幫助我們改善 Fluent Client</translation>
+        <source>Help us improve FengAmongUsTool by providing feedback</source>
+        <translation>提供反饋以幫助我們改善 FengAmongUsTool</translation>
     </message>
     <message>
         <location filename="../../view/setting_interface.py" line="109"/>
