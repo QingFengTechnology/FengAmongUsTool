@@ -1,0 +1,18 @@
+cache-dir = ".ruff_cache"
+fix = false
+indent-width = 4
+line-length = 100
+output-format = "github"
+required-version = ">=0.14.5"
+respect-gitignore = true
+target-version = "py313"
+
+[format]
+docstring-code-format = true
+indent-style = "space"
+line-ending = "native"
+quote-style = "double"
+skip-magic-trailing-comma = true
+
+[lint]
+task-tags = ["TODO"]

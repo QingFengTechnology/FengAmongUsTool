@@ -1,0 +1,16 @@
+name: Ruff Check
+
+on:
+  pull_request: 
+    types: [opened, synchronize, ready_for_review]
+jobs:
+  ruff:
+    name: Ruff Check
+    runs-on: ubuntu-24.04
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Run Ruff Check
+        uses: astral-sh/ruff-action@v3
