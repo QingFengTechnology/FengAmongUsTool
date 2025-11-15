@@ -1,1 +1,2 @@
 PyQt-Fluent-Widgets[full]==1.9.1
+ruff>=0.14.5
