@@ -1,5 +1,7 @@
 # coding: utf-8
-from PyQt5.QtCore import QUrl, QSize
+import asyncio
+import sys
+from PyQt5.QtCore import QUrl, QSize, QTimer, QObject, pyqtSignal
 from PyQt5.QtGui import QIcon, QColor
 from PyQt5.QtWidgets import QApplication
 
@@ -13,6 +15,33 @@ from ..common.config import cfg
 from ..common.icon import Icon
 from ..common.signal_bus import getSignalBus
 from ..common import resource
+from ..common.servers_downloader import ServersDownloader
+
+
+class DownloadWorker(QObject):
+    """下载工作线程类"""
+    download_finished = pyqtSignal(object)  # 下载完成信号，传递下载的数据
+    
+    def __init__(self):
+        super().__init__()
+    
+    def download_servers_json(self):
+        """在后台线程中下载servers.json"""
+        try:
+            # 创建下载器实例
+            downloader = ServersDownloader()
+            
+            # 在 Windows 上需要设置事件循环策略
+            import sys
+            if sys.platform.startswith("win"):
+                asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+            
+            # 运行异步下载
+            data = asyncio.run(downloader.download_servers_json())
+            self.download_finished.emit(data)
+        except Exception as e:
+            print(f"下载 servers.json 时出错: {e}")
+            self.download_finished.emit(None)
 
 
 class MainWindow(SplitFluentWindow):
@@ -22,28 +51,92 @@ class MainWindow(SplitFluentWindow):
         self.homeInterface = None
         self.privateServerInterface = None
         self.settingInterface = None
+        self.download_worker = None
+        self.download_thread = None
 
         self.connectSignalToSlot()
+
+        # 在初始化窗口之前下载servers.json
+        self.downloadServersJson()
 
         self.initWindow()
 
         # create sub interface
-        self.homeInterface = HomeInterface(self)
+        # 移除主页
+        # self.homeInterface = HomeInterface(self)
         self.privateServerInterface = PrivateServerInterface(self)
         self.settingInterface = SettingInterface(self)
 
         # add items to navigation interface
         self.initNavigation()
+        
+        # 设置默认页面为私服安装页
+        self.switchTo(self.privateServerInterface)
+    
+    def downloadServersJson(self):
+        """在程序启动时下载servers.json文件"""
+        try:
+            from PyQt5.QtCore import QThread
+            
+            # 创建工作线程和工作对象
+            self.download_thread = QThread()
+            self.download_worker = DownloadWorker()
+            
+            # 将工作对象移动到线程中
+            self.download_worker.moveToThread(self.download_thread)
+            
+            # 连接信号和槽
+            self.download_thread.started.connect(self.download_worker.download_servers_json)
+            self.download_worker.download_finished.connect(self._onDownloadFinished)
+            self.download_worker.download_finished.connect(self.download_thread.quit)
+            self.download_worker.download_finished.connect(self.download_worker.deleteLater)
+            self.download_thread.finished.connect(self.download_thread.deleteLater)
+            
+            # 启动线程
+            self.download_thread.start()
+        except Exception as e:
+            print(f"启动时下载servers.json失败: {e}")
+    
+    def _onDownloadFinished(self, servers_data):
+        """下载完成回调"""
+        try:
+            if servers_data:
+                # 保存到临时缓存文件
+                from ..common.servers_downloader import get_cached_servers_json_path
+                servers_json_path = get_cached_servers_json_path()
+                
+                # 保存文件
+                import json
+                with open(servers_json_path, 'w', encoding='utf-8') as f:
+                    json.dump(servers_data, f, ensure_ascii=False, indent=2)
+                print("成功下载并缓存servers.json")
+                
+                # 发送下载完成信号
+                from ..common.signal_bus import getSignalBus
+                getSignalBus().serversDownloaded.emit()
+            else:
+                print("下载servers.json失败")
+        except Exception as e:
+            print(f"保存servers.json时出错: {e}")
+    
+    def cleanupCache(self):
+        """清理缓存文件夹"""
+        try:
+            from ..common.servers_downloader import get_temp_cache_dir
+            import os
+            import shutil
+            cache_dir = get_temp_cache_dir()
+            if os.path.exists(cache_dir):
+                shutil.rmtree(cache_dir)
+                print("已清理缓存文件夹")
+        except Exception as e:
+            print(f"清理缓存文件夹时出错: {e}")
 
     def connectSignalToSlot(self):
         getSignalBus().micaEnableChanged.connect(self.setMicaEffectEnabled)
 
     def initNavigation(self):
         # self.navigationInterface.setAcrylicEnabled(True)
-
-        # add home widget
-        if self.homeInterface:
-            self.addSubInterface(self.homeInterface, FIF.HOME, self.tr('主页'))
 
         # add private server widget
         if self.privateServerInterface:
@@ -66,7 +159,7 @@ class MainWindow(SplitFluentWindow):
         desktop = QApplication.primaryScreen().availableGeometry()
         w, h = desktop.width(), desktop.height()
         self.move(w//2 - self.width()//2, h//2 - self.height()//2)
-        self.show()
+        # 注意：这里不再调用self.show()，因为启动屏幕会处理显示
 
     def resizeEvent(self, e):
         super().resizeEvent(e)

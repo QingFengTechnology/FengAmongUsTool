@@ -10,6 +10,26 @@
     </message>
 </context>
 <context>
+    <name>PrivateServerCard</name>
+    <message>
+        <location filename="../../view/private_server_interface.py" line="15"/>
+        <source>Servers</source>
+        <translation>服務器選項</translation>
+    </message>
+<context>
+    <name>PrivateServerInterface</name>
+    <message>
+        <location filename="../../view/private_server_interface.py" line="41"/>
+        <source>Private Server Installation</source>
+        <translation>私服安裝</translation>
+    </message>
+    <message>
+        <location filename="../../view/private_server_interface.py" line="47"/>
+        <source>Install</source>
+        <translation>安裝私服</translation>
+    </message>
+</context>
+<context>
     <name>SettingInterface</name>
     <message>
         <location filename="../../view/setting_interface.py" line="37"/>

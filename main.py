@@ -2,14 +2,15 @@
 import os
 import sys
 
-from PyQt5.QtCore import Qt, QTranslator, QLocale
-from PyQt5.QtGui import QFont
+from PyQt5.QtCore import Qt, QTranslator, QLocale, QTimer, QEventLoop, QSize
+from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtWidgets import QApplication
-from qfluentwidgets import FluentTranslator
+from qfluentwidgets import FluentTranslator, SplashScreen
+from qframelesswindow import StandardTitleBar
 
 from app.common.config import cfg
 from app.view.main_window import MainWindow
-
+from app.common.signal_bus import getSignalBus
 
 # enable dpi scale
 if cfg.get(cfg.dpiScale) != "Auto":
@@ -36,6 +37,27 @@ app.installTranslator(galleryTranslator)
 
 # create main window
 w = MainWindow()
+
+# 1. 创建启动页面（无标题和图标，更加简洁）
+splashScreen = SplashScreen(QIcon(':/app/images/logo.png'), w)
+splashScreen.setIconSize(QSize(120, 120))
+
+# 2. 在创建其他子页面前先显示主界面
 w.show()
+
+# 3. 定义隐藏启动页面的函数
+def hideSplashScreen():
+    splashScreen.finish()
+
+# 4. 连接服务器列表下载完成信号到隐藏启动页面函数
+getSignalBus().serversDownloaded.connect(hideSplashScreen)
+
+# 在程序退出时清理缓存
+def cleanup_before_exit():
+    w.cleanupCache()
+    app.quit()
+
+# 连接程序退出信号
+app.aboutToQuit.connect(cleanup_before_exit)
 
 app.exec()

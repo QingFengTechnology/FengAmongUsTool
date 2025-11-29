@@ -3,6 +3,11 @@ PrivateServerInterface, #scrollWidget {
 }
 
 QScrollArea {
+    background-color: transparent;
     border: none;
+}
+
+
+QLabel#settingLabel {
     background-color: transparent;
 }

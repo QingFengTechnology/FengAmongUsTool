@@ -6,3 +6,9 @@ QScrollArea {
     border: none;
     background-color: transparent;
 }
+
+
+QLabel#settingLabel {
+    background-color: transparent;
+    color: white;
+}
