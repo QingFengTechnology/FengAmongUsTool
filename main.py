@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import QApplication
 from qfluentwidgets import FluentTranslator, SplashScreen
 from qframelesswindow import StandardTitleBar
 
-from app.common.config import cfg
+from app.common.config import cfg, loadConfig
 from app.view.main_window import MainWindow
 from app.common.signal_bus import getSignalBus
 
@@ -24,6 +24,9 @@ else:
 # create application
 app = QApplication(sys.argv)
 app.setAttribute(Qt.AA_DontCreateNativeWidgetSiblings)
+
+# 加载配置（必须在 QApplication 创建后）
+loadConfig()
 
 # internationalization
 locale = cfg.get(cfg.language).value

@@ -50,4 +50,8 @@ class Config(QConfig):
 
 cfg = Config()
 cfg.themeMode.value = Theme.AUTO
-qconfig.load(str(CONFIG_FILE.absolute()), cfg)
+
+
+def loadConfig():
+    """加载配置文件，需要在 QApplication 创建后调用"""
+    qconfig.load(str(CONFIG_FILE.absolute()), cfg)

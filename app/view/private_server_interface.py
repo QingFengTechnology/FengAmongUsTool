@@ -11,41 +11,46 @@ from ..common.style_sheet import StyleSheet
 
 class PrivateServerCard(HeaderCardWidget):
     """ Private server card with checkboxes """
-    
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setTitle(self.tr('Servers'))
-        
+
         # 存储服务器选项的字典
         self.server_options = {}
-        
+
+        # 存储从 GitHub 获取的服务器数据
+        self.servers_data = None
+
         # 创建垂直布局
         self.vBoxLayout = QVBoxLayout()
-        
-        # 加载服务器选项
-        self.loadServerOptions()
-        
+
         # 使用HeaderCardWidget的viewLayout添加内容
         self.viewLayout.addLayout(self.vBoxLayout)
-    
-    def loadServerOptions(self):
-        """ 加载servers.json中的服务器选项 """
+
+    def setServersData(self, data):
+        """ 设置服务器数据并更新 UI """
         try:
-            # 获取项目根目录下的servers.json文件路径
-            servers_json_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'servers.json')
-            
-            # 读取servers.json文件
-            with open(servers_json_path, 'r', encoding='utf-8') as f:
-                servers_data = json.load(f)
-            
+            self.servers_data = data
+
+            if self.servers_data is None:
+                print("服务器数据为空")
+                return
+
+            # 清除现有的复选框
+            for checkbox in self.server_options.values():
+                self.vBoxLayout.removeWidget(checkbox)
+                checkbox.deleteLater()
+            self.server_options.clear()
+
             # 为每个服务器创建复选框
-            for server_name in servers_data:
+            for server_name in self.servers_data:
                 checkbox = CheckBox(server_name, self)
                 self.server_options[server_name] = checkbox
                 self.vBoxLayout.addWidget(checkbox)
-                
+
         except Exception as e:
-            print(f"加载服务器选项时出错: {e}")
+            print(f"设置服务器数据时出错: {e}")
 
 
 class PrivateServerInterface(ScrollArea):
@@ -121,12 +126,20 @@ class PrivateServerInterface(ScrollArea):
         """ 安装选中的私服 """
         try:
             print(f"[DEBUG] 开始安装私服，选中的服务器: {selected_servers}")
-            # 读取servers.json文件
-            servers_json_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'servers.json')
-            print(f"[DEBUG] servers.json 路径: {servers_json_path}")
-            with open(servers_json_path, 'r', encoding='utf-8') as f:
-                servers_data = json.load(f)
-            print(f"[DEBUG] 成功加载 servers.json，包含服务器组: {list(servers_data.keys())}")
+            # 使用已缓存的服务器数据
+            servers_data = self.headerCard.servers_data
+            if servers_data is None:
+                InfoBar.error(
+                    title=self.tr('安装失败'),
+                    content=self.tr('服务器数据未加载，请检查网络连接'),
+                    orient=Qt.Horizontal,
+                    isClosable=True,
+                    position=InfoBarPosition.TOP_RIGHT,
+                    duration=3000,
+                    parent=self
+                )
+                return
+            print(f"[DEBUG] 成功获取服务器数据，包含服务器组: {list(servers_data.keys())}")
             
             # 获取Among Us的regionInfo.json文件路径
             import platform

@@ -101,23 +101,18 @@ class MainWindow(SplitFluentWindow):
         """下载完成回调"""
         try:
             if servers_data:
-                # 保存到临时缓存文件
-                from ..common.servers_downloader import get_cached_servers_json_path
-                servers_json_path = get_cached_servers_json_path()
-                
-                # 保存文件
-                import json
-                with open(servers_json_path, 'w', encoding='utf-8') as f:
-                    json.dump(servers_data, f, ensure_ascii=False, indent=2)
-                print("成功下载并缓存servers.json")
-                
-                # 发送下载完成信号
-                from ..common.signal_bus import getSignalBus
-                getSignalBus().serversDownloaded.emit()
+                print("成功下载servers.json")
+
+                # 将数据传递给 PrivateServerCard 并更新 UI
+                if self.privateServerInterface and self.privateServerInterface.headerCard:
+                    self.privateServerInterface.headerCard.setServersData(servers_data)
             else:
                 print("下载servers.json失败")
         except Exception as e:
-            print(f"保存servers.json时出错: {e}")
+            print(f"处理servers.json时出错: {e}")
+        finally:
+            # 无论成功与否，都发送下载完成信号以隐藏 SplashScreen
+            getSignalBus().serversDownloaded.emit()
     
     def cleanupCache(self):
         """清理缓存文件夹"""
