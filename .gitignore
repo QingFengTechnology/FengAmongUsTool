@@ -4,3 +4,4 @@ dist/
 build/
 config/
 **.log
+AppData/
