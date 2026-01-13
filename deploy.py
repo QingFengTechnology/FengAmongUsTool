@@ -42,7 +42,7 @@ for src in copied_libs:
             copy(src, dist)
         else:
             copytree(src, dist)
-    except:
+    except Exception:
         pass
 
 
@@ -59,5 +59,5 @@ for file in copied_files:
             copy(src, dist)
         else:
             copytree(src, dist)
-    except:
+    except Exception:
         pass

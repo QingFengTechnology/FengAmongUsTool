@@ -2,11 +2,10 @@
 import os
 import sys
 
-from PyQt5.QtCore import Qt, QTranslator, QLocale, QTimer, QEventLoop, QSize
-from PyQt5.QtGui import QFont, QIcon
+from PyQt5.QtCore import Qt, QTranslator, QSize
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication
-from qfluentwidgets import FluentTranslator, SplashScreen
-from qframelesswindow import StandardTitleBar
+from qfluentwidgets import SplashScreen
 
 from app.common.config import cfg, loadConfig
 from app.view.main_window import MainWindow
@@ -45,15 +44,16 @@ w = MainWindow()
 splashScreen = SplashScreen(QIcon(':/app/images/logo.png'), w)
 splashScreen.setIconSize(QSize(120, 120))
 
-# 2. 在创建其他子页面前先显示主界面
-w.show()
+# 2. 定义显示启动页面的函数
+splashScreen.show()
 
-# 3. 定义隐藏启动页面的函数
-def hideSplashScreen():
+# 3. 定义完成初始化并显示主窗口的函数
+def finishInitialization():
     splashScreen.finish()
+    w.show()
 
-# 4. 连接服务器列表下载完成信号到隐藏启动页面函数
-getSignalBus().serversDownloaded.connect(hideSplashScreen)
+# 4. 连接服务器列表下载完成信号到完成初始化函数
+getSignalBus().serversDownloaded.connect(finishInitialization)
 
 # 在程序退出时清理缓存
 def cleanup_before_exit():

@@ -4,7 +4,7 @@ from enum import Enum
 
 from PyQt5.QtCore import QLocale
 from qfluentwidgets import (qconfig, QConfig, ConfigItem, OptionsConfigItem, BoolValidator,
-                            OptionsValidator, Theme, FolderValidator, ConfigSerializer)
+                            OptionsValidator, Theme, ConfigSerializer)
 
 from .setting import CONFIG_FILE
 

@@ -1,18 +1,17 @@
 # coding:utf-8
-from qfluentwidgets import (SwitchSettingCard, FolderListSettingCard,
-                            OptionsSettingCard, PushSettingCard,
-                            HyperlinkCard, PrimaryPushSettingCard, ScrollArea,
-                            ComboBoxSettingCard, ExpandLayout, Theme, CustomColorSettingCard,
-                            setTheme, setThemeColor, isDarkTheme, setFont)
+from qfluentwidgets import (SwitchSettingCard,
+                            PrimaryPushSettingCard, ScrollArea,
+                            ComboBoxSettingCard, ExpandLayout,
+                            setTheme, setFont)
 from qfluentwidgets import FluentIcon as FIF
 from qfluentwidgets import SettingCardGroup as CardGroup
 from qfluentwidgets import InfoBar
-from PyQt5.QtCore import Qt, pyqtSignal, QUrl, QStandardPaths
+from PyQt5.QtCore import Qt, QUrl
 from PyQt5.QtGui import QDesktopServices, QFont
-from PyQt5.QtWidgets import QWidget, QLabel, QFileDialog
+from PyQt5.QtWidgets import QWidget, QLabel
 
 from ..common.config import cfg, isWin11
-from ..common.setting import HELP_URL, FEEDBACK_URL, AUTHOR, VERSION, YEAR
+from ..common.setting import FEEDBACK_URL, AUTHOR, VERSION, YEAR
 from ..common.signal_bus import getSignalBus
 from ..common.style_sheet import StyleSheet
 
