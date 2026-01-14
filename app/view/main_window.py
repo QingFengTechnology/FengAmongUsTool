@@ -1,5 +1,6 @@
 # coding: utf-8
 import asyncio
+import logging
 import sys
 
 from PyQt5.QtCore import QObject, pyqtSignal
@@ -17,6 +18,8 @@ from ..common.servers_downloader import ServersDownloader
 
 # 导入资源模块以确保资源文件被加载
 from ..common import resource as _resource  # noqa: F401
+
+logger = logging.getLogger(__name__)
 
 
 class DownloadWorker(QObject):
@@ -40,7 +43,7 @@ class DownloadWorker(QObject):
             data = asyncio.run(downloader.download_servers_json())
             self.download_finished.emit(data)
         except Exception as e:
-            print(f"下载 servers.json 时出错: {e}")
+            logger.error(f"下载 servers.json 时出错: {e}")
             self.download_finished.emit(None)
 
 
@@ -53,15 +56,52 @@ class MainWindow(SplitFluentWindow):
         self.settingInterface = None
         self.download_worker = None
         self.download_thread = None
+        self.splashScreen = None
+        self._servers_data = None
 
+        # 基础设置
+        self.initWindowBasic()
+
+        # 先显示主窗口（此时内容为空）
+        self.show()
+
+        # 连接信号
         self.connectSignalToSlot()
 
-        # 在初始化窗口之前下载servers.json
+        # 创建并显示 SplashScreen（覆盖在主窗口上）
+        self.createSplashScreen()
+
+        # 开始下载（在 SplashScreen 显示时执行）
         self.downloadServersJson()
 
-        self.initWindow()
+    def initWindowBasic(self):
+        """基础窗口初始化（窗口大小、位置等，但不创建子界面）"""
+        self.resize(960, 780)
+        self.setMinimumWidth(760)
+        self.setWindowIcon(QIcon(':/app/images/logo.png'))
+        self.setWindowTitle('清风工具箱')
 
-        # create sub interface
+        self.setCustomBackgroundColor(QColor(240, 244, 249), QColor(32, 32, 32))
+        self.setMicaEffectEnabled(cfg.get(cfg.micaEnabled))
+
+        desktop = QApplication.primaryScreen().availableGeometry()
+        w, h = desktop.width(), desktop.height()
+        self.move(w//2 - self.width()//2, h//2 - self.height()//2)
+        # 注意：这里不调用 self.show()，因为等待下载完成后再显示
+
+    def createSplashScreen(self):
+        """创建并显示启动画面"""
+        from qfluentwidgets import SplashScreen
+        from PyQt5.QtGui import QIcon
+        from PyQt5.QtCore import QSize
+
+        self.splashScreen = SplashScreen(QIcon(':/app/images/logo.png'), self)
+        self.splashScreen.setIconSize(QSize(120, 120))
+        self.splashScreen.resize(self.size())
+        self.splashScreen.show()
+
+    def createInterfaces(self):
+        """创建所有子界面"""
         # 移除主页
         # self.homeInterface = HomeInterface(self)
         self.privateServerInterface = PrivateServerInterface(self)
@@ -73,8 +113,15 @@ class MainWindow(SplitFluentWindow):
         # 设置默认页面为私服安装页
         self.switchTo(self.privateServerInterface)
 
+    def finishSplashAndShow(self):
+        """关闭 SplashScreen 并显示主窗口"""
+        if self.splashScreen:
+            self.splashScreen.finish()
+            self.splashScreen = None
+        self.show()
+
     def downloadServersJson(self):
-        """在程序启动时下载servers.json文件"""
+        """在程序启动时下载servers.json文件（在 SplashScreen 显示时执行）"""
         try:
             from PyQt5.QtCore import QThread
 
@@ -95,24 +142,41 @@ class MainWindow(SplitFluentWindow):
             # 启动线程
             self.download_thread.start()
         except Exception as e:
-            print(f"启动时下载servers.json失败: {e}")
+            logger.error(f"启动时下载servers.json失败: {e}")
+            # 下载失败也要继续初始化界面
+            self._downloadComplete(None)
 
     def _onDownloadFinished(self, servers_data):
         """下载完成回调"""
         try:
             if servers_data:
-                print("成功下载servers.json")
-
-                # 将数据传递给 PrivateServerCard 并更新 UI
-                if self.privateServerInterface and self.privateServerInterface.headerCard:
-                    self.privateServerInterface.headerCard.setServersData(servers_data)
+                logger.info("成功下载servers.json")
+                self._servers_data = servers_data
             else:
-                print("下载servers.json失败")
+                logger.warning("下载servers.json失败")
+                self._servers_data = None
         except Exception as e:
-            print(f"处理servers.json时出错: {e}")
-        finally:
-            # 无论成功与否，都发送下载完成信号以隐藏 SplashScreen
-            getSignalBus().serversDownloaded.emit()
+            logger.error(f"处理servers.json时出错: {e}")
+            self._servers_data = None
+
+        self._downloadComplete(self._servers_data)
+
+    def _downloadComplete(self, servers_data):
+        """下载完成后的处理，创建界面并显示主窗口"""
+        try:
+            # 创建界面
+            self.createInterfaces()
+
+            # 将数据传递给 PrivateServerCard 并更新 UI
+            if servers_data and self.privateServerInterface and self.privateServerInterface.headerCard:
+                self.privateServerInterface.headerCard.setServersData(servers_data)
+
+            # 关闭 SplashScreen 并显示主窗口
+            self.finishSplashAndShow()
+        except Exception as e:
+            logger.error(f"下载完成后处理出错: {e}")
+            # 出错也要关闭 SplashScreen 并显示主窗口
+            self.finishSplashAndShow()
 
     def cleanupCache(self):
         """清理缓存文件夹"""
@@ -123,9 +187,9 @@ class MainWindow(SplitFluentWindow):
             cache_dir = get_temp_cache_dir()
             if os.path.exists(cache_dir):
                 shutil.rmtree(cache_dir)
-                print("已清理缓存文件夹")
+                logger.info("已清理缓存文件夹")
         except Exception as e:
-            print(f"清理缓存文件夹时出错: {e}")
+            logger.error(f"清理缓存文件夹时出错: {e}")
 
     def connectSignalToSlot(self):
         getSignalBus().micaEnableChanged.connect(self.setMicaEffectEnabled)
@@ -141,22 +205,3 @@ class MainWindow(SplitFluentWindow):
         if self.settingInterface:
             self.addSubInterface(
                 self.settingInterface, FIF.SETTING, self.tr('Settings'), NavigationItemPosition.BOTTOM)
-
-    def initWindow(self):
-        self.resize(960, 780)
-        self.setMinimumWidth(760)
-        self.setWindowIcon(QIcon(':/app/images/logo.png'))
-        self.setWindowTitle('清风工具箱')
-
-        self.setCustomBackgroundColor(QColor(240, 244, 249), QColor(32, 32, 32))
-        self.setMicaEffectEnabled(cfg.get(cfg.micaEnabled))
-
-        desktop = QApplication.primaryScreen().availableGeometry()
-        w, h = desktop.width(), desktop.height()
-        self.move(w//2 - self.width()//2, h//2 - self.height()//2)
-        # 注意：这里不再调用self.show()，因为启动屏幕会处理显示
-
-    def resizeEvent(self, e):
-        super().resizeEvent(e)
-        if hasattr(self, 'splashScreen'):
-            self.splashScreen.resize(self.size())

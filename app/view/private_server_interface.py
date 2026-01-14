@@ -1,5 +1,6 @@
 # coding: utf-8
 import json
+import logging
 import os
 import stat
 from PyQt5.QtCore import Qt
@@ -7,6 +8,8 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QLabel, QVBoxLayout, QWidget
 from qfluentwidgets import ScrollArea, HeaderCardWidget, CheckBox, setFont, PrimaryPushButton, InfoBar, InfoBarPosition
 from ..common.style_sheet import StyleSheet
+
+logger = logging.getLogger(__name__)
 
 
 class PrivateServerCard(HeaderCardWidget):
@@ -36,7 +39,7 @@ class PrivateServerCard(HeaderCardWidget):
             self.servers_data = data
 
             if self.servers_data is None:
-                print("失败：服务器数据为空")
+                logger.error("失败：服务器数据为空")
                 return
 
             # 为每个服务器创建复选框
@@ -45,10 +48,10 @@ class PrivateServerCard(HeaderCardWidget):
                 self.server_options[server_name] = checkbox
                 self.vBoxLayout.addWidget(checkbox)
 
-            print(f"成功加载服务器选项，共 {len(self.servers_data)} 个服务器组")
+            logger.info(f"成功加载服务器选项，共 {len(self.servers_data)} 个服务器组")
 
         except Exception as e:
-            print(f"设置服务器数据时出错: {e}")
+            logger.error(f"设置服务器数据时出错: {e}")
 
 
 class PrivateServerInterface(ScrollArea):
@@ -123,7 +126,7 @@ class PrivateServerInterface(ScrollArea):
     def installPrivateServers(self, selected_servers):
         """ 安装选中的私服 """
         try:
-            print(f"[DEBUG] 开始安装私服，选中的服务器: {selected_servers}")
+            logger.debug(f"开始安装私服，选中的服务器: {selected_servers}")
             # 使用已缓存的服务器数据
             servers_data = self.headerCard.servers_data
             if servers_data is None:
@@ -137,7 +140,6 @@ class PrivateServerInterface(ScrollArea):
                     parent=self
                 )
                 return
-            print(f"[DEBUG] 成功获取服务器数据，包含服务器组: {list(servers_data.keys())}")
 
             # 获取Among Us的regionInfo.json文件路径
             import platform
@@ -147,14 +149,12 @@ class PrivateServerInterface(ScrollArea):
             else:
                 # 其他系统可能需要不同的路径处理
                 region_info_path = os.path.expanduser('~/.steam/steam/steamapps/common/Among Us/regionInfo.json')
-            print(f"[DEBUG] regionInfo.json 路径: {region_info_path}")
 
             # 解锁regionInfo.json文件的只读属性（如果文件存在）
             file_existed = os.path.exists(region_info_path)
             if file_existed:
                 # 解锁文件（无论是否原来是只读的）
                 os.chmod(region_info_path, stat.S_IWRITE)
-            print(f"[DEBUG] regionInfo.json 文件是否存在: {file_existed}")
 
             # 检查regionInfo.json文件是否存在，如果不存在则创建一个默认结构
             if os.path.exists(region_info_path):
@@ -165,10 +165,8 @@ class PrivateServerInterface(ScrollArea):
                     try:
                         with open(region_info_path, 'r', encoding=encoding) as f:
                             region_info_data = json.load(f)
-                            print(f"[DEBUG] 成功使用 {encoding} 编码读取 regionInfo.json 数据")
                             break
-                    except (UnicodeDecodeError, json.JSONDecodeError) as e:
-                        print(f"[DEBUG] 使用 {encoding} 编码读取失败: {e}")
+                    except (UnicodeDecodeError, json.JSONDecodeError):
                         continue
 
                 # 如果所有编码都失败，使用默认结构
@@ -177,13 +175,13 @@ class PrivateServerInterface(ScrollArea):
                         "CurrentRegionIdx": 0,
                         "Regions": []
                     }
-                    print("[DEBUG] 所有编码方式都失败，使用默认结构")
+                    logger.debug("所有编码方式都失败，使用默认结构")
             else:
                 region_info_data = {
                     "CurrentRegionIdx": 0,
                     "Regions": []
                 }
-                print("[DEBUG] regionInfo.json 文件不存在，创建默认结构")
+                logger.debug("regionInfo.json 文件不存在，创建默认结构")
 
             # 确保region_info_data是一个字典且包含必要的字段
             if not isinstance(region_info_data, dict):
@@ -191,19 +189,18 @@ class PrivateServerInterface(ScrollArea):
                     "CurrentRegionIdx": 0,
                     "Regions": []
                 }
-                print("[DEBUG] regionInfo 数据格式不正确，重置为默认结构")
+                logger.debug("regionInfo 数据格式不正确，重置为默认结构")
 
             if "Regions" not in region_info_data:
                 region_info_data["Regions"] = []
-                print("[DEBUG] regionInfo 中缺少 Regions 字段，已添加")
+                logger.debug("regionInfo 中缺少 Regions 字段，已添加")
 
             if "CurrentRegionIdx" not in region_info_data:
                 region_info_data["CurrentRegionIdx"] = 0
-                print("[DEBUG] regionInfo 中缺少 CurrentRegionIdx 字段，已添加")
+                logger.debug("regionInfo 中缺少 CurrentRegionIdx 字段，已添加")
 
             # 获取现有的服务器列表
             existing_regions = region_info_data["Regions"]
-            print(f"[DEBUG] 当前已存在的服务器列表: {existing_regions}")
 
             # 统计安装数量和重复数量
             installed_count = 0
@@ -212,19 +209,26 @@ class PrivateServerInterface(ScrollArea):
             # 为每个选中的服务器生成region条目
             for server_group_name in selected_servers:
                 if server_group_name in servers_data:
-                    print(f"[DEBUG] 处理服务器组: {server_group_name}")
+                    logger.debug(f"处理服务器组: {server_group_name}")
                     # 遍历该服务器组中的所有服务器
                     for server_info in servers_data[server_group_name]:
-                        print(f"[DEBUG] 处理服务器信息: {server_info}")
+                        # 处理 IP，删除 http:// 或 https:// 前缀
+                        original_ip = server_info['Ip']
+                        ping_server = original_ip
+                        if ping_server.startswith('https://'):
+                            ping_server = ping_server[8:]
+                        elif ping_server.startswith('http://'):
+                            ping_server = ping_server[7:]
+
                         # 创建region条目
                         region_entry = {
                             "$type": "StaticHttpRegionInfo, Assembly-CSharp",
                             "Name": server_info['Name'],
-                            "PingServer": server_info['Ip'],
+                            "PingServer": ping_server,
                             "Servers": [
                                 {
                                     "Name": "Http-1",
-                                    "Ip": server_info['Ip'],
+                                    "Ip": original_ip,
                                     "Port": server_info['Port'],
                                     "UseDtls": False,
                                     "Players": 0,
@@ -234,25 +238,27 @@ class PrivateServerInterface(ScrollArea):
                             "TargetServer": None,
                             "TranslateName": 1003
                         }
-                        print(f"[DEBUG] 创建的region条目: {region_entry}")
 
-                        # 检查是否已存在相同的服务器
+                        # 检查是否已存在相同的服务器（通过 Servers[0].Ip 检测）
                         is_duplicate = False
                         for existing_entry in existing_regions:
-                            if (existing_entry.get('Name') == region_entry['Name'] and
-                                existing_entry.get('PingServer') == region_entry['PingServer']):
-                                is_duplicate = True
-                                duplicate_count += 1
-                                print(f"[DEBUG] 发现重复服务器: {region_entry['Name']}")
-                                break
+                            # 连接服务器使用的是 Servers[0].Ip
+                            servers = existing_entry.get('Servers', [])
+                            if servers and len(servers) > 0:
+                                existing_ip = servers[0].get('Ip')
+                                if existing_ip == server_info['Ip']:
+                                    is_duplicate = True
+                                    duplicate_count += 1
+                                    logger.debug(f"发现重复服务器: {region_entry['Name']}")
+                                    break
 
                         # 如果不是重复的服务器，则添加到regionInfo中
                         if not is_duplicate:
                             existing_regions.append(region_entry)
                             installed_count += 1
-                            print(f"[DEBUG] 添加新服务器: {region_entry['Name']}")
+                            logger.debug(f"添加新服务器: {region_entry['Name']}")
                         else:
-                            print(f"[DEBUG] 跳过重复服务器: {region_entry['Name']}")
+                            logger.debug(f"跳过重复服务器: {region_entry['Name']}")
 
             # 检查是否所有服务器都是重复的
             if installed_count == 0 and duplicate_count > 0:
@@ -269,32 +275,27 @@ class PrivateServerInterface(ScrollArea):
                 # 重新设置文件为只读（无论文件原来是否是只读的）
                 if os.path.exists(region_info_path):
                     os.chmod(region_info_path, stat.S_IREAD)
-                print("[DEBUG] 所有服务器均重复，安装终止")
+                logger.debug("所有服务器均重复，安装终止")
                 return
 
-            print(f"[DEBUG] 准备保存文件，新增服务器数: {installed_count}, 重复服务器数: {duplicate_count}")
+            logger.debug(f"准备保存文件，新增服务器数: {installed_count}, 重复服务器数: {duplicate_count}")
 
             # 更新regionInfo数据
             region_info_data["Regions"] = existing_regions
-            print(f"[DEBUG] 更新后的regionInfo数据: {region_info_data}")
 
             # 保存更新后的regionInfo.json文件
             # 确保目录存在
             os.makedirs(os.path.dirname(region_info_path), exist_ok=True)
-            print(f"[DEBUG] 确保目录存在: {os.path.dirname(region_info_path)}")
 
             # 使用UTF-8编码写入文件，确保中文字符正确保存
             with open(region_info_path, 'w', encoding='utf-8') as f:
                 json.dump(region_info_data, f, ensure_ascii=False, indent=2)
-                print("[DEBUG] 成功写入regionInfo.json文件")
 
             # 重新设置文件为只读（无论文件原来是否是只读的）
             if os.path.exists(region_info_path):
                 os.chmod(region_info_path, stat.S_IREAD)
-                print("[DEBUG] 设置regionInfo.json为只读")
 
-            # 显示成功消息，使用Pangu格式（在中文与英文、数字之间加上空格）
-            print(f"[DEBUG] 准备显示成功消息，安装数: {installed_count}, 重复数: {duplicate_count}")
+            # 显示成功消息
             InfoBar.success(
                 title=self.tr('私服安装成功'),
                 content=self.tr(f'共安装了 {installed_count} 个服务器，{duplicate_count} 个服务器重复'),
@@ -304,7 +305,6 @@ class PrivateServerInterface(ScrollArea):
                 duration=3000,
                 parent=self
             )
-            print("[DEBUG] 成功消息已显示")
 
         except Exception as e:
             # 显示错误消息

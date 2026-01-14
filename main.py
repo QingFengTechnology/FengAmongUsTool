@@ -1,15 +1,20 @@
 # coding:utf-8
+import logging
 import os
 import sys
 
-from PyQt5.QtCore import Qt, QTranslator, QSize
-from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import Qt, QTranslator
 from PyQt5.QtWidgets import QApplication
-from qfluentwidgets import SplashScreen
 
 from app.common.config import cfg, loadConfig
 from app.view.main_window import MainWindow
-from app.common.signal_bus import getSignalBus
+
+# 配置日志
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
 
 # enable dpi scale
 if cfg.get(cfg.dpiScale) != "Auto":
@@ -37,23 +42,8 @@ galleryTranslator.load(locale, "app", ".", ":/app/i18n")
 app.installTranslator(translator)
 app.installTranslator(galleryTranslator)
 
-# create main window
+# 创建主窗口（但不显示，等待下载完成后再显示）
 w = MainWindow()
-
-# 1. 创建启动页面（无标题和图标，更加简洁）
-splashScreen = SplashScreen(QIcon(':/app/images/logo.png'), w)
-splashScreen.setIconSize(QSize(120, 120))
-
-# 2. 定义显示启动页面的函数
-splashScreen.show()
-
-# 3. 定义完成初始化并显示主窗口的函数
-def finishInitialization():
-    splashScreen.finish()
-    w.show()
-
-# 4. 连接服务器列表下载完成信号到完成初始化函数
-getSignalBus().serversDownloaded.connect(finishInitialization)
 
 # 在程序退出时清理缓存
 def cleanup_before_exit():
