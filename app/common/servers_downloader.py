@@ -20,8 +20,8 @@ class ServersDownloader:
 
     # 默认的下载源
     DEFAULT_SOURCES = [
-        "https://github.com/YvonneOfficial/FengAmongUsTool-Asset/raw/main/servers.json",
-        "https://gh-proxy.org/https://github.com/YvonneOfficial/FengAmongUsTool-Asset/raw/main/servers.json"
+        "https://github.com/QingFengTechnology/FengAmongUsTool-Asset/raw/main/servers.json",
+        "https://gh-proxy.org/https://github.com/QingFengTechnology/FengAmongUsTool-Asset/raw/main/servers.json"
     ]
 
     # ping 超时时间（秒）
