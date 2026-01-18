@@ -3,8 +3,8 @@ import logging
 import os
 import sys
 
-from PyQt5.QtCore import Qt, QTranslator
-from PyQt5.QtWidgets import QApplication
+from PyQt6.QtCore import Qt, QTranslator
+from PyQt6.QtWidgets import QApplication
 
 from app.common.config import cfg, loadConfig
 from app.view.main_window import MainWindow

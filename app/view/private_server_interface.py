@@ -3,9 +3,9 @@ import json
 import logging
 import os
 import stat
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QLabel, QVBoxLayout, QWidget
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QFont
+from PyQt6.QtWidgets import QLabel, QVBoxLayout, QWidget
 from qfluentwidgets import ScrollArea, HeaderCardWidget, CheckBox, setFont, PrimaryPushButton, InfoBar, InfoBarPosition
 from ..common.style_sheet import StyleSheet
 

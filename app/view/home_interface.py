@@ -1,6 +1,6 @@
 # coding: utf-8
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget, QVBoxLayout
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QWidget, QVBoxLayout
 from qfluentwidgets import ScrollArea
 from ..common.style_sheet import StyleSheet
 

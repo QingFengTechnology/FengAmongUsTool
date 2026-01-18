@@ -6,9 +6,9 @@ from qfluentwidgets import (SwitchSettingCard,
 from qfluentwidgets import FluentIcon as FIF
 from qfluentwidgets import SettingCardGroup as CardGroup
 from qfluentwidgets import InfoBar
-from PyQt5.QtCore import Qt, QUrl
-from PyQt5.QtGui import QDesktopServices, QFont
-from PyQt5.QtWidgets import QWidget, QLabel
+from PyQt6.QtCore import Qt, QUrl
+from PyQt6.QtGui import QDesktopServices, QFont
+from PyQt6.QtWidgets import QWidget, QLabel
 
 from ..common.config import cfg, isWin11
 from ..common.setting import FEEDBACK_URL, AUTHOR, VERSION, YEAR
