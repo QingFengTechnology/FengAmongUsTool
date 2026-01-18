@@ -1,14 +1,15 @@
 cache-dir = ".ruff_cache"
 fix = false
 indent-width = 4
-line-length = 100
+line-length = 79
 output-format = "github"
-required-version = ">=0.14.5"
+required-version = ">=0.14.13"
 respect-gitignore = true
 target-version = "py313"
 
 [format]
 docstring-code-format = true
+docstring-code-line-length = 72
 indent-style = "space"
 line-ending = "native"
 quote-style = "double"
