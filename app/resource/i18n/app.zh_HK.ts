@@ -10,6 +10,26 @@
     </message>
 </context>
 <context>
+    <name>PrivateServerCard</name>
+    <message>
+        <location filename="../../view/private_server_interface.py" line="15"/>
+        <source>Servers</source>
+        <translation>服務器選項</translation>
+    </message>
+<context>
+    <name>PrivateServerInterface</name>
+    <message>
+        <location filename="../../view/private_server_interface.py" line="41"/>
+        <source>Private Server Installation</source>
+        <translation>私服安裝</translation>
+    </message>
+    <message>
+        <location filename="../../view/private_server_interface.py" line="47"/>
+        <source>Install</source>
+        <translation>安裝私服</translation>
+    </message>
+</context>
+<context>
     <name>SettingInterface</name>
     <message>
         <location filename="../../view/setting_interface.py" line="37"/>
@@ -108,8 +128,8 @@
     </message>
     <message>
         <location filename="../../view/setting_interface.py" line="93"/>
-        <source>Discover new features and learn useful tips about Fluent Client</source>
-        <translation>髮現並了解關於 Fluent Client 的新特性和最佳實踐</translation>
+        <source>Discover new features and learn useful tips about FengAmongUsTool</source>
+        <translation>髮現並了解關於清風工具箱的新特性和最佳實踐</translation>
     </message>
     <message>
         <location filename="../../view/setting_interface.py" line="102"/>
@@ -118,8 +138,8 @@
     </message>
     <message>
         <location filename="../../view/setting_interface.py" line="102"/>
-        <source>Help us improve Fluent Client by providing feedback</source>
-        <translation>提供反饋以幫助我們改善 Fluent Client</translation>
+        <source>Help us improve FengAmongUsTool by providing feedback</source>
+        <translation>提供反饋以幫助我們改善清風工具箱</translation>
     </message>
     <message>
         <location filename="../../view/setting_interface.py" line="109"/>

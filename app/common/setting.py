@@ -5,13 +5,13 @@ from pathlib import Path
 DEBUG = "__compiled__" not in globals()
 
 
-YEAR = 2023
-AUTHOR = "zhiyiYo"
-VERSION = "v0.0.1"
-APP_NAME = "Your App Name"
+YEAR = 2025
+AUTHOR = "QingFeng"
+VERSION = "v4.0.0-alpha.2"
+APP_NAME = "FengAmongUsTool"
 HELP_URL = "https://qfluentwidgets.com"
-REPO_URL = "https://github.com/zhiyiYo/PyQt-Fluent-Widgets"
-FEEDBACK_URL = "https://github.com/zhiyiYo/PyQt-Fluent-Widgets/issues"
+REPO_URL = "https://github.com/QingFengTechnology/FengAmongUsTool"
+FEEDBACK_URL = "https://github.com/QingFengTechnology/FengAmongUsTool/issues"
 DOC_URL = "https://qfluentwidgets.com/"
 
 CONFIG_FOLDER = Path('AppData').absolute()

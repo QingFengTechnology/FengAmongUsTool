@@ -1,7 +1,11 @@
+import logging
 import os
 from pathlib import Path
 from shutil import copy, copytree
 from distutils.sysconfig import get_python_lib
+
+logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
+logger = logging.getLogger(__name__)
 
 # https://blog.csdn.net/qq_25262697/article/details/129302819
 # https://www.cnblogs.com/happylee666/articles/16158458.html
@@ -35,14 +39,14 @@ for src in copied_libs:
     src = site_packages / src
     dist = dist_folder / src.name
 
-    print(f"Coping site-packages `{src}` to `{dist}`")
+    logger.info(f"Coping site-packages `{src}` to `{dist}`")
 
     try:
         if src.is_file():
             copy(src, dist)
         else:
             copytree(src, dist)
-    except:
+    except Exception:
         pass
 
 
@@ -52,12 +56,12 @@ for file in copied_files:
     src = site_packages.parent / file
     dist = dist_folder / src.name
 
-    print(f"Coping stand library `{src}` to `{dist}`")
+    logger.info(f"Coping stand library `{src}` to `{dist}`")
 
     try:
         if src.is_file():
             copy(src, dist)
         else:
             copytree(src, dist)
-    except:
+    except Exception:
         pass

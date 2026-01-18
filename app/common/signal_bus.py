@@ -7,6 +7,14 @@ class SignalBus(QObject):
 
     checkUpdateSig = pyqtSignal()
     micaEnableChanged = pyqtSignal(bool)
+    serversDownloaded = pyqtSignal()  # 新增：服务器列表下载完成信号
 
 
-signalBus = SignalBus()
+signalBus = None
+
+
+def getSignalBus():
+    global signalBus
+    if signalBus is None:
+        signalBus = SignalBus()
+    return signalBus
