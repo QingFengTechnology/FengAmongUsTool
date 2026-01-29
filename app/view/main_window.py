@@ -3,9 +3,9 @@ import asyncio
 import logging
 import sys
 
-from PyQt5.QtCore import QObject, pyqtSignal
-from PyQt5.QtGui import QIcon, QColor
-from PyQt5.QtWidgets import QApplication
+from PyQt6.QtCore import QObject, pyqtSignal
+from PyQt6.QtGui import QIcon, QColor
+from PyQt6.QtWidgets import QApplication
 
 from qfluentwidgets import NavigationItemPosition, SplitFluentWindow
 from qfluentwidgets import FluentIcon as FIF
@@ -92,8 +92,8 @@ class MainWindow(SplitFluentWindow):
     def createSplashScreen(self):
         """创建并显示启动画面"""
         from qfluentwidgets import SplashScreen
-        from PyQt5.QtGui import QIcon
-        from PyQt5.QtCore import QSize
+        from PyQt6.QtGui import QIcon
+        from PyQt6.QtCore import QSize
 
         self.splashScreen = SplashScreen(QIcon(':/app/images/logo.png'), self)
         self.splashScreen.setIconSize(QSize(120, 120))
@@ -123,7 +123,7 @@ class MainWindow(SplitFluentWindow):
     def downloadServersJson(self):
         """在程序启动时下载servers.json文件（在 SplashScreen 显示时执行）"""
         try:
-            from PyQt5.QtCore import QThread
+            from PyQt6.QtCore import QThread
 
             # 创建工作线程和工作对象
             self.download_thread = QThread()

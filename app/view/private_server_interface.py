@@ -3,9 +3,9 @@ import json
 import logging
 import os
 import stat
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QLabel, QVBoxLayout, QWidget
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QFont
+from PyQt6.QtWidgets import QLabel, QVBoxLayout, QWidget
 from qfluentwidgets import ScrollArea, HeaderCardWidget, CheckBox, setFont, PrimaryPushButton, InfoBar, InfoBarPosition
 from ..common.style_sheet import StyleSheet
 
@@ -96,7 +96,7 @@ class PrivateServerInterface(ScrollArea):
         self.vBoxLayout.addWidget(self.installButton)
 
         self.vBoxLayout.setSpacing(30)
-        self.vBoxLayout.setAlignment(Qt.AlignTop)
+        self.vBoxLayout.setAlignment(Qt.AlignmentFlag.AlignTop)
         self.vBoxLayout.setContentsMargins(36, 10, 36, 0)
 
     def onInstallButtonClicked(self):
@@ -112,7 +112,7 @@ class PrivateServerInterface(ScrollArea):
             InfoBar.warning(
                 title=self.tr('提示'),
                 content=self.tr('请至少选择一个服务器'),
-                orient=Qt.Horizontal,
+                orient=Qt.Orientation.Horizontal,
                 isClosable=True,
                 position=InfoBarPosition.TOP_RIGHT,
                 duration=3000,
@@ -133,7 +133,7 @@ class PrivateServerInterface(ScrollArea):
                 InfoBar.error(
                     title=self.tr('安装失败'),
                     content=self.tr('服务器数据未加载，请检查网络连接'),
-                    orient=Qt.Horizontal,
+                    orient=Qt.Orientation.Horizontal,
                     isClosable=True,
                     position=InfoBarPosition.TOP_RIGHT,
                     duration=3000,
@@ -266,7 +266,7 @@ class PrivateServerInterface(ScrollArea):
                 InfoBar.warning(
                     title=self.tr('安装终止'),
                     content=self.tr('所有服务器均重复'),
-                    orient=Qt.Horizontal,
+                    orient=Qt.Orientation.Horizontal,
                     isClosable=True,
                     position=InfoBarPosition.TOP_RIGHT,
                     duration=3000,
@@ -299,7 +299,7 @@ class PrivateServerInterface(ScrollArea):
             InfoBar.success(
                 title=self.tr('私服安装成功'),
                 content=self.tr(f'共安装了 {installed_count} 个服务器，{duplicate_count} 个服务器重复'),
-                orient=Qt.Horizontal,
+                orient=Qt.Orientation.Horizontal,
                 isClosable=True,
                 position=InfoBarPosition.TOP_RIGHT,
                 duration=3000,

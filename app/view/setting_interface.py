@@ -6,9 +6,9 @@ from qfluentwidgets import (SwitchSettingCard,
 from qfluentwidgets import FluentIcon as FIF
 from qfluentwidgets import SettingCardGroup as CardGroup
 from qfluentwidgets import InfoBar
-from PyQt5.QtCore import Qt, QUrl
-from PyQt5.QtGui import QDesktopServices, QFont
-from PyQt5.QtWidgets import QWidget, QLabel
+from PyQt6.QtCore import Qt, QUrl
+from PyQt6.QtGui import QDesktopServices, QFont
+from PyQt6.QtWidgets import QWidget, QLabel
 
 from ..common.config import cfg, isWin11
 from ..common.setting import FEEDBACK_URL, AUTHOR, VERSION, YEAR
@@ -109,7 +109,7 @@ class SettingInterface(ScrollArea):
 
     def __initWidget(self):
         self.resize(1000, 800)
-        self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.setViewportMargins(0, 100, 0, 20)
         self.setWidget(self.scrollWidget)
         self.setWidgetResizable(True)

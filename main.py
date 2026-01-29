@@ -3,8 +3,8 @@ import logging
 import os
 import sys
 
-from PyQt5.QtCore import Qt, QTranslator
-from PyQt5.QtWidgets import QApplication
+from PyQt6.QtCore import Qt, QTranslator
+from PyQt6.QtWidgets import QApplication
 
 from app.common.config import cfg, loadConfig
 from app.view.main_window import MainWindow
@@ -23,11 +23,10 @@ if cfg.get(cfg.dpiScale) != "Auto":
 else:
     QApplication.setHighDpiScaleFactorRoundingPolicy(
         Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
-    QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
 
 # create application
 app = QApplication(sys.argv)
-app.setAttribute(Qt.AA_DontCreateNativeWidgetSiblings)
+app.setAttribute(Qt.ApplicationAttribute.AA_DontCreateNativeWidgetSiblings)
 
 # 加载配置（必须在 QApplication 创建后）
 loadConfig()
@@ -48,7 +47,6 @@ w = MainWindow()
 # 在程序退出时清理缓存
 def cleanup_before_exit():
     w.cleanupCache()
-    app.quit()
 
 # 连接程序退出信号
 app.aboutToQuit.connect(cleanup_before_exit)
