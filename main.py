@@ -26,6 +26,7 @@ else:
 
 # create application
 app = QApplication(sys.argv)
+app.setAttribute(Qt.ApplicationAttribute.AA_DontCreateNativeWidgetSiblings)
 
 # 加载配置（必须在 QApplication 创建后）
 loadConfig()
