@@ -14,7 +14,7 @@ args = [
     '--standalone',
     # '--windows-disable-console',
     '--follow-import-to=app' ,
-    '--plugin-enable=PyQt6' ,
+    '--plugin-enable=pyqt6' ,
     '--include-qt-plugins=sensible,styles' ,
     '--msvc=latest',
     '--show-memory' ,
