@@ -122,13 +122,11 @@ def download_and_install_config(config_type):
 
     while True:
         generalMainMenu(config["menu_text"], config["title"])
-        sleep(1)
         downloadFileConfirm = console.input("你确定要继续吗？( [green1]Y[/green1] [white]/[/white] [red1]N[/red1] )").strip()
         if downloadFileConfirm.upper() == "Y":
             break
         elif downloadFileConfirm.upper() == "N":
             generalMainMenu("\n操作已取消，即将返回主菜单...\n", config["title"])
-            sleep(2)
             return
         else:
             console.print("[red1]输入无效[/red1]，请重新输入。")
@@ -244,7 +242,6 @@ def download_and_install_config(config_type):
                         console.log(f"[red1]未能从备份恢复[/red1]原始文件: {str(restoreError)}")
                 raise
             status.update("请稍后...")
-            sleep(2)
 
     except Exception as e:
         console.log(f"[red1]{config['header']}过程中发生意外错误[/red1]: {str(e)}")

@@ -1,4 +1,4 @@
-from time import sleep, time
+from time import time
 import requests
 import os
 import shutil
@@ -273,7 +273,6 @@ def run():
             except Exception as e:
                 console.log(f"[red1]设置只读属性失败: {str(e)}[/red1]")
             status.update("请稍后...")
-            sleep(2)
     
     except Exception as e:
         console.log(f"[red1]发生意外错误[/red1]，安装失败: {str(e)}")
