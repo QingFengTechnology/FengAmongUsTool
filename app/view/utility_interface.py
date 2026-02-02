@@ -135,6 +135,59 @@ class UtilityInterface(ScrollArea):
             InfoBar.error(title, content, orient=Qt.Orientation.Horizontal, isClosable=True,
                          position=InfoBarPosition.TOP_RIGHT, duration=duration, parent=self)
 
+    @staticmethod
+    def _get_settings_path() -> str | None:
+        """获取 Among Us 配置文件路径"""
+        import platform
+
+        if platform.system() == "Windows":
+            return os.path.expandvars(r'%APPDATA%\..\LocalLow\Innersloth\Among Us\settings.amogus')
+        logger.error("不支持的操作系统")
+        return None
+
+    def _backup_settings(self, settings_path: str) -> str | None:
+        """备份配置文件，返回备份路径，失败返回 None"""
+        backup_path = settings_path + '.backup'
+        try:
+            shutil.copy2(settings_path, backup_path)
+            logger.info(f"已备份配置文件到: {backup_path}")
+            return backup_path
+        except FileNotFoundError:
+            self._showInfoBar('error', '错误', '无法找到原始配置文件进行备份')
+            return None
+        except Exception:
+            logger.exception('备份 settings.amogus 失败')
+            self._showInfoBar('error', '错误', '备份配置失败，请查看日志了解详情')
+            return None
+
+    def _load_settings(self, settings_path: str) -> dict | None:
+        """读取配置文件，返回配置数据，失败返回 None"""
+        try:
+            with open(settings_path, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except FileNotFoundError:
+            self._showInfoBar('error', '错误', '未找到 settings.amogus 文件')
+            return None
+        except json.JSONDecodeError as exc:
+            logger.error(f'解析 settings.amogus 失败: {exc}')
+            self._showInfoBar('error', '错误', '配置文件格式不正确，无法解析')
+            return None
+        except Exception:
+            logger.exception('读取 settings.amogus 时发生异常')
+            self._showInfoBar('error', '错误', '读取配置失败，请查看日志了解详情')
+            return None
+
+    def _save_settings(self, settings_path: str, config_data: dict) -> bool:
+        """保存配置文件，成功返回 True，失败返回 False"""
+        try:
+            with open(settings_path, 'w', encoding='utf-8') as f:
+                json.dump(config_data, f, ensure_ascii=False, indent=4)
+            return True
+        except Exception:
+            logger.exception('保存 settings.amogus 时发生异常')
+            self._showInfoBar('error', '错误', '保存配置失败，请查看日志了解详情')
+            return False
+
     def _onSwitchButtonClicked(self):
         """处理切换配置的按钮点击事件"""
         is_new_version = self.switchCard.getIsNewVersion()
@@ -149,11 +202,8 @@ class UtilityInterface(ScrollArea):
             return
 
         # 获取配置文件路径
-        import platform
-        if platform.system() == "Windows":
-            settings_path = os.path.expandvars(r'%APPDATA%\..\LocalLow\Innersloth\Among Us\settings.amogus')
-        else:
-            logger.error("不支持的操作系统")
+        settings_path = self._get_settings_path()
+        if settings_path is None:
             self._showInfoBar('error', '错误', '不支持的操作系统')
             return
 
@@ -163,33 +213,14 @@ class UtilityInterface(ScrollArea):
             self._showInfoBar('error', '错误', '配置文件不存在')
             return
 
-        try:
-            # 读取配置文件
-            with open(settings_path, 'r', encoding='utf-8') as f:
-                config_data = json.load(f)
-        except FileNotFoundError:
-            self._showInfoBar('error', '错误', '未找到 settings.amogus 文件')
-            return
-        except json.JSONDecodeError as exc:
-            logger.error(f'解析 settings.amogus 失败: {exc}')
-            self._showInfoBar('error', '错误', '配置文件格式不正确，无法解析')
-            return
-        except Exception:
-            logger.exception('读取 settings.amogus 时发生异常')
-            self._showInfoBar('error', '错误', '读取配置失败，请查看日志了解详情')
+        # 读取配置文件
+        config_data = self._load_settings(settings_path)
+        if config_data is None:
             return
 
-        try:
-            # 备份配置文件
-            backup_path = settings_path + '.backup'
-            shutil.copy2(settings_path, backup_path)
-            logger.info(f"已备份配置文件到: {backup_path}")
-        except FileNotFoundError:
-            self._showInfoBar('error', '错误', '无法找到原始配置文件进行备份')
-            return
-        except Exception:
-            logger.exception('备份 settings.amogus 失败')
-            self._showInfoBar('error', '错误', '备份配置失败，请查看日志了解详情')
+        # 备份配置文件
+        backup_path = self._backup_settings(settings_path)
+        if backup_path is None:
             return
 
         # 修改配置
@@ -200,16 +231,11 @@ class UtilityInterface(ScrollArea):
             self._switchToOldVersion(config_data)
             success_message = '已成功切换为旧版配置'
 
-        try:
-            # 保存配置
-            with open(settings_path, 'w', encoding='utf-8') as f:
-                json.dump(config_data, f, ensure_ascii=False, indent=4)
-            logger.info(f"配置切换成功: {target}")
-        except Exception:
-            logger.exception('保存 settings.amogus 时发生异常')
-            self._showInfoBar('error', '错误', '保存配置失败，请查看日志了解详情')
+        # 保存配置
+        if not self._save_settings(settings_path, config_data):
             return
 
+        logger.info(f"配置切换成功: {target}")
         self._showInfoBar('success', '完成', success_message)
 
     def _switchToNewVersion(self, config_data: dict):
