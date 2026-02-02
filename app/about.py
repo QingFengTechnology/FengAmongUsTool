@@ -18,7 +18,7 @@ pageText = f"""
 
 作者：https://github.com/QingFeng-awa
 
-赞助：https://docs.qingfengawa.top/Donate.html
+赞助：https://docs.qingfengawa.top/docs/donate.html
 
 """
 
