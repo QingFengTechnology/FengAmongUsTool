@@ -1,6 +1,6 @@
-Version = "v3.1.0LTS"
+Version = "v3.2.0LTS"
 VersionType = "release"
-versionDate = "2025-10-07T02:00"
+versionDate = "2026-02-02"
 
 UpdateAvailable = False
 UpdateInfo = None
