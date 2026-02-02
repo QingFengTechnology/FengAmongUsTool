@@ -39,9 +39,9 @@ sleep(2)
 mainMenuText = """
 -  安装清风服
 
-   1.1 正常安装服务器
+   1.1 正常安装服务器 (检查是否重复，在原文件上新增服务器)
 
-   1.2 强制安装服务器
+   1.2 强制安装服务器 (不检查是否重复，直接删除原文件)
 
 -  调整 Among Us 配置版本
    
@@ -57,7 +57,9 @@ while True:
   generalMainMenu(mainMenuText, "主菜单")
   commandNumber = console.input("请输入要执行的命令编号：").strip()
   if commandNumber == "1" or commandNumber == "1.1":
-    installServer()
+    installServer(merge=True)
+  elif commandNumber == "1.2":
+    installServer(merge=False)
   elif commandNumber == "2" or commandNumber == "2.1":
     fixAmongUs()
   elif commandNumber == "2.2":

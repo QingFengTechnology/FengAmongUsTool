@@ -89,12 +89,14 @@ def selectBestServer():
     console.log(f"已选择最快下载源：[cornflower_blue]{best_server['name']}[/cornflower_blue]。")
     return best_server['url']
 
-def run():
-    """工具箱主要模块：安装清风服"""
+def run(merge=True):
+    """工具箱主要模块：安装清风服
+    Args:
+        merge: 是否为合并模式。
+    """
     regionInfoPath = getRegionInfoPath()
     regionInfoBakPath = regionInfoPath + '.bak'
     success = False
-    # 初始化计数器
     added_servers_count = 0
     duplicate_servers_count = 0
     try:
@@ -120,6 +122,26 @@ def run():
                     console.log("[orange1]未找到[/orange1]原始私服文件，跳过备份。")
             except Exception as e:
                 console.log(f"[orange1]未能备份[/orange1]原始私服文件: {str(e)}")
+            
+            if not merge:
+                status.update("删除原有文件...")
+                try:
+                    if os.path.exists(regionInfoPath):
+                        setFileWritable(regionInfoPath)
+                        os.remove(regionInfoPath)
+                        console.log("[green1]已删除[/green1]原始私服文件。")
+                    else:
+                        console.log("原始私服文件[orange1]不存在[/orange1]，跳过删除。")
+                except Exception as e:
+                    console.log(f"[orange1]未能删除[/orange1]原始私服文件: {str(e)}")
+                    try:
+                        status.update("强制删除原始文件...")
+                        os.chmod(regionInfoPath, stat.S_IWRITE | stat.S_IREAD)
+                        os.remove(regionInfoPath)
+                        console.log("[green1]成功强制删除[/green1]原始私服文件。")
+                    except:
+                        console.log("安装时[red1]发生意外错误[/red1]，[red1]未能强制删除[/red1]原始私服文件。")
+            
             status.update("下载文件...")
             try:
                 response = requests.get(DownloadServerURL)
@@ -142,7 +164,9 @@ def run():
             try:
                 if "清风服".encode('utf-8') not in ServerFileResponse:
                     raise ValueError("下载的私服文件缺少必备字符，疑似下载文件不正确。")
-                remote_region_data = json.loads(ServerFileResponse)
+                
+                if merge:
+                    remote_region_data = json.loads(ServerFileResponse)
                 console.log("文件[green1]校验成功[/green1]。")
             except Exception as e:
                 console.log(f"文件[red1]校验失败[/red1]: {str(e)}")
@@ -164,76 +188,76 @@ def run():
                     console.print(f"[red1]解码内容失败[/red1]: {ServerFileResponse[:100].hex()}")
                 raise
             status.update("合并配置文件...")
-            try:
-                # 读取本地文件
-                if os.path.exists(regionInfoPath):
-                    with open(regionInfoPath, 'r', encoding='utf-8') as f:
-                        local_region_data = json.load(f)
-                else:
-                    # 如果本地没有文件，创建一个默认结构
-                    local_region_data = {
-                        "CurrentRegionIdx": 0,
-                        "Regions": []
-                    }
-                
-                # 记录添加的服务器数量和重复的服务器数量
-                added_servers_count = 0
-                duplicate_servers_count = 0
-                
-                # 将远程服务器添加到本地配置中（逐个检查重复）
-                for region in remote_region_data["Regions"]:
-                    new_ip = ""
-                    if region.get("Servers"):
-                        new_ip = region["Servers"][0].get("Ip", "") if region["Servers"] else ""
-                    
-                    # 检查本地是否已有相同的服务器
-                    duplicate_found = False
-                    for existing_region in local_region_data["Regions"]:
-                        existing_ip = ""
-                        if existing_region.get("Servers"):
-                            existing_ip = existing_region["Servers"][0].get("Ip", "") if existing_region["Servers"] else ""
-                        
-                        # 如果 IP 相同，则认为是重复的服务器
-                        if new_ip == existing_ip:
-                            duplicate_found = True
-                            server_name = region['Name']
-                            import re
-                            # 移除 <color=#XXXXXX>内容</color> 格式的标签，只保留内容
-                            server_name = re.sub(r'<color=#([0-9A-F]{6})>([^<]+)</color>', r'\2', server_name)
-                            console.log(f"检测到重复服务器{server_name}，跳过安装。")
-                            break
-                    
-                    # 如果没有重复，则添加服务器
-                    if not duplicate_found:
-                        local_region_data["Regions"].append(region)
-                        added_servers_count += 1
+            if merge:
+                try:
+                    if os.path.exists(regionInfoPath):
+                        with open(regionInfoPath, 'r', encoding='utf-8') as f:
+                            local_region_data = json.load(f)
                     else:
-                        duplicate_servers_count += 1
-                
-                # 更新 CurrentRegionIdx 指向新添加的最后一个服务器
-                if added_servers_count > 0:
-                    local_region_data["CurrentRegionIdx"] = len(local_region_data["Regions"]) - 1
-                
-                console.log(f"[green1]成功合并[/green1]服务器配置，新增 {added_servers_count} 个服务器。")
-            except Exception as e:
-                console.log(f"[red1]合并配置失败[/red1]: {str(e)}")
-                if os.path.exists(regionInfoBakPath):
-                    try:
-                        if os.path.exists(regionInfoPath):
+                        local_region_data = {
+                            "CurrentRegionIdx": 0,
+                            "Regions": []
+                        }
+                    
+                    added_servers_count = 0
+                    duplicate_servers_count = 0
+                    
+                    for region in remote_region_data["Regions"]:
+                        new_ip = ""
+                        if region.get("Servers"):
+                            new_ip = region["Servers"][0].get("Ip", "") if region["Servers"] else ""
+                        
+                        duplicate_found = False
+                        for existing_region in local_region_data["Regions"]:
+                            existing_ip = ""
+                            if existing_region.get("Servers"):
+                                existing_ip = existing_region["Servers"][0].get("Ip", "") if existing_region["Servers"] else ""
+                            
+                            if new_ip == existing_ip:
+                                duplicate_found = True
+                                server_name = region['Name']
+                                import re
+                                server_name = re.sub(r'<color=#([0-9A-F]{6})>([^<]+)</color>', r'\2', server_name)
+                                console.log(f"检测到重复服务器{server_name}，跳过安装。")
+                                break
+                        
+                        if not duplicate_found:
+                            local_region_data["Regions"].append(region)
+                            added_servers_count += 1
+                        else:
+                            duplicate_servers_count += 1
+                    
+                    if added_servers_count > 0:
+                        local_region_data["CurrentRegionIdx"] = len(local_region_data["Regions"]) - 1
+                    
+                    console.log(f"[green1]成功合并[/green1]服务器配置，新增 {added_servers_count} 个服务器。")
+                except Exception as e:
+                    console.log(f"[red1]合并配置失败[/red1]: {str(e)}")
+                    if os.path.exists(regionInfoBakPath):
+                        try:
+                            if os.path.exists(regionInfoPath):
+                                setFileWritable(regionInfoPath)
+                            shutil.copy2(regionInfoBakPath, regionInfoPath)
                             setFileWritable(regionInfoPath)
-                        shutil.copy2(regionInfoBakPath, regionInfoPath)
-                        setFileWritable(regionInfoPath)
-                        console.log("[green1]成功从备份中恢复[/green1]原始文件。")
-                    except Exception as restoreError:
-                        console.log(f"[red1]恢复备份失败[/red1]: {str(restoreError)}")
-                raise
+                            console.log("[green1]成功从备份中恢复[/green1]原始文件。")
+                        except Exception as restoreError:
+                            console.log(f"[red1]恢复备份失败[/red1]: {str(restoreError)}")
+                    raise
+            else:
+                console.log("[green1]跳过合并[/green1]，直接使用下载的配置文件。")
+            
             status.update("导入文件...")
             try:
                 os.makedirs(os.path.dirname(regionInfoPath), exist_ok=True)
                 if os.path.exists(regionInfoPath):
                     setFileWritable(regionInfoPath)
-                with open(regionInfoPath, 'w', encoding='utf-8') as f:
-                    json.dump(local_region_data, f, ensure_ascii=False, indent=2)
+                
+                if merge:
+                    with open(regionInfoPath, 'w', encoding='utf-8') as f:
+                        json.dump(local_region_data, f, ensure_ascii=False, indent=2)
+                else:
+                    with open(regionInfoPath, 'wb') as f:
+                        f.write(ServerFileResponse)
                 console.log(f"文件[green1]导入成功[/green1]。")
                 if os.path.exists(regionInfoBakPath):
                     try:
@@ -269,10 +293,13 @@ def run():
         console.input("按 [plum1]Enter[/plum1] 返回主菜单。")
         return
     if success:
-        if added_servers_count == 0 and duplicate_servers_count > 0:
-            finalMessage = f"\n未安装任何服务器，所有服务器均为重复项，已跳过。\n"
+        if merge:
+            if added_servers_count == 0 and duplicate_servers_count > 0:
+                finalMessage = f"\n未安装任何服务器，所有服务器均为重复项，已跳过。\n"
+            else:
+                finalMessage = f"\n服务器安装完成。\n成功安装 {added_servers_count} 个服务器，{duplicate_servers_count} 个服务器重复跳过。\n"
         else:
-            finalMessage = f"\n服务器安装完成。\n成功安装 {added_servers_count} 个服务器，{duplicate_servers_count} 个服务器重复跳过。\n"
+            finalMessage = "\n服务器安装完成。\n已替换为最新清风服配置文件。\n"
         generalMainMenu(finalMessage, MenuTitle)
     else:
         finalMessage = "\n服务器安装失败，请查看日志以了解详情。\n"
