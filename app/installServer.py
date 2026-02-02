@@ -295,11 +295,13 @@ def run(merge=True):
     if success:
         if merge:
             if added_servers_count == 0 and duplicate_servers_count > 0:
-                finalMessage = f"\n未安装任何服务器，所有服务器均为重复项，已跳过。\n"
+                finalMessage = f"\n已取消安装服务器，所有服务器均为重复项。\n若仍需要安装清风服，请选择强制安装。\n"
             else:
-                finalMessage = f"\n服务器安装完成。\n成功安装 {added_servers_count} 个服务器，{duplicate_servers_count} 个服务器重复跳过。\n"
+                finalMessage = f"\n服务器安装完成。\n"
+                if duplicate_servers_count > 0:
+                    finalMessage += f"已跳过安装 {duplicate_servers_count} 个服务器，如果你仍需要安装，请选择强制安装。\n"
         else:
-            finalMessage = "\n服务器安装完成。\n已替换为最新清风服配置文件。\n"
+            finalMessage = "\n服务器安装完成。\n"
         generalMainMenu(finalMessage, MenuTitle)
     else:
         finalMessage = "\n服务器安装失败，请查看日志以了解详情。\n"
