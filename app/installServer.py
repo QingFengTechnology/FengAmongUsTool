@@ -182,7 +182,6 @@ def run():
                 
                 # 将远程服务器添加到本地配置中（逐个检查重复）
                 for region in remote_region_data["Regions"]:
-                    new_ping_server = region.get("PingServer", "")
                     new_ip = ""
                     if region.get("Servers"):
                         new_ip = region["Servers"][0].get("Ip", "") if region["Servers"] else ""
@@ -190,19 +189,18 @@ def run():
                     # 检查本地是否已有相同的服务器
                     duplicate_found = False
                     for existing_region in local_region_data["Regions"]:
-                        existing_ping_server = existing_region.get("PingServer", "")
                         existing_ip = ""
                         if existing_region.get("Servers"):
                             existing_ip = existing_region["Servers"][0].get("Ip", "") if existing_region["Servers"] else ""
                         
                         # 如果PingServer或Ip相同，则认为是重复的服务器
-                        if new_ping_server == existing_ping_server or new_ip == existing_ip:
+                        if new_ip == existing_ip:
                             duplicate_found = True
                             server_name = region['Name']
                             import re
                             # 移除 <color=#XXXXXX>内容</color> 格式的标签，只保留内容
                             server_name = re.sub(r'<color=#([0-9A-F]{6})>([^<]+)</color>', r'\2', server_name)
-                            console.log(f"检测到重复服务器，跳过安装: {server_name}")
+                            console.log(f"检测到重复服务器{server_name}，跳过安装。")
                             break
                     
                     # 如果没有重复，则添加服务器
