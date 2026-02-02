@@ -193,7 +193,7 @@ def run():
                         if existing_region.get("Servers"):
                             existing_ip = existing_region["Servers"][0].get("Ip", "") if existing_region["Servers"] else ""
                         
-                        # 如果PingServer或Ip相同，则认为是重复的服务器
+                        # 如果 IP 相同，则认为是重复的服务器
                         if new_ip == existing_ip:
                             duplicate_found = True
                             server_name = region['Name']
