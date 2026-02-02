@@ -15,5 +15,7 @@
         <file>qss/dark/home_interface.qss</file>
         <file>qss/light/private_server_interface.qss</file>
         <file>qss/dark/private_server_interface.qss</file>
+        <file>qss/light/utility_interface.qss</file>
+        <file>qss/dark/utility_interface.qss</file>
     </qresource>
 </RCC>

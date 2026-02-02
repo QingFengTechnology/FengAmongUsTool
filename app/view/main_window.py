@@ -12,6 +12,7 @@ from qfluentwidgets import FluentIcon as FIF
 
 from .setting_interface import SettingInterface
 from .private_server_interface import PrivateServerInterface
+from .utility_interface import UtilityInterface
 from ..common.config import cfg
 from ..common.signal_bus import getSignalBus
 from ..common.servers_downloader import ServersDownloader
@@ -53,6 +54,7 @@ class MainWindow(SplitFluentWindow):
         super().__init__()
         self.homeInterface = None
         self.privateServerInterface = None
+        self.utilityInterface = None
         self.settingInterface = None
         self.download_worker = None
         self.download_thread = None
@@ -105,6 +107,7 @@ class MainWindow(SplitFluentWindow):
         # 移除主页
         # self.homeInterface = HomeInterface(self)
         self.privateServerInterface = PrivateServerInterface(self)
+        self.utilityInterface = UtilityInterface(self)
         self.settingInterface = SettingInterface(self)
 
         # add items to navigation interface
@@ -200,6 +203,10 @@ class MainWindow(SplitFluentWindow):
         # add private server widget
         if self.privateServerInterface:
             self.addSubInterface(self.privateServerInterface, FIF.DOWNLOAD, self.tr('私服安装'))
+
+        # add utility widget
+        if self.utilityInterface:
+            self.addSubInterface(self.utilityInterface, FIF.APPLICATION, self.tr('实用功能'))
 
         # add custom widget to bottom
         if self.settingInterface:
