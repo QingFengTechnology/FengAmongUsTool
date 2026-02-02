@@ -198,21 +198,11 @@ def run():
                         # 如果PingServer或Ip相同，则认为是重复的服务器
                         if new_ping_server == existing_ping_server or new_ip == existing_ip:
                             duplicate_found = True
-                            # 直接使用HTML颜色代码，但转换为rich可识别的格式
                             server_name = region['Name']
-                            # 将 <color=#XXXXXX>内容</color> 转换为 [#{XXXXXX}]内容[/{XXXXXX}] 格式
                             import re
-                        
-                            def html_to_rich_color(match):
-                                color = match.group(1)
-                                content = match.group(2)
-                                return f"[#{color}]{content}[/{color}]"
-                        
-                            # 转换HTML颜色标签为rich格式（但使用正确的结束标签）
-                            rich_formatted_name = re.sub(r'<color=#([0-9A-F]{6})>([^<]+)</color>', html_to_rich_color, server_name)
-                            # 修复结束标签格式，应该使用[/]而不是具体的颜色名
-                            rich_formatted_name = re.sub(r'\[/[0-9A-F]{6}\]', '[/]', rich_formatted_name)
-                            console.log(f"检测到重复服务器，跳过安装: {rich_formatted_name}")
+                            # 移除 <color=#XXXXXX>内容</color> 格式的标签，只保留内容
+                            server_name = re.sub(r'<color=#([0-9A-F]{6})>([^<]+)</color>', r'\2', server_name)
+                            console.log(f"检测到重复服务器，跳过安装: {server_name}")
                             break
                     
                     # 如果没有重复，则添加服务器
