@@ -1,8 +1,8 @@
 from datetime import date
 
-Version: str = "v3.2.0LTS"
+Version: str = "v3.3.0LTS"
 VersionType: str = "release"
-versionDate: date = date(2026, 2, 2)
+versionDate: date = date(2026, 3, 1)
 
 UpdateAvailable: bool = False
 UpdateInfo: str = None
