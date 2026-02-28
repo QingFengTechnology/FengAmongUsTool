@@ -51,10 +51,8 @@ def checkUpdate():
                     remote_version_info = remote_version_data[version_type]
                     
                     # 比较日期
-                    local_date = datetime.fromisoformat(versionDate.replace('Z', '+00:00')).date()
                     remote_date = datetime.fromisoformat(remote_version_info["versionDate"].replace('Z', '+00:00')).date()
-                    
-                    if remote_date > local_date:
+                    if remote_date > versionDate:
                         # 发现新版本，返回更新信息
                         console.log(f"[green1]发现新版本[/green1]更新可用！")
                         return remote_version_info
