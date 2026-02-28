@@ -1,13 +1,15 @@
-Version = "v3.2.0LTS"
-VersionType = "release"
-versionDate = "2026-02-02"
+from datetime import date
 
-UpdateAvailable = False
-UpdateInfo = None
+Version: str = "v3.2.0LTS"
+VersionType: str = "release"
+versionDate: date = date(2026, 2, 2)
 
-REGIONVALIDATIONKEY: str = "StaticHttpRegionInfo, Assembly-CSharp",
+UpdateAvailable: bool = False
+UpdateInfo: str = None
 
-ToolTitle= """
+REGIONVALIDATIONKEY: str = "StaticHttpRegionInfo, Assembly-CSharp"
+
+ToolTitle: str = """
 ███████╗███████╗███╗   ██╗ ██████╗     ████████╗ ██████╗  ██████╗ ██╗     
 ██╔════╝██╔════╝████╗  ██║██╔════╝     ╚══██╔══╝██╔═══██╗██╔═══██╗██║     
 █████╗  █████╗  ██╔██╗ ██║██║  ███╗       ██║   ██║   ██║██║   ██║██║     
