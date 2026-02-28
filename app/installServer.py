@@ -24,8 +24,12 @@ ServerSources = [
         "url": "https://api.qingfengawa.top/FengAmongUsTool-Asset/regionInfo.json"
     },
     {
-        "name": "Xget",
-        "url": "https://xget.xi-xu.me/gh/QingFengTechnology/FengAmongUsTool-Asset/raw/refs/heads/main/regionInfo.json"
+        "name": "GhProxy (CloudFlare)",
+        "url": "https://gh-proxy.org/https://github.com/QingFengTechnology/FengAmongUsTool-Asset/raw/refs/heads/main/regionInfo.json"
+    },
+    {
+        "name": "GhProxy (HongKong)",
+        "url": "https://hk.gh-proxy.org/https://github.com/QingFengTechnology/FengAmongUsTool-Asset/raw/refs/heads/main/regionInfo.json"
     },
     {
         "name": "Github",
