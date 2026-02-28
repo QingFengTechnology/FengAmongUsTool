@@ -1,9 +1,8 @@
+from rich.text import Text
+from rich.panel import Panel
 from rich.box import DOUBLE_EDGE
 from rich.console import Console
-from rich.panel import Panel
-from rich.text import Text
 
-# 这个地方不用绝对路径会报错循环引用然后死掉，第一次遇到还挺意外
 from function.variable import Version, ToolTitle
 from function.updateCheck import updateNotification
 

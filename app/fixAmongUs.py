@@ -1,13 +1,14 @@
-from time import sleep, time
 import os
-import shutil
 import stat
+import shutil
 import random
 import requests
-from rich.console import Console
-from rich.panel import Panel
+
 from rich.text import Text
+from rich.panel import Panel
+from time import sleep, time
 from rich.syntax import Syntax
+from rich.console import Console
 
 from function.main import generalMainMenu, defaultHeader, br
 

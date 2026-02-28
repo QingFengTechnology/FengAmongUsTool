@@ -1,18 +1,18 @@
-from time import time
-import requests
 import os
-import shutil
 import stat
-import random
 import json
+import shutil
+import random
+import requests
 
-from rich.console import Console
-from rich.syntax import Syntax
-from rich.panel import Panel
+from time import time
 from rich.text import Text
+from rich.panel import Panel
+from rich.syntax import Syntax
+from rich.console import Console
 
-from function.main import defaultHeader, br, generalMainMenu
 from function.variable import REGIONVALIDATIONKEY
+from function.main import defaultHeader, br, generalMainMenu
 
 console = Console()
 

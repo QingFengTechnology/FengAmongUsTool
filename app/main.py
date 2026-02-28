@@ -1,16 +1,17 @@
-import platform
 import os
-from time import sleep
-import signal
 import sys
+import signal
+import platform
+
+from time import sleep
 from rich.console import Console
 
-from installServer import run as installServer
+from about import run as aboutPage
 from fixAmongUs import run as fixAmongUs
 from fixAmongUs import run2 as updateAmongUs
-from about import run as aboutPage
-from function.main import defaultHeader, generalMainMenu
 from function.updateCheck import checkUpdate
+from installServer import run as installServer
+from function.main import defaultHeader, generalMainMenu
 
 os.system('title 清风 Among Us 工具箱')
 
