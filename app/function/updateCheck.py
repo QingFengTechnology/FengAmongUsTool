@@ -16,8 +16,12 @@ UpdateSources = [
         "url": "https://api.qingfengawa.top/FengAmongUsTool-Asset/version.json"
     },
     {
-        "name": "Xget",
-        "url": "https://xget.xi-xu.me/gh/QingFengTechnology/FengAmongUsTool-Asset/raw/refs/heads/main/version.json"
+        "name": "GhProxy (HongKong)",
+        "url": "https://hk.gh-proxy.org/https://github.com/QingFengTechnology/FengAmongUsTool-Asset/raw/refs/heads/main/version.json"
+    },
+    {
+        "name": "GhProxy (CloudFlare)",
+        "url": "https://gh-proxy.org/https://github.com/QingFengTechnology/FengAmongUsTool-Asset/raw/refs/heads/main/version.json"
     },
     {
         "name": "Github",
