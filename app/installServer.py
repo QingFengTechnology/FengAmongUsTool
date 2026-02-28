@@ -55,6 +55,20 @@ def setFileWritable(regionFilePath):
             console.log(f"[red]未能成功移除[/red]私服文件只读属性: {str(e)}")
     return False
 
+def restoreFromBackup(regionInfoPath, regionInfoBakPath):
+    """从备份文件恢复原始文件"""
+    if os.path.exists(regionInfoBakPath):
+        try:
+            if os.path.exists(regionInfoPath):
+                setFileWritable(regionInfoPath)
+            shutil.copy2(regionInfoBakPath, regionInfoPath)
+            setFileWritable(regionInfoPath)
+            console.log("[green1]成功从备份中恢复[/green1]原始文件。")
+            return True
+        except Exception as restoreError:
+            console.log(f"[red1]恢复备份失败:[/red1] {str(restoreError)}")
+    return False
+
 def testServerLatency(url, timeout=5):
     """测试下载源延迟"""
     try:
@@ -152,40 +166,16 @@ def run(merge=True):
                 console.log(f"[green1]文件下载成功[/green1]。")
             except requests.exceptions.Timeout:
                 console.log(f"[red1]文件下载失败[/red1]: 请求下载源超时。")
-                if os.path.exists(regionInfoBakPath):
-                    try:
-                        if os.path.exists(regionInfoPath):
-                            setFileWritable(regionInfoPath)
-                        shutil.copy2(regionInfoBakPath, regionInfoPath)
-                        setFileWritable(regionInfoPath)
-                        console.log("[green1]成功从备份中恢复[/green1]原始文件。")
-                    except Exception as restoreError:
-                        console.log(f"[red1]恢复备份失败:[/red1] {str(restoreError)}")
+                restoreFromBackup(regionInfoPath, regionInfoBakPath)
                 raise
             except requests.exceptions.SSLError as e:
                 console.log(f"[red1]文件下载失败[/red1]: SSL 证书验证失败: {str(e)}")
                 console.log("请检查你的电脑时间是否正确，或代理软件是否正常工作。")
-                if os.path.exists(regionInfoBakPath):
-                    try:
-                        if os.path.exists(regionInfoPath):
-                            setFileWritable(regionInfoPath)
-                        shutil.copy2(regionInfoBakPath, regionInfoPath)
-                        setFileWritable(regionInfoPath)
-                        console.log("[green1]成功从备份中恢复[/green1]原始文件。")
-                    except Exception as restoreError:
-                        console.log(f"[red1]恢复备份失败:[/red1] {str(restoreError)}")
+                restoreFromBackup(regionInfoPath, regionInfoBakPath)
                 raise
             except Exception as e:
                 console.log(f"[red1]文件下载失败[/red1]: {str(e)}")
-                if os.path.exists(regionInfoBakPath):
-                    try:
-                        if os.path.exists(regionInfoPath):
-                            setFileWritable(regionInfoPath)
-                        shutil.copy2(regionInfoBakPath, regionInfoPath)
-                        setFileWritable(regionInfoPath)
-                        console.log("[green1]成功从备份中恢复[/green1]原始文件。")
-                    except Exception as restoreError:
-                        console.log(f"[red1]恢复备份失败:[/red1] {str(restoreError)}")
+                restoreFromBackup(regionInfoPath, regionInfoBakPath)
                 raise
             status.update("校验文件...")
             try:
@@ -196,15 +186,7 @@ def run(merge=True):
                 console.log("文件[green1]校验成功[/green1]。")
             except Exception as e:
                 console.log(f"文件[red1]校验失败[/red1]: {str(e)}")
-                if os.path.exists(regionInfoBakPath):
-                    try:
-                        if os.path.exists(regionInfoPath):
-                            setFileWritable(regionInfoPath)
-                        shutil.copy2(regionInfoBakPath, regionInfoPath)
-                        setFileWritable(regionInfoPath)
-                        console.log("[green1]成功从备份中恢复[/green1]原始文件。")
-                    except Exception as restoreError:
-                        console.log(f"[red1]恢复备份失败[/red1]: {str(restoreError)}")
+                restoreFromBackup(regionInfoPath, regionInfoBakPath)
                 console.print("[red1]发生意外错误[/red1]，下载的文件存在问题，已回滚更改。")
                 console.print("下方为工具箱获取到的文件内容:")
                 console.print(Syntax(ServerFileResponse, theme="github-dark"))
@@ -255,15 +237,7 @@ def run(merge=True):
                     console.log(f"[green1]成功合并[/green1]服务器配置，新增 {added_servers_count} 个服务器。")
                 except Exception as e:
                     console.log(f"[red1]合并配置失败[/red1]: {str(e)}")
-                    if os.path.exists(regionInfoBakPath):
-                        try:
-                            if os.path.exists(regionInfoPath):
-                                setFileWritable(regionInfoPath)
-                            shutil.copy2(regionInfoBakPath, regionInfoPath)
-                            setFileWritable(regionInfoPath)
-                            console.log("[green1]成功从备份中恢复[/green1]原始文件。")
-                        except Exception as restoreError:
-                            console.log(f"[red1]恢复备份失败[/red1]: {str(restoreError)}")
+                    restoreFromBackup(regionInfoPath, regionInfoBakPath)
                     raise
             else:
                 console.log("[green1]跳过合并[/green1]，直接使用下载的配置文件。")
@@ -290,15 +264,7 @@ def run(merge=True):
                 success = True    
             except Exception as e:
                 console.log(f"[red1]导入文件失败[/red1]: {str(e)}")
-                if os.path.exists(regionInfoBakPath):
-                    try:
-                        if os.path.exists(regionInfoPath):
-                            setFileWritable(regionInfoPath) 
-                        shutil.copy2(regionInfoBakPath, regionInfoPath)
-                        setFileWritable(regionInfoPath)
-                        console.log("[green1]成功从备份恢复[/green1]原始文件。")
-                    except Exception as restoreError:
-                        console.log(f"[red1]恢复备份失败[/red1]: {str(restoreError)}")
+                restoreFromBackup(regionInfoPath, regionInfoBakPath)
                 raise
             status.update("设置只读...")
             try:
