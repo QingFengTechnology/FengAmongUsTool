@@ -71,10 +71,7 @@ def testServerLatency(url, timeout=5):
 
 def selectBestServer():
     """选择延迟最低的下载源"""
-    results = []
-
-    random.shuffle(ServerSources)
-    
+    results = []    
     for server in ServerSources:
         console.log(f"测试下载源[cornflower_blue]{server['name']}[/cornflower_blue][white]...[/white]")
         latency = testServerLatency(server['url'])
