@@ -69,7 +69,7 @@ def restoreFromBackup(regionInfoPath, regionInfoBakPath):
             console.log(f"[red1]恢复备份失败:[/red1] {str(restoreError)}")
     return False
 
-def testServerLatency(url, timeout=5):
+def testServerLatency(url, timeout=3):
     """测试下载源延迟"""
     try:
         start_time = time()
