@@ -5,6 +5,8 @@ versionDate = "2026-02-02"
 UpdateAvailable = False
 UpdateInfo = None
 
+REGIONVALIDATIONKEY: str = "StaticHttpRegionInfo, Assembly-CSharp",
+
 ToolTitle= """
 ███████╗███████╗███╗   ██╗ ██████╗     ████████╗ ██████╗  ██████╗ ██╗     
 ██╔════╝██╔════╝████╗  ██║██╔════╝     ╚══██╔══╝██╔═══██╗██╔═══██╗██║     

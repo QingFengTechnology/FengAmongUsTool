@@ -12,6 +12,7 @@ from rich.panel import Panel
 from rich.text import Text
 
 from function.main import defaultHeader, br, generalMainMenu
+from function.variable import REGIONVALIDATIONKEY
 
 console = Console()
 
@@ -166,7 +167,7 @@ def run(merge=True):
                 raise
             status.update("校验文件...")
             try:
-                if "清风服".encode('utf-8') not in ServerFileResponse:
+                if REGIONVALIDATIONKEY.encode('utf-8') not in ServerFileResponse:
                     raise ValueError("下载的私服文件缺少必备字符，疑似下载文件不正确。")
                 
                 if merge:
