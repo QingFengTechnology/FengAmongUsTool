@@ -150,6 +150,31 @@ def run(merge=True):
                 response.raise_for_status()
                 ServerFileResponse = response.text
                 console.log(f"[green1]文件下载成功[/green1]。")
+            except requests.exceptions.Timeout:
+                console.log(f"[red1]文件下载失败[/red1]: 请求下载源超时。")
+                if os.path.exists(regionInfoBakPath):
+                    try:
+                        if os.path.exists(regionInfoPath):
+                            setFileWritable(regionInfoPath)
+                        shutil.copy2(regionInfoBakPath, regionInfoPath)
+                        setFileWritable(regionInfoPath)
+                        console.log("[green1]成功从备份中恢复[/green1]原始文件。")
+                    except Exception as restoreError:
+                        console.log(f"[red1]恢复备份失败:[/red1] {str(restoreError)}")
+                raise
+            except requests.exceptions.SSLError as e:
+                console.log(f"[red1]文件下载失败[/red1]: SSL 证书验证失败: {str(e)}")
+                console.log("请检查你的电脑时间是否正确，或代理软件是否正常工作。")
+                if os.path.exists(regionInfoBakPath):
+                    try:
+                        if os.path.exists(regionInfoPath):
+                            setFileWritable(regionInfoPath)
+                        shutil.copy2(regionInfoBakPath, regionInfoPath)
+                        setFileWritable(regionInfoPath)
+                        console.log("[green1]成功从备份中恢复[/green1]原始文件。")
+                    except Exception as restoreError:
+                        console.log(f"[red1]恢复备份失败:[/red1] {str(restoreError)}")
+                raise
             except Exception as e:
                 console.log(f"[red1]文件下载失败[/red1]: {str(e)}")
                 if os.path.exists(regionInfoBakPath):
