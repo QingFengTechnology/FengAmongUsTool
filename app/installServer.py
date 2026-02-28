@@ -148,8 +148,8 @@ def run(merge=True):
             try:
                 response = requests.get(DownloadServerURL)
                 response.raise_for_status()
-                ServerFileResponse = response.content
-                console.log(f"[green1]文件下载成功[/green1]，大小：[cornflower_blue]{len(ServerFileResponse)}B[/cornflower_blue]。")
+                ServerFileResponse = response.text
+                console.log(f"[green1]文件下载成功[/green1]。")
             except Exception as e:
                 console.log(f"[red1]文件下载失败[/red1]: {str(e)}")
                 if os.path.exists(regionInfoBakPath):
@@ -164,9 +164,8 @@ def run(merge=True):
                 raise
             status.update("校验文件...")
             try:
-                if REGIONVALIDATIONKEY.encode('utf-8') not in ServerFileResponse:
+                if REGIONVALIDATIONKEY not in ServerFileResponse:
                     raise ValueError("下载的私服文件缺少必备字符，疑似下载文件不正确。")
-                
                 if merge:
                     remote_region_data = json.loads(ServerFileResponse)
                 console.log("文件[green1]校验成功[/green1]。")
@@ -183,11 +182,7 @@ def run(merge=True):
                         console.log(f"[red1]恢复备份失败[/red1]: {str(restoreError)}")
                 console.print("[red1]发生意外错误[/red1]，下载的文件存在问题，已回滚更改。")
                 console.print("下方为工具箱获取到的文件内容:")
-                try:
-                    content = ServerFileResponse.decode('utf-8', errors='replace')
-                    console.print(Syntax(content, theme="github-dark", line_numbers=False))
-                except:
-                    console.print(f"[red1]解码内容失败[/red1]: {ServerFileResponse[:100].hex()}")
+                console.print(Syntax(ServerFileResponse, theme="github-dark"))
                 raise
             status.update("合并配置文件...")
             if merge:
