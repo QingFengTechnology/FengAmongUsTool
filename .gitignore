@@ -3,3 +3,5 @@ AppData/
 .ruff_cache/
 **/*test*/**
 .claude/
+/**/build/
+/**/dist/
