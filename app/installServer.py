@@ -248,12 +248,11 @@ def run(merge=True):
                 if os.path.exists(regionInfoPath):
                     setFileWritable(regionInfoPath)
                 
-                if merge:
-                    with open(regionInfoPath, 'w', encoding='utf-8') as f:
-                        json.dump(local_region_data, f, ensure_ascii=False, indent=2)
-                else:
-                    with open(regionInfoPath, 'wb') as f:
-                        f.write(ServerFileResponse)
+                with open(regionInfoPath, 'w', encoding='utf-8') as f:
+                    if merge:
+                            json.dump(local_region_data, f, ensure_ascii=False, indent=2)
+                    else:
+                            f.write(ServerFileResponse)
                 console.log(f"文件[green1]导入成功[/green1]。")
                 if os.path.exists(regionInfoBakPath):
                     try:
