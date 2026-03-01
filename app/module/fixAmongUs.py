@@ -115,7 +115,7 @@ def download_and_install_config(config_type):
             sleep(1)
 
     try:
-        defaultHeader(f"\n{config['header']}\n")
+        defaultHeader()
         br()
         with console.status("准备下载设置文件...") as status:
             status.update("检测下载源延迟...")
