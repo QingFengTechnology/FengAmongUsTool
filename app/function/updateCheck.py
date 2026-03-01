@@ -1,5 +1,4 @@
 import requests
-
 from rich.text import Text
 from rich.panel import Panel
 from datetime import datetime
