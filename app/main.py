@@ -26,7 +26,7 @@ mainMenuText = """
 
     2.2 使用新版本配置
 
-3. 通过 Steam 启动 Among Us
+3. 启动 Steam Among Us
 
 4. 关于工具箱
 
