@@ -77,9 +77,6 @@ def testSettingsLatency(base_url, filename, timeout=5):
 def selectBestSettingsSource(filename):
     """选择延迟最低的下载源"""
     results = []
-
-    random.shuffle(DownloadSources)
-    
     for source in DownloadSources:
         console.log(f"测试[cornflower_blue]{source['name']}[/cornflower_blue]延迟[white]...[/white]")
         latency = testSettingsLatency(source['base_url'], filename)
