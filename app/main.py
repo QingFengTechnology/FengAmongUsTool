@@ -1,6 +1,7 @@
 import os
 import sys
 import signal
+import ctypes
 import platform
 
 from time import sleep
@@ -26,9 +27,11 @@ mainMenuText = """
 
     2.2 使用新版本配置
 
-3. 关于工具箱
+3. 通过 Steam 启动 Among Us
 
-4. 退出
+4. 关于工具箱
+
+5. 退出
 """
 
 if __name__ == '__main__':
@@ -66,8 +69,15 @@ if __name__ == '__main__':
         elif commandNumber == "2.2":
             updateAmongUsSetting()
         elif commandNumber == "3":
-            showAboutPage()
+            try:
+                os.startfile("steam://rungameid/945360")
+                console.print("[green1]已尝试通过 Steam 启动 Among Us。[/green1]")
+                sleep(1)
+            except Exception as e:
+                console.print(f"[red1]通过 Steam 启动 Among Us 时出错：{e}[/red1]")
         elif commandNumber == "4":
+            showAboutPage()
+        elif commandNumber == "5":
             sys.exit(0)
         else:
             console.print("[red1]输入的命令编号无效，请重新输入。[/red1]")
