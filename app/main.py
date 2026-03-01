@@ -44,6 +44,10 @@ if __name__ == '__main__':
     console = Console()
 
     defaultHeader()
+    if platform.system() != "Windows":
+        console.print("此项目[red1]不支持[/red1]当前系统，请在 Windows 系统上运行。")
+        console.input("按下 [plum1]Enter[/plum1] 退出[white]...[/white]")
+        sys.exit(1)
     if platform.version().find("10") != 0:
         console.print("当前系统版本[red1]不满足[/red1]所需的要求，请升级你的 Windows 版本。")
         console.print("此项目不支持[red1]Windows 7 及以下版本[/red1]。")
