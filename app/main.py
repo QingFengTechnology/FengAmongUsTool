@@ -1,7 +1,6 @@
 import os
 import sys
 import signal
-import ctypes
 import platform
 
 from time import sleep
