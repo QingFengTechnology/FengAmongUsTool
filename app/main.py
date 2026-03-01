@@ -6,11 +6,11 @@ import platform
 from time import sleep
 from rich.console import Console
 
-from about import run as aboutPage
-from fixAmongUs import run as fixAmongUs
-from fixAmongUs import run2 as updateAmongUs
+from module.about import run as aboutPage
 from function.updateCheck import checkUpdate
-from installServer import run as installServer
+from module.fixAmongUs import run as fixAmongUs
+from module.fixAmongUs import run2 as updateAmongUs
+from module.installServer import run as installServer
 from function.main import defaultHeader, generalMainMenu
 
 mainMenuText = """
