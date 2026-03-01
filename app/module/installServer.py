@@ -2,7 +2,6 @@ import os
 import stat
 import json
 import shutil
-import random
 import requests
 
 from time import time

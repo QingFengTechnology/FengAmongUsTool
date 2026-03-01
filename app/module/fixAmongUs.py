@@ -1,7 +1,6 @@
 import os
 import stat
 import shutil
-import random
 import requests
 
 from rich.text import Text
