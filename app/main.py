@@ -8,8 +8,8 @@ from rich.console import Console
 
 from module.about import showAboutPage
 from function.updateCheck import checkUpdate
-from module.fixAmongUs import fixAmongUsSetting
-from module.fixAmongUs import updateAmongUsSetting
+from module.changeSetting import fixAmongUsSetting
+from module.changeSetting import updateAmongUsSetting
 from module.installServer import installServerRegion
 from function.main import defaultHeader, generalMainMenu
 
