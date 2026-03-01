@@ -53,7 +53,6 @@ if __name__ == '__main__':
         import function.variable
         function.variable.UpdateAvailable = True
         function.variable.UpdateInfo = update_result
-    sleep(2)
 
     while True:
         generalMainMenu(mainMenuText, "主菜单")
