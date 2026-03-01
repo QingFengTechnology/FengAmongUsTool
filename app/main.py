@@ -6,11 +6,11 @@ import platform
 from time import sleep
 from rich.console import Console
 
-from module.about import run as aboutPage
+from module.about import showAboutPage
 from function.updateCheck import checkUpdate
-from module.fixAmongUs import run as fixAmongUs
-from module.fixAmongUs import run2 as updateAmongUs
-from module.installServer import run as installServer
+from module.fixAmongUs import fixAmongUsSetting
+from module.fixAmongUs import updateAmongUsSetting
+from module.installServer import installServerRegion
 from function.main import defaultHeader, generalMainMenu
 
 mainMenuText = """
@@ -58,15 +58,15 @@ if __name__ == '__main__':
         generalMainMenu(mainMenuText, "主菜单")
         commandNumber = console.input("请输入要执行的命令编号：").strip()
         if commandNumber == "1" or commandNumber == "1.1":
-            installServer(merge=True)
+            installServerRegion(merge=True)
         elif commandNumber == "1.2":
-            installServer(merge=False)
+            installServerRegion(merge=False)
         elif commandNumber == "2" or commandNumber == "2.1":
-            fixAmongUs()
+            fixAmongUsSetting()
         elif commandNumber == "2.2":
-            updateAmongUs()
+            updateAmongUsSetting()
         elif commandNumber == "3":
-            aboutPage()
+            showAboutPage()
         elif commandNumber == "4":
             sys.exit(0)
         else:

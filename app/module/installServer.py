@@ -84,7 +84,7 @@ def selectBestServer():
     console.log(f"已选择最快下载源：[cornflower_blue]{best_server['name']}[/cornflower_blue]。")
     return best_server['base_url'] + 'regionInfo.json'
 
-def run(merge=True):
+def installServerRegion(merge=True):
     """工具箱主要模块：安装清风服
     Args:
         merge: 是否为合并模式。

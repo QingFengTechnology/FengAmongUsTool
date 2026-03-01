@@ -241,10 +241,10 @@ def download_and_install_config(config_type):
     
     console.input("按 [plum1]Enter[/plum1] 返回主菜单。")
 
-def run():
+def fixAmongUsSetting():
     """工具箱主模块：修复旧版 Among Us"""
     download_and_install_config("old")
 
-def run2():
+def updateAmongUsSetting():
     """工具箱主模块：配置新版 Among Us"""
     download_and_install_config("new")
