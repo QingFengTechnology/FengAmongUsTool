@@ -11,32 +11,12 @@ from rich.panel import Panel
 from rich.syntax import Syntax
 from rich.console import Console
 
-from function.variable import REGIONVALIDATIONKEY
+from function.variable import REGIONVALIDATIONKEY, DownloadSources
 from function.main import defaultHeader, br, generalMainMenu
 
 console = Console()
 
 MenuTitle = "清风服安装器"
-
-# 下载源列表
-ServerSources = [
-    {
-        "name": "清风 API",
-        "url": "https://api.qingfengawa.top/FengAmongUsTool-Asset/regionInfo.json"
-    },
-    {
-        "name": "GhProxy (CloudFlare)",
-        "url": "https://gh-proxy.org/https://github.com/QingFengTechnology/FengAmongUsTool-Asset/raw/refs/heads/main/regionInfo.json"
-    },
-    {
-        "name": "GhProxy (HongKong)",
-        "url": "https://hk.gh-proxy.org/https://github.com/QingFengTechnology/FengAmongUsTool-Asset/raw/refs/heads/main/regionInfo.json"
-    },
-    {
-        "name": "Github",
-        "url": "https://github.com/QingFengTechnology/FengAmongUsTool-Asset/raw/refs/heads/main/regionInfo.json"
-    }
-]
 
 def getRegionInfoPath():
     """获取私服文件的完整路径"""
@@ -86,9 +66,9 @@ def testServerLatency(url, timeout=3):
 def selectBestServer():
     """选择延迟最低的下载源"""
     results = []    
-    for server in ServerSources:
+    for server in DownloadSources:
         console.log(f"测试下载源[cornflower_blue]{server['name']}[/cornflower_blue][white]...[/white]")
-        latency = testServerLatency(server['url'])
+        latency = testServerLatency(server['base_url'] + 'regionInfo.json')
         if latency == float('inf'):
             console.log(f"[orange1]无法连接[/orange1]至下载源[cornflower_blue]{server['name']}[/cornflower_blue]。")
         else:
@@ -103,7 +83,7 @@ def selectBestServer():
     
     best_server, best_latency = min(available_servers, key=lambda x: x[1])
     console.log(f"已选择最快下载源：[cornflower_blue]{best_server['name']}[/cornflower_blue]。")
-    return best_server['url']
+    return best_server['base_url'] + 'regionInfo.json'
 
 def run(merge=True):
     """工具箱主要模块：安装清风服

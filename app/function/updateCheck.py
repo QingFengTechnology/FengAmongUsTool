@@ -5,38 +5,18 @@ from rich.panel import Panel
 from datetime import datetime
 from rich.console import Console
 
-from function.variable import VersionType, versionDate
+from function.variable import VersionType, versionDate, DownloadSources
 
 console = Console()
-
-# 更新源列表
-UpdateSources = [
-    {
-        "name": "清风 API",
-        "url": "https://api.qingfengawa.top/FengAmongUsTool-Asset/version.json"
-    },
-    {
-        "name": "GhProxy (HongKong)",
-        "url": "https://hk.gh-proxy.org/https://github.com/QingFengTechnology/FengAmongUsTool-Asset/raw/refs/heads/main/version.json"
-    },
-    {
-        "name": "GhProxy (CloudFlare)",
-        "url": "https://gh-proxy.org/https://github.com/QingFengTechnology/FengAmongUsTool-Asset/raw/refs/heads/main/version.json"
-    },
-    {
-        "name": "Github",
-        "url": "https://github.com/QingFengTechnology/FengAmongUsTool-Asset/raw/refs/heads/main/version.json"
-    }
-]
 
 def checkUpdate():
     """检查工具箱更新，返回更新信息（如果有）"""
     # 按顺序尝试各个更新源
-    for source in UpdateSources:
+    for source in DownloadSources:
         try:
             console.log(f"尝试从[cornflower_blue]{source['name']}[/cornflower_blue]检查更新...")
             # 从远程获取版本信息
-            response = requests.get(source['url'], timeout=10)
+            response = requests.get(source['base_url'] + 'version.json', timeout=3)
             response.raise_for_status()
             remote_version_data = response.json()
         

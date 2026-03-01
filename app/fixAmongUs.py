@@ -11,6 +11,7 @@ from rich.syntax import Syntax
 from rich.console import Console
 
 from function.main import generalMainMenu, defaultHeader, br
+from function.variable import DownloadSources
 
 console = Console()
 
@@ -39,22 +40,6 @@ CONFIG_TYPES = {
         "success_message": "更换配置完成。"
     }
 }
-
-# 下载源列表
-SettingsSources = [
-    {
-        "name": "清风 API",
-        "base_url": "https://api.qingfengawa.top/FengAmongUsTool-Asset/"
-    },
-    {
-        "name": "Xget",
-        "base_url": "https://xget.xi-xu.me/gh/QingFengTechnology/FengAmongUsTool-Asset/raw/refs/heads/main/"
-    },
-    {
-        "name": "Github",
-        "base_url": "https://raw.githubusercontent.com/QingFengTechnology/FengAmongUsTool-Asset/refs/heads/main/"
-    }
-]
 
 def getSettingsFilePath():
     """获取游戏设置文件的完整路径"""
@@ -93,9 +78,9 @@ def selectBestSettingsSource(filename):
     """选择延迟最低的下载源"""
     results = []
 
-    random.shuffle(SettingsSources)
+    random.shuffle(DownloadSources)
     
-    for source in SettingsSources:
+    for source in DownloadSources:
         console.log(f"测试[cornflower_blue]{source['name']}[/cornflower_blue]延迟[white]...[/white]")
         latency = testSettingsLatency(source['base_url'], filename)
         if latency == float('inf'):
