@@ -5,7 +5,7 @@ import requests
 
 from rich.text import Text
 from rich.panel import Panel
-from time import sleep, time
+from time import sleep
 from rich.syntax import Syntax
 from rich.console import Console
 

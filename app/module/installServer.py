@@ -4,7 +4,6 @@ import json
 import shutil
 import requests
 
-from time import time
 from rich.text import Text
 from rich.panel import Panel
 from rich.syntax import Syntax
