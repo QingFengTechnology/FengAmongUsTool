@@ -10,11 +10,10 @@ from rich.syntax import Syntax
 from rich.console import Console
 
 from function.main import generalMainMenu, defaultHeader, br
-from function.variable import DownloadSources
+from function.variable import DownloadSources, BestDownloadSource
 
 console = Console()
 
-# 配置类型定义
 CONFIG_TYPES = {
     "old": {
         "title": "修复旧版 Among Us",
@@ -58,42 +57,12 @@ def setFileWritable(filePath):
             console.log(f"[red1]未能移除[/red1]文件只读属性: {str(e)}")
     return False
 
-def testSettingsLatency(base_url, filename, timeout=5):
-    """测试下载源延迟"""
-    try:
-        full_url = base_url + filename
-        start_time = time()
-        response = requests.head(full_url, timeout=timeout, allow_redirects=True)
-        if response.status_code == 200:
-            end_time = time()
-            latency = (end_time - start_time) * 1000
-            return latency
-        else:
-            return float('inf')
-    except:
-        return float('inf')
-
-def selectBestSettingsSource(filename):
-    """选择延迟最低的下载源"""
-    results = []
-    for source in DownloadSources:
-        console.log(f"测试[cornflower_blue]{source['name']}[/cornflower_blue]延迟[white]...[/white]")
-        latency = testSettingsLatency(source['base_url'], filename)
-        if latency == float('inf'):
-            console.log(f"[orange1]未能连接[/orange1]到[cornflower_blue]{source['name']}[/cornflower_blue]。")
-        else:
-            console.log(f"[green1]成功连接[/green1]到[cornflower_blue]{source['name']}[/cornflower_blue]延迟: [cornflower_blue]{latency:.2f}ms[/cornflower_blue]")
-        results.append((source, latency))
-    
-    available_sources = [(s, l) for s, l in results if l != float('inf')]
-    
-    if not available_sources:
-        console.log("[red1]所有下载源均无法连接。[/red1]")
-        return None
-    
-    best_source, best_latency = min(available_sources, key=lambda x: x[1])
-    console.log(f"已选择[cornflower_blue]{best_source['name']}[/cornflower_blue]为下载源。")
-    return best_source['base_url'] + filename
+def getBestSourceUrl(filename):
+    """获取最佳下载源的完整URL"""
+    import function.variable
+    if function.variable.BestDownloadSource:
+        return function.variable.BestDownloadSource['base_url'] + filename
+    return DownloadSources[0]['base_url'] + filename
 
 def download_and_install_config(config_type):
     """通用的下载和安装配置函数"""
@@ -118,13 +87,7 @@ def download_and_install_config(config_type):
         defaultHeader()
         br()
         with console.status("准备下载设置文件...") as status:
-            status.update("检测下载源延迟...")
-            DownloadSettingsURL = selectBestSettingsSource(config["filename"])
-            if not DownloadSettingsURL:
-                status.stop()
-                console.print("[red1]未能连接[/red1]至可用下载服务器。")
-                console.input("按 [plum1]Enter[/plum1] 返回主菜单...")
-                return
+            DownloadSettingsURL = getBestSourceUrl(config["filename"])
             status.update("备份已有文件...")
             try:
                 if os.path.exists(settingsFilePath):

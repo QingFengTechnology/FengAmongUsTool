@@ -1,13 +1,54 @@
 import ctypes
+import requests
+
+from time import time
 from rich.text import Text
 from rich.panel import Panel
 from rich.box import DOUBLE_EDGE
 from rich.console import Console
 
 from function.updateCheck import updateNotification
-from function.variable import Version, VersionType, ToolTitle
+from function.variable import Version, VersionType, ToolTitle, DownloadSources
 
 console = Console()
+
+def testLatency(base_url, timeout=3):
+    """测试下载源延迟"""
+    try:
+        start_time = time()
+        response = requests.head(base_url, timeout=timeout, allow_redirects=True)
+        end_time = time()
+        if response.status_code < 500:
+            latency = (end_time - start_time) * 1000
+            return latency
+        else:
+            return float('inf')
+    except:
+        return float('inf')
+
+def selectBestSource():
+    """选择延迟最低的下载源"""
+    import function.variable
+    results = []
+    for source in DownloadSources:
+        console.log(f"测试[cornflower_blue]{source['name']}[/cornflower_blue]延迟[white]...[/white]")
+        latency = testLatency(source['base_url'])
+        if latency == float('inf'):
+            console.log(f"[orange1]未能连接[/orange1]到[cornflower_blue]{source['name']}[/cornflower_blue]。")
+        else:
+            console.log(f"[green1]成功连接[/green1]到[cornflower_blue]{source['name']}[/cornflower_blue]延迟: [cornflower_blue]{latency:.2f}ms[/cornflower_blue]")
+        results.append((source, latency))
+    
+    available_sources = [(s, l) for s, l in results if l != float('inf')]
+    
+    if not available_sources:
+        console.log("[red1]所有下载源均无法连接[/red1]。")
+        function.variable.BestDownloadSource = None
+        return False
+    
+    best_source = min(available_sources, key=lambda x: x[1])[0]
+    console.log(f"已选择[cornflower_blue]{best_source['name']}[/cornflower_blue]为下载源。")
+    function.variable.BestDownloadSource = best_source
 
 def cls():
   """仿制批处理的 cls 清屏操作"""
@@ -27,8 +68,9 @@ def defaultHeader(title=ToolTitle, version=Version, isMainMenu=False):
         br()
         updateNotification(function.variable.UpdateInfo)
     
-    # （仅 isMainMenu = True 显示）检查窗口是否最大化
+    # 仅在主菜单显示
     if isMainMenu:
+        # 窗口最大化检测
         hwnd = ctypes.windll.user32.FindWindowW(None, "清风 Among Us 工具箱")
         if hwnd:
             class RECT(ctypes.Structure):
@@ -40,6 +82,11 @@ def defaultHeader(title=ToolTitle, version=Version, isMainMenu=False):
         if windowWidth <= screenWidth:
             br()
             console.print(Panel(Text("\n当前窗口似乎并未最大化显示，这可能会影响显示效果。\n", justify="center"), title="警告", style="yellow1"))
+        
+        # 下载源无效警告
+        if not function.variable.BestDownloadSource:
+            br()
+            console.print(Panel(Text("\n无法连接到可用的源服务器，这将导致工具箱绝大部分功能不可用。\n", justify="center"), title="未连接至可用源服务器", style="red1"))
 
 def br():
   """(名称)HTML 风格的换行"""

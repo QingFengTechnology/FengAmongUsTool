@@ -10,7 +10,7 @@ from rich.panel import Panel
 from rich.syntax import Syntax
 from rich.console import Console
 
-from function.variable import REGIONVALIDATIONKEY, DownloadSources
+from function.variable import REGIONVALIDATIONKEY, DownloadSources, BestDownloadSource
 from function.main import defaultHeader, br, generalMainMenu
 
 console = Console()
@@ -48,41 +48,12 @@ def restoreFromBackup(regionInfoPath, regionInfoBakPath):
             console.log(f"[red1]恢复备份失败:[/red1] {str(restoreError)}")
     return False
 
-def testServerLatency(url, timeout=3):
-    """测试下载源延迟"""
-    try:
-        start_time = time()
-        response = requests.head(url, timeout=timeout, allow_redirects=True)
-        if response.status_code == 200:
-            end_time = time()
-            latency = (end_time - start_time) * 1000
-            return latency
-        else:
-            return float('inf')
-    except:
-        return float('inf')
-
-def selectBestServer():
-    """选择延迟最低的下载源"""
-    results = []    
-    for server in DownloadSources:
-        console.log(f"测试下载源[cornflower_blue]{server['name']}[/cornflower_blue][white]...[/white]")
-        latency = testServerLatency(server['base_url'] + 'regionInfo.json')
-        if latency == float('inf'):
-            console.log(f"[orange1]无法连接[/orange1]至下载源[cornflower_blue]{server['name']}[/cornflower_blue]。")
-        else:
-            console.log(f"[green1]成功连接[/green1]至下载源[cornflower_blue]{server['name']}[/cornflower_blue]，延迟: [cornflower_blue]{latency:.2f}ms[/cornflower_blue]")
-        results.append((server, latency))
-    
-    available_servers = [(s, l) for s, l in results if l != float('inf')]
-    
-    if not available_servers:
-        console.log("安装时[red1]发生意外错误[/red1]，所有下载源均[red1]无法连接[/red1]。")
-        return None
-    
-    best_server, best_latency = min(available_servers, key=lambda x: x[1])
-    console.log(f"已选择最快下载源：[cornflower_blue]{best_server['name']}[/cornflower_blue]。")
-    return best_server['base_url'] + 'regionInfo.json'
+def getBestSourceUrl(filename):
+    """获取最佳下载源的完整URL"""
+    import function.variable
+    if function.variable.BestDownloadSource:
+        return function.variable.BestDownloadSource['base_url'] + filename
+    return DownloadSources[0]['base_url'] + filename
 
 def installServerRegion(merge=True):
     """工具箱主要模块：安装清风服
@@ -98,13 +69,7 @@ def installServerRegion(merge=True):
         defaultHeader()
         br()
         with console.status("准备下载清风服文件...") as status:
-            status.update("检测下载源延迟...")
-            DownloadServerURL = selectBestServer()
-            if not DownloadServerURL:
-                status.stop()
-                console.print("[red1]未能连接[/red1]至可用下载服务器。")
-                console.input("按 [plum1]Enter[/plum1] 返回主菜单...")
-                return
+            DownloadServerURL = getBestSourceUrl('regionInfo.json')
             status.update("备份已有文件...")
             try:
                 if os.path.exists(regionInfoPath):
