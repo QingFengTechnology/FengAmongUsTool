@@ -5,7 +5,7 @@ REGIONVALIDATIONKEY: str = "StaticHttpRegionInfo, Assembly-CSharp"
 
 Version: str = "v3.3.0LTS"
 VersionType: Literal["alpha", "beta", "preview", "release"] = "release"
-versionDate: date = date(2026, 3, 1)
+versionDate: date = date(2026, 3, 3)
 
 UpdateAvailable: bool = False
 UpdateInfo: str = None
