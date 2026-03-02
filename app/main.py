@@ -68,27 +68,37 @@ if __name__ == '__main__':
 """
         generalMainMenu(mainMenuText, "主菜单")
         commandNumber = console.input("请输入要执行的命令编号：").strip()
-        if commandNumber == "1" or commandNumber == "1.1":
+        try:
+            commandNumber = float(commandNumber)
+        except ValueError:
+            console.print("[red1]输入的命令编号无效，请重新输入。[/red1]")
+            sleep(1)
+            continue
+        if commandNumber < 3 and not currentSource:
+            console.print("当前[red1]无可用源服务器[/red1]，请在检查网络连接后重新自动选择源服务器。")
+            sleep(2)
+            continue
+        if commandNumber == 1.0 or commandNumber == 1.1:
             installServerRegion(merge=True)
-        elif commandNumber == "1.2":
+        elif commandNumber == 1.2:
             installServerRegion(merge=False)
-        elif commandNumber == "2" or commandNumber == "2.1":
+        elif commandNumber == 2.0 or commandNumber == 2.1:
             fixAmongUsSetting()
-        elif commandNumber == "2.2":
+        elif commandNumber == 2.2:
             updateAmongUsSetting()
-        elif commandNumber == "3":
+        elif commandNumber == 3.0:
             try:
                 os.startfile("steam://rungameid/945360")
                 console.print("[green1]已尝试通过 Steam 启动 Among Us。[/green1]")
                 sleep(1)
             except Exception as e:
                 console.print(f"[red1]通过 Steam 启动 Among Us 时出错：{e}[/red1]")
-        elif commandNumber == "4":
+        elif commandNumber == 4.0:
             selectBestSource()
             sleep(2)
-        elif commandNumber == "5":
+        elif commandNumber == 5.0:
             showAboutPage()
-        elif commandNumber == "6":
+        elif commandNumber == 6.0:
             sys.exit(0)
         else:
             console.print("[red1]输入的命令编号无效，请重新输入。[/red1]")
