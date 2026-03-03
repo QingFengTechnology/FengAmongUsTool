@@ -84,7 +84,7 @@ def download_and_install_config(config_type):
             sleep(1)
 
     try:
-        defaultHeader()
+        defaultHeader(version=config["title"])
         br()
         with console.status("准备下载设置文件...") as status:
             DownloadSettingsURL = getBestSourceUrl(config["filename"])

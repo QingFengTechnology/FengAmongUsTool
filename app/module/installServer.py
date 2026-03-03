@@ -14,8 +14,6 @@ from function.main import defaultHeader, br, generalMainMenu
 
 console = Console()
 
-MenuTitle = "清风服安装器"
-
 def getRegionInfoPath():
     """获取私服文件的完整路径"""
     appdata_path = os.environ['APPDATA']
@@ -59,13 +57,18 @@ def installServerRegion(merge=True):
     Args:
         merge: 是否为合并模式。
     """
+    MenuTitle = "清风服安装器"
+    if merge:
+        MenuTitle += " (合并模式)"
+    else:
+        MenuTitle += " (强制模式)"
     regionInfoPath = getRegionInfoPath()
     regionInfoBakPath = regionInfoPath + '.bak'
     success = False
     added_servers_count = 0
     duplicate_servers_count = 0
     try:
-        defaultHeader()
+        defaultHeader(version=MenuTitle)
         br()
         with console.status("准备下载清风服文件...") as status:
             DownloadServerURL = getBestSourceUrl('regionInfo.json')
@@ -215,6 +218,7 @@ def installServerRegion(merge=True):
             except Exception as e:
                 console.log(f"[red1]设置只读属性失败: {str(e)}[/red1]")
             status.update("请稍后...")
+            console.input() #Test
     
     except Exception as e:
         console.log(f"[red1]发生意外错误[/red1]，安装失败: {str(e)}")
