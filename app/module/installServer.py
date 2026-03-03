@@ -218,7 +218,6 @@ def installServerRegion(merge=True):
             except Exception as e:
                 console.log(f"[red1]设置只读属性失败: {str(e)}[/red1]")
             status.update("请稍后...")
-            console.input() #Test
     
     except Exception as e:
         console.log(f"[red1]发生意外错误[/red1]，安装失败: {str(e)}")
