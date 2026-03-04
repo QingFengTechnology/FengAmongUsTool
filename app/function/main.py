@@ -70,7 +70,7 @@ def defaultHeader(title=ToolTitle, version=Version, isMainMenu=False):
     
     # 仅在主菜单显示
     if isMainMenu:
-        # 窗口最大化检测
+        # 窗口宽度检测
         hwnd = ctypes.windll.user32.GetForegroundWindow()
         if hwnd:
             class RECT(ctypes.Structure):
@@ -78,10 +78,9 @@ def defaultHeader(title=ToolTitle, version=Version, isMainMenu=False):
             rect = RECT()
             ctypes.windll.user32.GetWindowRect(hwnd, ctypes.byref(rect))
             windowWidth = rect.right - rect.left
-            screenWidth = ctypes.windll.user32.GetSystemMetrics(0)
-            if windowWidth < screenWidth:
+            if windowWidth < 775:
                 br()
-                console.print(Panel(Text("\n当前窗口似乎并未最大化显示，这可能会影响显示效果。\n", justify="center"), title="警告", style="yellow1"))
+                console.print(Panel(Text("\n当前窗口显示宽度过小，这可能会导致显示异常。\n", justify="center"), title="警告", style="yellow1"))
         
         # 下载源无效警告
         if not function.variable.BestDownloadSource:
