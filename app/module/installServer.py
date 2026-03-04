@@ -166,8 +166,8 @@ def installServerRegion(merge=True):
                                 duplicate_found = True
                                 server_name = region['Name']
                                 import re
-                                server_name = re.sub(r'<color=#([0-9A-F]{6})>([^<]+)</color>', r'\2', server_name)
-                                console.log(f"检测到重复服务器{server_name}，跳过安装。")
+                                server_name = re.sub(r'<[^>]+>', '', server_name)
+                                console.log(f"检测到重复服务器[cornflower_blue]{server_name}[/cornflower_blue]，跳过安装。")
                                 break
                         
                         if not duplicate_found:
