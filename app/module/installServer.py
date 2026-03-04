@@ -137,8 +137,8 @@ def installServerRegion(merge=True):
                 console.print("下方为工具箱获取到的文件内容:")
                 console.print(Syntax(ServerFileResponse, theme="github-dark"))
                 raise
-            status.update("合并配置文件...")
             if merge:
+                status.update("合并配置文件...")
                 try:
                     if os.path.exists(regionInfoPath):
                         with open(regionInfoPath, 'r', encoding='utf-8') as f:
@@ -186,31 +186,29 @@ def installServerRegion(merge=True):
                     restoreFromBackup(regionInfoPath, regionInfoBakPath)
                     raise
             else:
-                console.log("[green1]跳过合并[/green1]，直接使用下载的配置文件。")
-            
-            status.update("导入文件...")
-            try:
-                os.makedirs(os.path.dirname(regionInfoPath), exist_ok=True)
-                if os.path.exists(regionInfoPath):
-                    setFileWritable(regionInfoPath)
-                
-                with open(regionInfoPath, 'w', encoding='utf-8') as f:
-                    if merge:
-                            json.dump(local_region_data, f, ensure_ascii=False, indent=2)
-                    else:
-                            f.write(ServerFileResponse)
-                console.log(f"文件[green1]导入成功[/green1]。")
-                if os.path.exists(regionInfoBakPath):
-                    try:
-                        setFileWritable(regionInfoBakPath)
-                        os.remove(regionInfoBakPath)
-                    except Exception as e:
-                        console.log(f"[orange1]未能清理[/orange1]备份文件: {str(e)}")
-                success = True    
-            except Exception as e:
-                console.log(f"[red1]导入文件失败[/red1]: {str(e)}")
-                restoreFromBackup(regionInfoPath, regionInfoBakPath)
-                raise
+                status.update("导入文件...")
+                try:
+                    os.makedirs(os.path.dirname(regionInfoPath), exist_ok=True)
+                    if os.path.exists(regionInfoPath):
+                        setFileWritable(regionInfoPath)
+                    
+                    with open(regionInfoPath, 'w', encoding='utf-8') as f:
+                        if merge:
+                                json.dump(local_region_data, f, ensure_ascii=False, indent=2)
+                        else:
+                                f.write(ServerFileResponse)
+                    console.log(f"文件[green1]导入成功[/green1]。")
+                    if os.path.exists(regionInfoBakPath):
+                        try:
+                            setFileWritable(regionInfoBakPath)
+                            os.remove(regionInfoBakPath)
+                        except Exception as e:
+                            console.log(f"[orange1]未能清理[/orange1]备份文件: {str(e)}")
+                    success = True    
+                except Exception as e:
+                    console.log(f"[red1]导入文件失败[/red1]: {str(e)}")
+                    restoreFromBackup(regionInfoPath, regionInfoBakPath)
+                    raise
             status.update("设置只读...")
             try:
                 os.chmod(regionInfoPath, stat.S_IREAD)
