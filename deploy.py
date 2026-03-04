@@ -7,6 +7,22 @@ from distutils.sysconfig import get_python_lib
 logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 logger = logging.getLogger(__name__)
 
+
+def copy_to_dist(src: Path, dist: Path, scope: str) -> None:
+    if not src.exists():
+        logger.warning("%s source `%s` does not exist, skip", scope, src)
+        return
+
+    logger.info("Copying %s `%s` to `%s`", scope, src, dist)
+    try:
+        if src.is_file():
+            dist.parent.mkdir(parents=True, exist_ok=True)
+            copy(src, dist)
+        else:
+            copytree(src, dist, dirs_exist_ok=True)
+    except Exception:
+        logger.exception("Failed to copy %s `%s` to `%s`", scope, src, dist)
+
 # https://blog.csdn.net/qq_25262697/article/details/129302819
 # https://www.cnblogs.com/happylee666/articles/16158458.html
 args = [
@@ -38,16 +54,7 @@ copied_libs = []
 for src in copied_libs:
     src = site_packages / src
     dist = dist_folder / src.name
-
-    logger.info(f"Coping site-packages `{src}` to `{dist}`")
-
-    try:
-        if src.is_file():
-            copy(src, dist)
-        else:
-            copytree(src, dist)
-    except Exception:
-        pass
+    copy_to_dist(src, dist, "site-packages")
 
 
 # copy standard library
@@ -55,13 +62,4 @@ copied_files = ["ctypes", "hashlib.py", "hmac.py", "random.py", "secrets.py", "u
 for file in copied_files:
     src = site_packages.parent / file
     dist = dist_folder / src.name
-
-    logger.info(f"Coping stand library `{src}` to `{dist}`")
-
-    try:
-        if src.is_file():
-            copy(src, dist)
-        else:
-            copytree(src, dist)
-    except Exception:
-        pass
+    copy_to_dist(src, dist, "standard library")
