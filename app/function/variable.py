@@ -3,9 +3,9 @@ from typing import Literal
 
 REGIONVALIDATIONKEY: str = "StaticHttpRegionInfo, Assembly-CSharp"
 
-Version: str = "v3.3.0LTS"
+Version: str = "v3.3.1LTS"
 VersionType: Literal["alpha", "beta", "preview", "release"] = "release"
-versionDate: date = date(2026, 3, 3)
+versionDate: date = date(2026, 3, 4)
 
 UpdateAvailable: bool = False
 UpdateInfo: str = None
