@@ -64,7 +64,6 @@ def installServerRegion(merge=True):
         MenuTitle += " (强制模式)"
     regionInfoPath = getRegionInfoPath()
     regionInfoBakPath = regionInfoPath + '.bak'
-    success = False
     added_servers_count = 0
     duplicate_servers_count = 0
     try:
@@ -204,7 +203,6 @@ def installServerRegion(merge=True):
                             os.remove(regionInfoBakPath)
                         except Exception as e:
                             console.log(f"[orange1]未能清理[/orange1]备份文件: {str(e)}")
-                    success = True    
                 except Exception as e:
                     console.log(f"[red1]导入文件失败[/red1]: {str(e)}")
                     restoreFromBackup(regionInfoPath, regionInfoBakPath)
@@ -219,23 +217,18 @@ def installServerRegion(merge=True):
     
     except Exception as e:
         console.log(f"[red1]发生意外错误[/red1]，安装失败: {str(e)}")
-        success = False
         console.print("\n如果你确认这是工具箱问题，请截图相关信息并通过 GitHub Issue 报告问题。\n")
         console.input("按 [plum1]Enter[/plum1] 返回主菜单。")
         return
-    if success:
-        if merge:
-            if added_servers_count == 0 and duplicate_servers_count > 0:
-                finalMessage = f"\n已取消安装服务器，所有服务器均为重复项。\n若仍需要安装清风服，请选择强制安装。\n"
-            else:
-                finalMessage = f"\n服务器安装完成。\n"
-                if duplicate_servers_count > 0:
-                    finalMessage += f"已跳过安装 {duplicate_servers_count} 个服务器，如果你仍需要安装，请选择强制安装。\n"
+    if merge:
+        if added_servers_count == 0 and duplicate_servers_count > 0:
+            finalMessage = f"\n已取消安装服务器，所有服务器均为重复项。\n若仍需要安装清风服，请选择强制安装。\n"
         else:
-            finalMessage = "\n服务器安装完成。\n"
-        generalMainMenu(finalMessage, MenuTitle)
+            finalMessage = f"\n服务器安装完成。\n"
+            if duplicate_servers_count > 0:
+                finalMessage += f"已跳过安装 {duplicate_servers_count} 个服务器，如果你仍需要安装，请选择强制安装。\n"
     else:
-        finalMessage = "\n服务器安装失败，请查看日志以了解详情。\n"
-        console.print(Panel(Text(finalMessage, style="red1"), title=Text(MenuTitle, style="bold")))
+        finalMessage = "\n服务器安装完成。\n"
+    generalMainMenu(finalMessage, MenuTitle)
     
     console.input("按 [plum1]Enter[/plum1] 返回主菜单。")
