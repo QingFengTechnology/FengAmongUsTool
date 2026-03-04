@@ -71,7 +71,7 @@ def defaultHeader(title=ToolTitle, version=Version, isMainMenu=False):
     # 仅在主菜单显示
     if isMainMenu:
         # 窗口最大化检测
-        hwnd = ctypes.windll.user32.FindWindowW(None, "清风 Among Us 工具箱")
+        hwnd = ctypes.windll.kernel32.GetConsoleWindow()
         if hwnd:
             class RECT(ctypes.Structure):
                 _fields_ = [("left", ctypes.c_long), ("top", ctypes.c_long), ("right", ctypes.c_long), ("bottom", ctypes.c_long)]
@@ -79,7 +79,7 @@ def defaultHeader(title=ToolTitle, version=Version, isMainMenu=False):
             ctypes.windll.user32.GetWindowRect(hwnd, ctypes.byref(rect))
             windowWidth = rect.right - rect.left
             screenWidth = ctypes.windll.user32.GetSystemMetrics(0)
-            if windowWidth <= screenWidth:
+            if windowWidth < screenWidth:
                 br()
                 console.print(Panel(Text("\n当前窗口似乎并未最大化显示，这可能会影响显示效果。\n", justify="center"), title="警告", style="yellow1"))
         
