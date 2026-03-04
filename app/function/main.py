@@ -71,7 +71,7 @@ def defaultHeader(title=ToolTitle, version=Version, isMainMenu=False):
     # 仅在主菜单显示
     if isMainMenu:
         # 窗口最大化检测
-        hwnd = ctypes.windll.kernel32.GetConsoleWindow()
+        hwnd = ctypes.windll.user32.GetForegroundWindow()
         if hwnd:
             class RECT(ctypes.Structure):
                 _fields_ = [("left", ctypes.c_long), ("top", ctypes.c_long), ("right", ctypes.c_long), ("bottom", ctypes.c_long)]
