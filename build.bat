@@ -27,7 +27,11 @@ if not exist "dist\" (
 
 echo 开始打包dist文件夹...
 echo.
-set zip_filename=dist\FengAmongUsTool.zip
+set zip_filename=FengAmongUsTool.zip
+if exist "%zip_filename%" (
+    echo 删除已存在的压缩包文件...
+    del /f /q "%zip_filename%"
+)
 powershell -Command "& {Add-Type -AssemblyName System.IO.Compression.FileSystem; [System.IO.Compression.ZipFile]::CreateFromDirectory('dist', '%zip_filename%')}"
 :: 检查打包是否成功
 if %errorlevel% neq 0 (
