@@ -77,11 +77,11 @@ def defaultHeader(title=ToolTitle, version=Version, isMainMenu=False):
                 _fields_ = [("left", ctypes.c_long), ("top", ctypes.c_long), ("right", ctypes.c_long), ("bottom", ctypes.c_long)]
             rect = RECT()
             ctypes.windll.user32.GetWindowRect(hwnd, ctypes.byref(rect))
-        windowWidth = rect.right - rect.left
-        screenWidth = ctypes.windll.user32.GetSystemMetrics(0)
-        if windowWidth <= screenWidth:
-            br()
-            console.print(Panel(Text("\n当前窗口似乎并未最大化显示，这可能会影响显示效果。\n", justify="center"), title="警告", style="yellow1"))
+            windowWidth = rect.right - rect.left
+            screenWidth = ctypes.windll.user32.GetSystemMetrics(0)
+            if windowWidth <= screenWidth:
+                br()
+                console.print(Panel(Text("\n当前窗口似乎并未最大化显示，这可能会影响显示效果。\n", justify="center"), title="警告", style="yellow1"))
         
         # 下载源无效警告
         if not function.variable.BestDownloadSource:
