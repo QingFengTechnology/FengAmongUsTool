@@ -18,15 +18,15 @@ DownloadSources = [
     },
     {
         "name": "GhProxy (CloudFlare)",
-        "base_url": "https://gh-proxy.org/https://github.com/QingFengTechnology/FengAmongUsTool-Asset/raw/refs/heads/main/"
+        "base_url": "https://gh-proxy.org/https://github.com/BreezeCrew/FengAmongUsTool-Asset/raw/refs/heads/main/"
     },
     {
         "name": "GhProxy (HongKong)",
-        "base_url": "https://hk.gh-proxy.org/https://github.com/QingFengTechnology/FengAmongUsTool-Asset/raw/refs/heads/main/"
+        "base_url": "https://hk.gh-proxy.org/https://github.com/BreezeCrew/FengAmongUsTool-Asset/raw/refs/heads/main/"
     },
     {
         "name": "Github",
-        "base_url": "https://raw.githubusercontent.com/QingFengTechnology/FengAmongUsTool-Asset/refs/heads/main/"
+        "base_url": "https://raw.githubusercontent.com/BreezeCrew/FengAmongUsTool-Asset/refs/heads/main/"
     }
 ]
 
