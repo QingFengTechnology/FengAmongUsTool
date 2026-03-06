@@ -12,9 +12,9 @@ pageText = f"""
 
 许可：GPL-3.0
 
-反馈：https://github.com/QingFengTechnology/FengAmongUsTool/issues
+反馈：https://github.com/BreezeCrew/FengAmongUsTool/issues
 
-源码：https://github.com/QingFengTechnology/FengAmongUsTool
+源码：https://github.com/BreezeCrew/FengAmongUsTool
 
 作者：https://github.com/QingFeng-awa
 
