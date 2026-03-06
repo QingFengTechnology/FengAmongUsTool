@@ -3,17 +3,22 @@ import logging
 import os
 import sys
 
-from PyQt6.QtCore import Qt, QTranslator
+from PyQt6.QtCore import Qt, QTranslator, QLocale
 from PyQt6.QtWidgets import QApplication
 
 from app.common.config import cfg, loadConfig
 from app.view.main_window import MainWindow
 
-# 配置日志
+# 配置日志：控制台 + 文件（每次启动覆盖）
+_log_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'FengAmongUsTool.log')
 logging.basicConfig(
     level=logging.DEBUG,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S'
+    datefmt='%Y-%m-%d %H:%M:%S',
+    handlers=[
+        logging.StreamHandler(),
+        logging.FileHandler(_log_file, mode='w', encoding='utf-8'),
+    ]
 )
 
 # enable dpi scale
@@ -31,24 +36,19 @@ app.setAttribute(Qt.ApplicationAttribute.AA_DontCreateNativeWidgetSiblings)
 # 加载配置（必须在 QApplication 创建后）
 loadConfig()
 
-# internationalization
-locale = cfg.get(cfg.language).value
-translator = QTranslator()
-translator.load(f":/qfluentwidgets/i18n/qfluentwidgets.{locale.name()}.qm")
-galleryTranslator = QTranslator()
-galleryTranslator.load(locale, "app", ".", ":/app/i18n")
+# 加载 qfluentwidgets 组件库翻译（使系统语言下 On/Off 等控件文字显示为中文）
+_translator = QTranslator()
+_locale = QLocale.system()
+_translator.load(f":/qfluentwidgets/i18n/qfluentwidgets.{_locale.name()}.qm")
+app.installTranslator(_translator)
 
-app.installTranslator(translator)
-app.installTranslator(galleryTranslator)
-
-# 创建主窗口（但不显示，等待下载完成后再显示）
+# 创建主窗口
 w = MainWindow()
 
 # 在程序退出时清理缓存
 def cleanup_before_exit():
     w.cleanupCache()
 
-# 连接程序退出信号
 app.aboutToQuit.connect(cleanup_before_exit)
 
 app.exec()

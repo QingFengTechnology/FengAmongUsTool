@@ -20,8 +20,8 @@ class ServersDownloader:
 
     # 默认的下载源
     DEFAULT_SOURCES = [
-        "https://github.com/QingFengTechnology/FengAmongUsTool-Asset/raw/main/servers.json",
-        "https://gh-proxy.org/https://github.com/QingFengTechnology/FengAmongUsTool-Asset/raw/main/servers.json",
+        "https://github.com/BreezeCrew/FengAmongUsTool-Asset/raw/main/servers.json",
+        "https://gh-proxy.org/https://github.com/BreezeCrew/FengAmongUsTool-Asset/raw/main/servers.json",
         "https://api.qingfengawa.top/FengAmongUsTool-Asset/servers.json"
     ]
 

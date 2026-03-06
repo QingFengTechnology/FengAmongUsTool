@@ -23,7 +23,6 @@ class SettingCardGroup(CardGroup):
        setFont(self.titleLabel, 14, QFont.Weight.DemiBold)
 
 
-
 class SettingInterface(ScrollArea):
     """ Setting interface """
 
@@ -33,75 +32,58 @@ class SettingInterface(ScrollArea):
         self.expandLayout = ExpandLayout(self.scrollWidget)
 
         # setting label
-        self.settingLabel = QLabel(self.tr("Settings"), self)
+        self.settingLabel = QLabel('设置', self)
 
         # personalization
-        self.personalGroup = SettingCardGroup(
-            self.tr('Personalization'), self.scrollWidget)
+        self.personalGroup = SettingCardGroup('个性化', self.scrollWidget)
         self.micaCard = SwitchSettingCard(
             FIF.TRANSPARENT,
-            self.tr('Mica effect'),
-            self.tr('Apply semi transparent to windows and surfaces'),
+            '云母效果',
+            '为窗口和界面应用半透明效果',
             cfg.micaEnabled,
             self.personalGroup
         )
         self.themeCard = ComboBoxSettingCard(
             cfg.themeMode,
             FIF.BRUSH,
-            self.tr('Application theme'),
-            self.tr("Change the appearance of your application"),
-            texts=[
-                self.tr('Light'), self.tr('Dark'),
-                self.tr('Use system setting')
-            ],
+            '应用主题',
+            '更改应用的外观',
+            texts=['浅色', '深色', '跟随系统设置'],
             parent=self.personalGroup
         )
         self.zoomCard = ComboBoxSettingCard(
             cfg.dpiScale,
             FIF.ZOOM,
-            self.tr("Interface zoom"),
-            self.tr("Change the size of widgets and fonts"),
-            texts=[
-                "100%", "125%", "150%", "175%", "200%",
-                self.tr("Use system setting")
-            ],
-            parent=self.personalGroup
-        )
-        self.languageCard = ComboBoxSettingCard(
-            cfg.language,
-            FIF.LANGUAGE,
-            self.tr('Language'),
-            self.tr('Set your preferred language for UI'),
-            texts=['简体中文', '繁體中文', 'English', self.tr('Use system setting')],
+            '界面缩放',
+            '更改组件和字体的大小',
+            texts=["100%", "125%", "150%", "175%", "200%", '跟随系统设置'],
             parent=self.personalGroup
         )
 
         # update software
-        self.updateSoftwareGroup = SettingCardGroup(
-            self.tr("Software update"), self.scrollWidget)
+        self.updateSoftwareGroup = SettingCardGroup('软件更新', self.scrollWidget)
         self.updateOnStartUpCard = SwitchSettingCard(
             FIF.UPDATE,
-            self.tr('Check for updates when the application starts'),
-            self.tr('The new version will be more stable and have more features'),
+            '在应用启动时检查更新',
+            '新版本将更加稳定并拥有更多功能',
             configItem=cfg.checkUpdateAtStartUp,
             parent=self.updateSoftwareGroup
         )
 
         # application
-        self.aboutGroup = SettingCardGroup(self.tr('About'), self.scrollWidget)
+        self.aboutGroup = SettingCardGroup('关于', self.scrollWidget)
         self.feedbackCard = PrimaryPushSettingCard(
-            self.tr('Provide feedback'),
+            '提交反馈',
             FIF.FEEDBACK,
-            self.tr('Provide feedback'),
-            self.tr('Help us improve FengAmongUsTool by providing feedback'),
+            '提交反馈',
+            '通过提交反馈帮助我们改进 FengAmongUsTool',
             self.aboutGroup
         )
         self.aboutCard = PrimaryPushSettingCard(
-            self.tr('Check update'),
+            '检查更新',
             FIF.INFO,
-            self.tr('About'),
-            '© ' + self.tr('Copyright') + f" {YEAR}, {AUTHOR}. " +
-            self.tr('Version') + " " + VERSION,
+            '关于',
+            f'© 版权所有 {YEAR}, {AUTHOR}. 版本 {VERSION}',
             self.aboutGroup
         )
 
@@ -134,7 +116,6 @@ class SettingInterface(ScrollArea):
         self.personalGroup.addSettingCard(self.micaCard)
         self.personalGroup.addSettingCard(self.themeCard)
         self.personalGroup.addSettingCard(self.zoomCard)
-        self.personalGroup.addSettingCard(self.languageCard)
 
         self.updateSoftwareGroup.addSettingCard(self.updateOnStartUpCard)
 
@@ -151,8 +132,8 @@ class SettingInterface(ScrollArea):
     def _showRestartTooltip(self):
         """ show restart tooltip """
         InfoBar.success(
-            self.tr('Updated successfully'),
-            self.tr('Configuration takes effect after restart'),
+            '更新成功',
+            '配置将在重启后生效',
             duration=1500,
             parent=self
         )
