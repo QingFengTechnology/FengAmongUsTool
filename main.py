@@ -9,8 +9,10 @@ from PyQt6.QtWidgets import QApplication
 from app.common.config import cfg, loadConfig
 from app.view.main_window import MainWindow
 
-# 配置日志：控制台 + 文件（每次启动覆盖）
-_log_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'FengAmongUsTool.log')
+# 配置日志：控制台 + 文件（每次启动覆盖，使用用户目录以兼容 PyInstaller/Windows）
+_log_dir = os.path.join(os.getenv('LOCALAPPDATA') or os.path.expanduser('~'), 'FengAmongUsTool')
+os.makedirs(_log_dir, exist_ok=True)
+_log_file = os.path.join(_log_dir, 'FengAmongUsTool.log')
 logging.basicConfig(
     level=logging.DEBUG,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',

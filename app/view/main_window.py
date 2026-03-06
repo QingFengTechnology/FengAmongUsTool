@@ -50,6 +50,20 @@ class DownloadWorker(QObject):
             self.download_finished.emit(None)
 
 
+class UpdateWorker(QObject):
+    finished = pyqtSignal(object)
+
+    def run(self):
+        if sys.platform.startswith("win"):
+            asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+        try:
+            result = asyncio.run(check_update())
+        except Exception as e:
+            logger.error(f"检查更新时出错: {e}")
+            result = False
+        self.finished.emit(result)
+
+
 class MainWindow(SplitFluentWindow):
 
     def __init__(self):
@@ -202,22 +216,7 @@ class MainWindow(SplitFluentWindow):
 
     def _checkUpdate(self):
         """异步检查更新，有新版时弹出提示"""
-        import sys
-
-        from PyQt6.QtCore import QThread, QObject, pyqtSignal, Qt
-
-        class UpdateWorker(QObject):
-            finished = pyqtSignal(object)
-
-            def run(self):
-                if sys.platform.startswith("win"):
-                    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-                try:
-                    result = asyncio.run(check_update())
-                except Exception as e:
-                    logger.error(f"检查更新时出错: {e}")
-                    result = False
-                self.finished.emit(result)
+        from PyQt6.QtCore import QThread, Qt
 
         self._update_thread = QThread()
         self._update_worker = UpdateWorker()

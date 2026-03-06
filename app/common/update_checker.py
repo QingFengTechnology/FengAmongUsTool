@@ -6,7 +6,7 @@
 
 import asyncio
 import logging
-from typing import Optional, Tuple
+from typing import Literal, Optional, Tuple, Union
 
 import aiohttp
 
@@ -59,7 +59,7 @@ def _is_valid_tag(tag_name: str) -> bool:
         return False
 
 
-async def _fetch_latest_release() -> Optional[dict]:
+async def _fetch_latest_release() -> Union[dict, Literal[False]]:
     """并发测速后从最快源拉取 releases 列表，过滤并返回 created_at 最大的 release"""
     async with aiohttp.ClientSession(headers={"Accept": "application/vnd.github+json"}) as session:
         # 并发 ping
@@ -96,7 +96,7 @@ async def _fetch_latest_release() -> Optional[dict]:
     return latest
 
 
-async def check_update() -> Optional[dict]:
+async def check_update() -> Union[dict, None, Literal[False]]:
     """
     检查是否有新版本。
 
