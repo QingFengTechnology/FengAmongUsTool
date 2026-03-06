@@ -67,7 +67,7 @@ async def _fetch_latest_release() -> Optional[dict]:
         valid = [(u, t) for u, t in ping_results if t is not None]
         if not valid:
             logger.warning("更新检查：所有源 ping 失败")
-            return None
+            return False
 
         best_url, best_time = min(valid, key=lambda x: x[1])
         logger.info("更新检查：共 %d/%d 个源可用，选用 %s (耗时: %.3fs)", len(valid), len(_SOURCES), best_url, best_time)
@@ -76,11 +76,11 @@ async def _fetch_latest_release() -> Optional[dict]:
             async with session.get(best_url, timeout=_REQUEST_TIMEOUT) as resp:
                 if resp.status != 200:
                     logger.warning("更新检查：HTTP %d from %s", resp.status, best_url)
-                    return None
+                    return False
                 releases = await resp.json()
         except Exception as e:
             logger.warning("更新检查：请求失败 %s", e)
-            return None
+            return False
 
     # 过滤掉草稿及 v1~v3
     candidates = [
@@ -89,7 +89,7 @@ async def _fetch_latest_release() -> Optional[dict]:
     ]
     if not candidates:
         logger.warning("更新检查：未找到符合条件的 release")
-        return None
+        return False
 
     latest = max(candidates, key=lambda r: r.get("created_at", ""))
     logger.debug("更新检查：最新符合版本 %s (%s)", latest.get("tag_name"), latest.get("created_at"))
@@ -102,17 +102,19 @@ async def check_update() -> Optional[dict]:
 
     Returns:
         有新版时返回 release dict（包含 tag_name / created_at / html_url）；
-        无新版或出错返回 None。
+        无新版返回 None；
+        网络/HTTP 出错返回 False。
     """
     from .setting import VERSION_DATE
 
     release = await _fetch_latest_release()
-    if not release:
-        return None
+    if release is False:
+        return False
 
     remote_date = release.get("created_at", "")
     if not remote_date:
-        return None
+        logger.warning("更新检查：release 缺少 created_at 字段")
+        return False
 
     # ISO 8601 字符串字典序 == 时间顺序
     if remote_date > VERSION_DATE:

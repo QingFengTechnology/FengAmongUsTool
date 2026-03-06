@@ -14,6 +14,7 @@ from .setting_interface import SettingInterface
 from .private_server_interface import PrivateServerInterface
 from .utility_interface import UtilityInterface
 from ..common.config import cfg
+from ..common.setting import REPO_URL
 from ..common.signal_bus import getSignalBus
 from ..common.servers_downloader import ServersDownloader
 from ..common.update_checker import check_update
@@ -278,7 +279,7 @@ class MainWindow(SplitFluentWindow):
         )
 
         tag = release.get("tag_name", "未知版本")
-        url = f"https://github.com/QingFengTechnology/FengAmongUsTool/releases/tag/{tag}"
+        url = f"{REPO_URL}/releases/tag/{tag}"
 
         dialog = MessageBox(
             '检测到新的版本！',
