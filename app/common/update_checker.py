@@ -6,6 +6,7 @@
 
 import asyncio
 import logging
+from datetime import datetime
 from typing import Literal, Optional, Tuple, Union
 
 import aiohttp
@@ -120,8 +121,22 @@ async def check_update() -> Union[dict, None, Literal[False]]:
         logger.warning("更新检查：release 缺少 created_at 字段")
         return False
 
-    # ISO 8601 字符串字典序 == 时间顺序
-    if remote_date > VERSION_DATE:
+    # 使用解析后的 datetime 比较，避免依赖 ISO 字符串字典序
+    try:
+        local_dt = datetime.fromisoformat(VERSION_DATE.replace("Z", "+00:00"))
+        remote_dt = datetime.fromisoformat(remote_date.replace("Z", "+00:00"))
+    except ValueError:
+        logger.warning(
+            "更新检查：版本日期解析失败，回退到字符串比较（本地 %s，远程 %s）",
+            VERSION_DATE, remote_date, exc_info=True,
+        )
+        if remote_date > VERSION_DATE:
+            logger.info("发现新版本：%s (%s)", release.get("tag_name"), remote_date)
+            return release
+        logger.info("已是最新版本（本地 %s，远程 %s）", VERSION_DATE, remote_date)
+        return None
+
+    if remote_dt > local_dt:
         logger.info("发现新版本：%s (%s)", release.get("tag_name"), remote_date)
         return release
 
