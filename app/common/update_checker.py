@@ -82,6 +82,10 @@ async def _fetch_latest_release() -> Union[dict, Literal[False]]:
             logger.warning("更新检查：请求失败 %s", e)
             return False
 
+    if not isinstance(releases, list):
+        logger.warning("更新检查：响应非列表（可能触发了速率限制）: %s", releases)
+        return False
+
     # 过滤掉草稿及 v1~v3
     candidates = [
         r for r in releases
