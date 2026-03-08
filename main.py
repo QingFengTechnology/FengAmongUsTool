@@ -11,16 +11,18 @@ from app.view.main_window import MainWindow
 
 # 配置日志：控制台 + 文件（每次启动覆盖，使用用户目录以兼容 PyInstaller/Windows）
 _log_dir = os.path.join(os.getenv('LOCALAPPDATA') or os.path.expanduser('~'), 'FengAmongUsTool')
-os.makedirs(_log_dir, exist_ok=True)
 _log_file = os.path.join(_log_dir, 'FengAmongUsTool.log')
+_handlers: list[logging.Handler] = [logging.StreamHandler()]
+try:
+    os.makedirs(_log_dir, exist_ok=True)
+    _handlers.append(logging.FileHandler(_log_file, mode='w', encoding='utf-8'))
+except Exception:
+    print(f"Warning: 无法初始化文件日志 '{_log_file}'，已回退到仅控制台输出。")
 logging.basicConfig(
     level=logging.DEBUG,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     datefmt='%Y-%m-%d %H:%M:%S',
-    handlers=[
-        logging.StreamHandler(),
-        logging.FileHandler(_log_file, mode='w', encoding='utf-8'),
-    ]
+    handlers=_handlers,
 )
 
 # enable dpi scale

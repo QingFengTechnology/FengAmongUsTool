@@ -54,8 +54,6 @@ class UpdateWorker(QObject):
     finished = pyqtSignal(object)
 
     def run(self):
-        if sys.platform.startswith("win"):
-            asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
         try:
             result = asyncio.run(check_update())
         except Exception as e:
@@ -217,6 +215,9 @@ class MainWindow(SplitFluentWindow):
     def _checkUpdate(self):
         """异步检查更新，有新版时弹出提示"""
         from PyQt6.QtCore import QThread, Qt
+        # 防止并发：已有检查线程正在运行时直接返回
+        if hasattr(self, '_update_thread') and self._update_thread.isRunning():
+            return
 
         self._update_thread = QThread()
         self._update_worker = UpdateWorker()
