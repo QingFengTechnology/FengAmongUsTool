@@ -279,7 +279,7 @@ class MainWindow(SplitFluentWindow):
         )
 
         tag = release.get("tag_name", "未知版本")
-        url = f"{REPO_URL}/releases/tag/{tag}"
+        url = release.get("html_url") or f"{REPO_URL}/releases/tag/{tag}"
 
         dialog = MessageBox(
             '检测到新的版本！',

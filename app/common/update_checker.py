@@ -10,15 +10,20 @@ from datetime import datetime
 from typing import Literal, Optional, Tuple, Union
 
 import aiohttp
+from .setting import REPO_URL as _REPO_URL
 
 logger = logging.getLogger(__name__)
 
-# 三个Github API源
+# 从 REPO_URL 推导出 API 路径，避免硬编码仓库名
+# 例如 https://github.com/BreezeCrew/FengAmongUsTool → repos/BreezeCrew/FengAmongUsTool
+_REPO_PATH = _REPO_URL.removeprefix("https://github.com/")
+_API_SUFFIX = f"repos/{_REPO_PATH}/releases?per_page=100"
+
 # 诡异GHProxy源无法成功加速Github API，所以此处不添加GHProxy源
 _SOURCES = [
-    "https://api.github.com/repos/BreezeCrew/FengAmongUsTool/releases?per_page=100",
-    "https://gh.llkk.cc/https://api.github.com/repos/BreezeCrew/FengAmongUsTool/releases?per_page=100",
-    "https://tvv.tw/https://api.github.com/repos/BreezeCrew/FengAmongUsTool/releases?per_page=100"
+    f"https://api.github.com/{_API_SUFFIX}",
+    f"https://gh.llkk.cc/https://api.github.com/{_API_SUFFIX}",
+    f"https://tvv.tw/https://api.github.com/{_API_SUFFIX}",
 ]
 
 _PING_TIMEOUT = 6
@@ -26,16 +31,26 @@ _REQUEST_TIMEOUT = 10
 
 
 async def _ping(session: aiohttp.ClientSession, url: str) -> Tuple[str, Optional[float]]:
-    """HEAD 测速，返回 (url, 响应秒数) 或 (url, None)"""
+    """测速，返回 (url, 响应秒数) 或 (url, None)。HEAD 失败时回退 GET。"""
     import time
     try:
         start = time.monotonic()
         async with session.head(url, timeout=_PING_TIMEOUT, allow_redirects=True) as resp:
             if resp.status < 400:
                 elapsed = time.monotonic() - start
-                logger.debug("Ping %s 成功，耗时: %.3fs", url, elapsed)
+                logger.debug("Ping %s 成功（HEAD），耗时: %.3fs", url, elapsed)
                 return url, elapsed
-            logger.debug("Ping %s 失败，状态码: %d", url, resp.status)
+            if resp.status not in (403, 405, 501):
+                logger.debug("Ping %s 失败（HEAD），状态码: %d", url, resp.status)
+                return url, None
+        # HEAD 返回 403/405，部分代理不支持 HEAD，改用 GET 重试
+        start = time.monotonic()
+        async with session.get(url, timeout=_PING_TIMEOUT, allow_redirects=True) as resp:
+            elapsed = time.monotonic() - start
+            if resp.status < 400:
+                logger.debug("Ping %s 成功（GET 回退），耗时: %.3fs", url, elapsed)
+                return url, elapsed
+            logger.debug("Ping %s 失败（GET 回退），状态码: %d", url, resp.status)
             return url, None
     except asyncio.TimeoutError:
         logger.debug("Ping %s 超时 (>%ds)", url, _PING_TIMEOUT)
@@ -66,26 +81,34 @@ async def _fetch_latest_release() -> Union[dict, Literal[False]]:
         # 并发 ping
         ping_results = await asyncio.gather(*[_ping(session, u) for u in _SOURCES])
         valid = [(u, t) for u, t in ping_results if t is not None]
+        # 按响应时间排序；ping 全失败时按原始顺序兜底
+        ordered_urls = [u for u, _ in sorted(valid, key=lambda x: x[1])] if valid else list(_SOURCES)
         if not valid:
-            logger.warning("更新检查：所有源 ping 失败")
+            logger.warning("更新检查：所有源 ping 失败，将逐一尝试所有源")
+        else:
+            logger.info("更新检查：共 %d/%d 个源可用，按速度依次尝试", len(valid), len(_SOURCES))
+
+        releases = None
+        for url in ordered_urls:
+            try:
+                async with session.get(url, timeout=_REQUEST_TIMEOUT) as resp:
+                    if resp.status != 200:
+                        logger.warning("更新检查：HTTP %d from %s，尝试下一源", resp.status, url)
+                        continue
+                    data = await resp.json()
+                    if not isinstance(data, list):
+                        logger.warning("更新检查：%s 响应非列表（可能触发速率限制）: %s，尝试下一源", url, data)
+                        continue
+                    releases = data
+                    logger.info("更新检查：成功从 %s 获取数据", url)
+                    break
+            except Exception as e:
+                logger.warning("更新检查：请求 %s 失败: %s，尝试下一源", url, e)
+                continue
+
+        if releases is None:
+            logger.warning("更新检查：所有源均失败")
             return False
-
-        best_url, best_time = min(valid, key=lambda x: x[1])
-        logger.info("更新检查：共 %d/%d 个源可用，选用 %s (耗时: %.3fs)", len(valid), len(_SOURCES), best_url, best_time)
-
-        try:
-            async with session.get(best_url, timeout=_REQUEST_TIMEOUT) as resp:
-                if resp.status != 200:
-                    logger.warning("更新检查：HTTP %d from %s", resp.status, best_url)
-                    return False
-                releases = await resp.json()
-        except Exception as e:
-            logger.warning("更新检查：请求失败 %s", e)
-            return False
-
-    if not isinstance(releases, list):
-        logger.warning("更新检查：响应非列表（可能触发了速率限制）: %s", releases)
-        return False
 
     # 过滤掉草稿及 v1~v3
     candidates = [

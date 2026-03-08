@@ -12,6 +12,7 @@ VERSION_DATE = "2026-03-06T10:22:48Z"
 APP_NAME = "FengAmongUsTool"
 HELP_URL = "https://qfluentwidgets.com"
 REPO_URL = "https://github.com/BreezeCrew/FengAmongUsTool"
+ASSET_REPO_URL = "https://github.com/BreezeCrew/FengAmongUsTool-Asset"
 FEEDBACK_URL = "https://github.com/BreezeCrew/FengAmongUsTool/issues"
 
 CONFIG_FOLDER = Path('AppData').absolute()
