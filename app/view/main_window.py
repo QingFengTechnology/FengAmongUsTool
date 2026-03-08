@@ -216,7 +216,7 @@ class MainWindow(SplitFluentWindow):
         """异步检查更新，有新版时弹出提示"""
         from PyQt6.QtCore import QThread, Qt
         # 防止并发：已有检查线程正在运行时直接返回
-        if hasattr(self, '_update_thread') and self._update_thread.isRunning():
+        if getattr(self, '_update_thread', None) is not None:
             return
 
         self._update_thread = QThread()
@@ -227,6 +227,7 @@ class MainWindow(SplitFluentWindow):
         self._update_worker.finished.connect(self._update_thread.quit)
         self._update_worker.finished.connect(self._update_worker.deleteLater)
         self._update_thread.finished.connect(self._update_thread.deleteLater)
+        self._update_thread.finished.connect(lambda: setattr(self, '_update_thread', None))
         InfoBar.info(
             '检查更新',
             '正在检查可用新版本...',
