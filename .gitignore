@@ -5,3 +5,4 @@ AppData/
 .claude/
 /**/build/
 /**/dist/
+*.log

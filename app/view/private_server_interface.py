@@ -17,7 +17,7 @@ class PrivateServerCard(HeaderCardWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setTitle(self.tr('Servers'))
+        self.setTitle('服务器')
 
         # 存储服务器选项的字典
         self.server_options = {}
@@ -63,13 +63,13 @@ class PrivateServerInterface(ScrollArea):
         self.vBoxLayout = QVBoxLayout(self.scrollWidget)
 
         # 添加页面标题
-        self.titleLabel = QLabel(self.tr('Private Server Installation'), self)
+        self.titleLabel = QLabel('私服安装', self)
 
         # 添加HeaderCardWidget组件
         self.headerCard = PrivateServerCard(self)
 
         # 添加"安装私服"按钮
-        self.installButton = PrimaryPushButton(self.tr('Install'), self)
+        self.installButton = PrimaryPushButton('安装', self)
         # 连接按钮点击事件
         self.installButton.clicked.connect(self.onInstallButtonClicked)
 
@@ -110,8 +110,8 @@ class PrivateServerInterface(ScrollArea):
         if not selected_servers:
             # 如果没有选择任何服务器，显示提示信息
             InfoBar.warning(
-                title=self.tr('提示'),
-                content=self.tr('请至少选择一个服务器'),
+                title='提示',
+                content='请至少选择一个服务器',
                 orient=Qt.Orientation.Horizontal,
                 isClosable=True,
                 position=InfoBarPosition.TOP_RIGHT,
@@ -131,8 +131,8 @@ class PrivateServerInterface(ScrollArea):
             servers_data = self.headerCard.servers_data
             if servers_data is None:
                 InfoBar.error(
-                    title=self.tr('安装失败'),
-                    content=self.tr('服务器数据未加载，请检查网络连接'),
+                    title='安装失败',
+                    content='服务器数据未加载，请检查网络连接',
                     orient=Qt.Orientation.Horizontal,
                     isClosable=True,
                     position=InfoBarPosition.TOP_RIGHT,
@@ -264,8 +264,8 @@ class PrivateServerInterface(ScrollArea):
             if installed_count == 0 and duplicate_count > 0:
                 # 所有服务器都重复，显示提示信息
                 InfoBar.warning(
-                    title=self.tr('安装终止'),
-                    content=self.tr('所有服务器均重复'),
+                    title='安装终止',
+                    content='所有服务器均重复',
                     orient=Qt.Orientation.Horizontal,
                     isClosable=True,
                     position=InfoBarPosition.TOP_RIGHT,
@@ -297,8 +297,8 @@ class PrivateServerInterface(ScrollArea):
 
             # 显示成功消息
             InfoBar.success(
-                title=self.tr('私服安装成功'),
-                content=self.tr(f'共安装了 {installed_count} 个服务器，{duplicate_count} 个服务器重复'),
+                title='私服安装成功',
+                content=f'共安装了 {installed_count} 个服务器，{duplicate_count} 个服务器重复',
                 orient=Qt.Orientation.Horizontal,
                 isClosable=True,
                 position=InfoBarPosition.TOP_RIGHT,
@@ -309,9 +309,9 @@ class PrivateServerInterface(ScrollArea):
         except Exception as e:
             # 显示错误消息
             InfoBar.error(
-                title=self.tr('安装失败'),
-                content=self.tr(f'安装过程中发生错误: {str(e)}'),
-                orient=Qt.Horizontal,
+                title='安装失败',
+                content=f'安装过程中发生错误: {str(e)}',
+                orient=Qt.Orientation.Horizontal,
                 isClosable=True,
                 position=InfoBarPosition.TOP_RIGHT,
                 duration=3000,

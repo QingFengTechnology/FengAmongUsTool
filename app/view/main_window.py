@@ -7,15 +7,17 @@ from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtGui import QIcon, QColor
 from PyQt6.QtWidgets import QApplication
 
-from qfluentwidgets import NavigationItemPosition, SplitFluentWindow
+from qfluentwidgets import NavigationItemPosition, SplitFluentWindow, InfoBar, InfoBarPosition
 from qfluentwidgets import FluentIcon as FIF
 
 from .setting_interface import SettingInterface
 from .private_server_interface import PrivateServerInterface
 from .utility_interface import UtilityInterface
 from ..common.config import cfg
+from ..common.setting import REPO_URL
 from ..common.signal_bus import getSignalBus
 from ..common.servers_downloader import ServersDownloader
+from ..common.update_checker import check_update
 
 # 导入资源模块以确保资源文件被加载
 from ..common import resource as _resource  # noqa: F401
@@ -46,6 +48,18 @@ class DownloadWorker(QObject):
         except Exception as e:
             logger.error(f"下载 servers.json 时出错: {e}")
             self.download_finished.emit(None)
+
+
+class UpdateWorker(QObject):
+    finished = pyqtSignal(object)
+
+    def run(self):
+        try:
+            result = asyncio.run(check_update())
+        except Exception as e:
+            logger.error(f"检查更新时出错: {e}")
+            result = False
+        self.finished.emit(result)
 
 
 class MainWindow(SplitFluentWindow):
@@ -176,6 +190,10 @@ class MainWindow(SplitFluentWindow):
 
             # 关闭 SplashScreen 并显示主窗口
             self.finishSplashAndShow()
+
+            # 启动时检查更新（受配置控制）
+            if cfg.get(cfg.checkUpdateAtStartUp):
+                self._checkUpdate()
         except Exception as e:
             logger.error(f"下载完成后处理出错: {e}")
             # 出错也要关闭 SplashScreen 并显示主窗口
@@ -194,21 +212,103 @@ class MainWindow(SplitFluentWindow):
         except Exception as e:
             logger.error(f"清理缓存文件夹时出错: {e}")
 
+    def _checkUpdate(self):
+        """异步检查更新，有新版时弹出提示"""
+        from PyQt6.QtCore import QThread, Qt
+        # 防止并发：已有检查线程正在运行时直接返回
+        if getattr(self, '_update_thread', None) is not None:
+            return
+
+        self._update_thread = QThread()
+        self._update_worker = UpdateWorker()
+        self._update_worker.moveToThread(self._update_thread)
+        self._update_thread.started.connect(self._update_worker.run)
+        self._update_worker.finished.connect(self._onUpdateChecked)
+        self._update_worker.finished.connect(self._update_thread.quit)
+        self._update_worker.finished.connect(self._update_worker.deleteLater)
+        self._update_thread.finished.connect(self._update_thread.deleteLater)
+        self._update_thread.finished.connect(lambda: setattr(self, '_update_thread', None))
+        InfoBar.info(
+            '检查更新',
+            '正在检查可用新版本...',
+            orient=Qt.Orientation.Horizontal,
+            isClosable=True,
+            position=InfoBarPosition.TOP_RIGHT,
+            duration=2500,
+            parent=self
+        )
+        self._update_thread.start()
+
+    def _onUpdateChecked(self, release):
+        from PyQt6.QtCore import Qt
+        from qfluentwidgets import MessageBox
+        import webbrowser
+
+        if release is False:
+            InfoBar.error(
+                '检查更新',
+                '更新检查失败，具体错误原因请查看日志。',
+                orient=Qt.Orientation.Horizontal,
+                isClosable=True,
+                position=InfoBarPosition.TOP_RIGHT,
+                duration=4000,
+                parent=self
+            )
+            return
+
+        if release is None:
+            InfoBar.success(
+                '检查更新',
+                '当前已是最新版本！',
+                orient=Qt.Orientation.Horizontal,
+                isClosable=True,
+                position=InfoBarPosition.TOP_RIGHT,
+                duration=3000,
+                parent=self
+            )
+            return
+
+        # New version available
+        InfoBar.success(
+            '检查更新',
+            '检测到有新版本可用！',
+            orient=Qt.Orientation.Horizontal,
+            isClosable=True,
+            position=InfoBarPosition.TOP_RIGHT,
+            duration=3000,
+            parent=self
+        )
+
+        tag = release.get("tag_name", "未知版本")
+        url = release.get("html_url") or f"{REPO_URL}/releases/tag/{tag}"
+
+        dialog = MessageBox(
+            '检测到新的版本！',
+            f'检测到新的版本 {tag}，是否跳转到发布页？',
+            self
+        )
+        dialog.yesButton.setText('是')
+        dialog.cancelButton.setText('否')
+
+        if dialog.exec():
+            webbrowser.open(url)
+
     def connectSignalToSlot(self):
         getSignalBus().micaEnableChanged.connect(self.setMicaEffectEnabled)
+        getSignalBus().checkUpdateSig.connect(self._checkUpdate)
 
     def initNavigation(self):
         # self.navigationInterface.setAcrylicEnabled(True)
 
         # add private server widget
         if self.privateServerInterface:
-            self.addSubInterface(self.privateServerInterface, FIF.DOWNLOAD, self.tr('私服安装'))
+            self.addSubInterface(self.privateServerInterface, FIF.DOWNLOAD, '私服安装')
 
         # add utility widget
         if self.utilityInterface:
-            self.addSubInterface(self.utilityInterface, FIF.APPLICATION, self.tr('实用功能'))
+            self.addSubInterface(self.utilityInterface, FIF.APPLICATION, '实用功能')
 
         # add custom widget to bottom
         if self.settingInterface:
             self.addSubInterface(
-                self.settingInterface, FIF.SETTING, self.tr('Settings'), NavigationItemPosition.BOTTOM)
+                self.settingInterface, FIF.SETTING, '设置', NavigationItemPosition.BOTTOM)

@@ -12,6 +12,8 @@ import os
 import time
 from typing import Optional, Dict, Any, Tuple
 
+from .setting import ASSET_REPO_URL as _ASSET_REPO_URL
+
 logger = logging.getLogger(__name__)
 
 
@@ -20,8 +22,8 @@ class ServersDownloader:
 
     # 默认的下载源
     DEFAULT_SOURCES = [
-        "https://github.com/QingFengTechnology/FengAmongUsTool-Asset/raw/main/servers.json",
-        "https://gh-proxy.org/https://github.com/QingFengTechnology/FengAmongUsTool-Asset/raw/main/servers.json",
+        f"{_ASSET_REPO_URL}/raw/main/servers.json",
+        f"https://gh-proxy.org/{_ASSET_REPO_URL}/raw/main/servers.json",
         "https://api.qingfengawa.top/FengAmongUsTool-Asset/servers.json"
     ]
 
