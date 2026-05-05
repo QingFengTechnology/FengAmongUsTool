@@ -8,6 +8,7 @@ from rich.console import Console
 
 from module.about import showAboutPage
 from function.updateCheck import checkUpdate
+from module.cosmeticUnlock import cosmetic_unlock
 from module.changeSetting import fixAmongUsSetting
 from module.changeSetting import updateAmongUsSetting
 from module.installServer import installServerRegion
@@ -58,13 +59,19 @@ if __name__ == '__main__':
 
     2.2 使用新版本配置
 
-3. 启动 Steam Among Us
+- 皮肤解锁器
 
-4. 重新自动选择源服务器 (当前源：{currentSourceName})
+    3.1 新版皮肤解锁器 (适用于 Among Us v16.1.0+)
 
-5. 关于工具箱
+    3.2 旧版皮肤解锁器 (适用于 Among Us v2022.10.15 - v16.0.5)
 
-6. 退出
+4. 启动 Steam Among Us
+
+5. 重新自动选择源服务器 (当前源：{currentSourceName})
+
+6. 关于工具箱
+
+7. 退出
 """
         generalMainMenu(mainMenuText, "主菜单")
         commandNumber = console.input("请输入要执行的命令编号：").strip()
@@ -86,19 +93,23 @@ if __name__ == '__main__':
             fixAmongUsSetting()
         elif commandNumber == 2.2:
             updateAmongUsSetting()
-        elif commandNumber == 3.0:
+        elif commandNumber == 3.0 or commandNumber == 3.1:
+            cosmetic_unlock(for_old_version=False)
+        elif commandNumber == 3.2:
+            cosmetic_unlock(for_old_version=True)
+        elif commandNumber == 4.0:
             try:
                 os.startfile("steam://rungameid/945360")
                 console.print("[green1]已尝试通过 Steam 启动 Among Us。[/green1]")
                 sleep(1)
             except Exception as e:
                 console.print(f"[red1]通过 Steam 启动 Among Us 时出错：{e}[/red1]")
-        elif commandNumber == 4.0:
+        elif commandNumber == 5.0:
             selectBestSource()
             sleep(2)
-        elif commandNumber == 5.0:
-            showAboutPage()
         elif commandNumber == 6.0:
+            showAboutPage()
+        elif commandNumber == 7.0:
             sys.exit(0)
         else:
             console.print("[red1]输入的命令编号无效，请重新输入。[/red1]")
