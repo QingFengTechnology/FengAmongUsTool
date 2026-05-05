@@ -1,18 +1,16 @@
 import os
-import sys
-import signal
 import platform
-
+import signal
+import sys
 from time import sleep
-from rich.console import Console
 
-from module.about import showAboutPage
-from function.updateCheck import checkUpdate
-from module.cosmeticUnlock import cosmetic_unlock
-from module.changeSetting import fixAmongUsSetting
-from module.changeSetting import updateAmongUsSetting
-from module.installServer import installServerRegion
 from function.main import defaultHeader, generalMainMenu, selectBestSource
+from function.updateCheck import checkUpdate
+from module.about import showAboutPage
+from module.changeSetting import fixAmongUsSetting, updateAmongUsSetting
+from module.cosmeticUnlock import cosmetic_unlock
+from module.installServer import installServerRegion
+from rich.console import Console
 
 if __name__ == '__main__':
     os.system('title 清风 Among Us 工具箱')

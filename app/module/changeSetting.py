@@ -1,16 +1,15 @@
 import os
-import stat
 import shutil
-import requests
-
-from rich.text import Text
-from rich.panel import Panel
+import stat
 from time import sleep
-from rich.syntax import Syntax
-from rich.console import Console
 
-from function.main import generalMainMenu, defaultHeader, br
-from function.variable import DownloadSources, BestDownloadSource
+import requests
+from function.main import br, defaultHeader, generalMainMenu
+from function.variable import BestDownloadSource, DownloadSources
+from rich.console import Console
+from rich.panel import Panel
+from rich.syntax import Syntax
+from rich.text import Text
 
 console = Console()
 

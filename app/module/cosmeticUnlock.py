@@ -1,11 +1,10 @@
-import signal
 import ctypes
-
-from time import sleep
+import signal
 from ctypes import wintypes
-from rich.console import Console
+from time import sleep
 
 from function.main import generalMainMenu
+from rich.console import Console
 
 console = Console()
 kernel32 = ctypes.WinDLL('kernel32', use_last_error=True)

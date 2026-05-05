@@ -1,8 +1,8 @@
 from time import sleep
-from rich.console import Console
 
-from function.variable import Version
 from function.main import generalMainMenu
+from function.variable import Version
+from rich.console import Console
 
 console = Console()
 

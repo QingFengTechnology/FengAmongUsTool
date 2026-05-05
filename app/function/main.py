@@ -1,14 +1,13 @@
 import ctypes
-import requests
-
 from time import time
-from rich.text import Text
-from rich.panel import Panel
+
+import requests
+from function.updateCheck import updateNotification
+from function.variable import DownloadSources, ToolTitle, Version, VersionType
 from rich.box import DOUBLE_EDGE
 from rich.console import Console
-
-from function.updateCheck import updateNotification
-from function.variable import Version, VersionType, ToolTitle, DownloadSources
+from rich.panel import Panel
+from rich.text import Text
 
 console = Console()
 

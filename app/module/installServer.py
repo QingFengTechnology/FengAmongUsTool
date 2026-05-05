@@ -1,16 +1,16 @@
-import os
-import stat
 import json
+import os
 import shutil
-import requests
+import stat
 
-from rich.text import Text
+import requests
+from function.main import br, defaultHeader, generalMainMenu
+from function.variable import (REGIONVALIDATIONKEY, BestDownloadSource,
+                               DownloadSources)
+from rich.console import Console
 from rich.panel import Panel
 from rich.syntax import Syntax
-from rich.console import Console
-
-from function.variable import REGIONVALIDATIONKEY, DownloadSources, BestDownloadSource
-from function.main import defaultHeader, br, generalMainMenu
+from rich.text import Text
 
 console = Console()
 

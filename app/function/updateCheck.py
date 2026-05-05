@@ -1,10 +1,10 @@
-import requests
-from rich.text import Text
-from rich.panel import Panel
 from datetime import datetime
-from rich.console import Console
 
+import requests
 from function.variable import VersionType, versionDate
+from rich.console import Console
+from rich.panel import Panel
+from rich.text import Text
 
 console = Console()
 
